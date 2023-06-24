@@ -81,15 +81,15 @@ if __name__ == "__main__":
     np.random.seed(42)
     units = np.random.choice(np.arange(len(available_units))[available_units], 100)
 
-    wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
-    wandb.config.update(
-        dict(
-            energy_scale=energy_scale,
-            norm_constraint=norm_constraint,
-            model_type=model_type,
-            units=units,
-        )
-    )
+    # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
+    # wandb.config.update(
+    #     dict(
+    #         energy_scale=energy_scale,
+    #         norm_constraint=norm_constraint,
+    #         model_type=model_type,
+    #         units=units,
+    #     )
+    # )
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
@@ -136,15 +136,15 @@ if __name__ == "__main__":
             )
             end = time.time()
 
-            wandb.log(
-                {
-                    "image": wandb.Image(image),
-                    **score,
-                    "unit_idx": unit_idx,
-                    "seed": seed,
-                    "time": end - start,
-                }
-            )
+            #  wandb.log(
+            #     {
+            #         "image": wandb.Image(image),
+            #         **score,
+            #         "unit_idx": unit_idx,
+            #         "seed": seed,
+            #         "time": end - start,
+            #     }
+            # )
 
             train_scores.append(score["train"].item())
             val_scores.append(score["val"].item())
