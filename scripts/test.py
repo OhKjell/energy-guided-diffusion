@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 from egg.models import models
 from egg.diffusion import EGG
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 # Setup the parameters
