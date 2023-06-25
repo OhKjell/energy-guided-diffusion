@@ -122,6 +122,7 @@ if __name__ == "__main__":
     train_scores = []
     val_scores = []
     cross_val_scores = []
+    run = 1
     for seed in seeds:
         
         for unit_idx in units:
@@ -134,7 +135,7 @@ if __name__ == "__main__":
                 desc=f"diffMEI_{unit_idx}",
                 grayscale=True,
                 seed=seed,
-                run=unit_idx
+                run=run
             )
             end = time.time()
 
@@ -152,6 +153,7 @@ if __name__ == "__main__":
             val_scores.append(score["val"].item())
             cross_val_scores.append(score["cross-val"].item())
         energy_scale = energy_scale + 5
+        run = run +1
 
     print("Train:", train_scores)
     print("Val:", val_scores)
