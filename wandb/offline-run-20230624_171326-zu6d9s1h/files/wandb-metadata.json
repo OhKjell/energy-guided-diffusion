@@ -1,0 +1,165 @@
+{
+    "os": "Linux-5.15.0-57-generic-x86_64-with-glibc2.27",
+    "python": "3.9.6",
+    "heartbeatAt": "2023-06-24T17:13:27.142963",
+    "startedAt": "2023-06-24T17:13:26.522182",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/src/scripts/meis_egg.py",
+    "codePath": "scripts/meis_egg.py",
+    "git": {
+        "remote": "git@github.com:DavidHir0/energy-guided-diffusion.git",
+        "commit": "46412ecc111c87fdcb9fff988bf8b65b6b23b5de"
+    },
+    "email": null,
+    "root": "/src",
+    "host": "f2c26cba6106",
+    "username": "root",
+    "executable": "/usr/local/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2207.5552083333328,
+        "min": 2200.0,
+        "max": 3700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2208.602,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2192.208,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.289,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.208,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.546,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2194.82,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.581,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.195,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.313,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2191.086,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2194.522,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2196.002,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.175,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.506,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.896,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.188,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2191.791,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2190.471,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.12,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2190.842,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2190.697,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2186.48,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2195.694,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2189.789,
+            "min": 2200.0,
+            "max": 3700.0
+        }
+    ],
+    "disk": {
+        "total": 913.3173141479492,
+        "used": 38.98326110839844
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3090",
+            "memory_total": 25769803776
+        }
+    ],
+    "memory": {
+        "total": 62.71573257446289
+    }
+}
