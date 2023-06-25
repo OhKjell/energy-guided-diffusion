@@ -23,7 +23,7 @@ from egg.models import models
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-seeds = [0]
+seeds = [0, 0, 0]
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 
@@ -123,6 +123,7 @@ if __name__ == "__main__":
     val_scores = []
     cross_val_scores = []
     for seed in seeds:
+        
         for unit_idx in units:
             start = time.time()
             score, image = do_run(
@@ -150,6 +151,7 @@ if __name__ == "__main__":
             train_scores.append(score["train"].item())
             val_scores.append(score["val"].item())
             cross_val_scores.append(score["cross-val"].item())
+        energy_scale = energy_scale + 5
 
     print("Train:", train_scores)
     print("Val:", val_scores)
