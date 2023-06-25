@@ -28,7 +28,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 
 
-def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None):
+def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None, run=1):
     if seed is not None:
         torch.manual_seed(seed)
 
@@ -47,7 +47,7 @@ def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None):
             energy = energy_fn(sample["pred_xstart"])
 
             for k, image in enumerate(sample["pred_xstart"]):
-                filename = f"{desc}_{0:05}.png"
+                filename = f"output/{desc}_{j:05}.png"
                 if grayscale:
                     image = image.mean(0, keepdim=True)
 
@@ -67,7 +67,7 @@ def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None):
             plt.gca().xaxis.set_major_locator(plt.NullLocator())
             plt.gca().yaxis.set_major_locator(plt.NullLocator())
             plt.savefig(
-                f"temp.png", transparent=True, bbox_inches="tight", pad_inches=0
+                filename, transparent=True, bbox_inches="tight", pad_inches=0
             )
 
     return energy, "temp.png"
@@ -133,6 +133,7 @@ if __name__ == "__main__":
                 desc=f"diffMEI_{unit_idx}",
                 grayscale=True,
                 seed=seed,
+                run=unit_idx
             )
             end = time.time()
 
