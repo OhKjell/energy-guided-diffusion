@@ -3,6 +3,8 @@ import torch
 import torch.nn.functional as F
 from egg.models import models
 from egg.diffusion import EGG
+import matplotlib as plt
+import numpy as np
 
 # Setup the parameters
 energy_scale = 5
@@ -34,3 +36,8 @@ samples = diffusion.sample(
     energy_fn=partial(energy_fn, unit_idx=0),
     energy_scale=energy_scale
 )
+*_, sample = samples
+print(sample["sample"].shape)
+image = np.transpose(sample["sample"][0], (1,2,0))
+plt.imshow(image)
+plt.show()
