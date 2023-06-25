@@ -10,14 +10,14 @@ v4_multihead_attention_ensemble_model_2.eval()
 
 models = {
     'task_driven': {
-        'train': task_driven_ensemble_1,
-        'val': task_driven_ensemble_2,
-        'cross-val': v4_multihead_attention_ensemble_model,
+        'train': task_driven_ensemble_1.cuda(),
+        'val': task_driven_ensemble_2.cuda(),
+        'cross-val': v4_multihead_attention_ensemble_model.cuda(),
     },
     'v4_multihead_attention': {
-        'train': v4_multihead_attention_ensemble_model,
-        'val': v4_multihead_attention_ensemble_model_2,
-        'cross-val': task_driven_ensemble_1,
+        'train': v4_multihead_attention_ensemble_model.cuda(),
+        'val': v4_multihead_attention_ensemble_model_2.cuda(),
+        'cross-val': task_driven_ensemble_1.cuda(),
     },
     'cross': {
         'train': task_driven_ensemble_1,
