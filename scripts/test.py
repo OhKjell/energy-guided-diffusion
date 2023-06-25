@@ -1,5 +1,6 @@
 from functools import partial
-
+import torch
+import torch.nn.functional as F
 from egg.models import models
 from egg.diffusion import EGG
 
