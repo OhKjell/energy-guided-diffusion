@@ -23,7 +23,7 @@ from egg.models import models
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-seeds = [0, 1, 2]
+seeds = [0]
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
 
     np.random.seed(42)
-    units = np.random.choice(np.arange(len(available_units))[available_units], 100)
+    units = np.random.choice(np.arange(len(available_units))[available_units], 5)
 
     # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
     # wandb.config.update(

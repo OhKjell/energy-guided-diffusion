@@ -50,6 +50,13 @@ image = image.clip(0, 1)
 
 #plt.imshow(image)
 #plt.show()
-plt.imsave("output.png", image)
-
-print("Image saved successfully.")  
+plt.imshow(tar.cpu().detach().squeeze(), cmap="gray", vmin=-1.7, vmax=1.7)
+plt.axis("off")
+plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+plt.margins(0, 0)
+plt.gca().xaxis.set_major_locator(plt.NullLocator())
+plt.gca().yaxis.set_major_locator(plt.NullLocator())
+plt.savefig(
+    "output.png", transparent=True, bbox_inches="tight", pad_inches=0
+)
+ 
