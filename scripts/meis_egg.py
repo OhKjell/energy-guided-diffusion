@@ -47,7 +47,7 @@ def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None, run=1)
             energy = energy_fn(sample["pred_xstart"])
 
             for k, image in enumerate(sample["pred_xstart"]):
-                filename = f"output/{desc}_{j:05}.png"
+                filename = f"output/{str(run)}{desc}_{j:05}.png"
                 if grayscale:
                     image = image.mean(0, keepdim=True)
 
@@ -58,17 +58,17 @@ def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None, run=1)
                     f'step {j} | train energy: {energy["train"]:.4g} | val energy: {energy["val"]:.4g} | cross-val energy: {energy["cross-val"]:.4g}'
                 )
 
-            import matplotlib.pyplot as plt
+                import matplotlib.pyplot as plt
 
-            plt.imshow(tar.cpu().detach().squeeze(), cmap="gray", vmin=-1.7, vmax=1.7)
-            plt.axis("off")
-            plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
-            plt.margins(0, 0)
-            plt.gca().xaxis.set_major_locator(plt.NullLocator())
-            plt.gca().yaxis.set_major_locator(plt.NullLocator())
-            plt.savefig(
-                filename, transparent=True, bbox_inches="tight", pad_inches=0
-            )
+                plt.imshow(tar.cpu().detach().squeeze(), cmap="gray", vmin=-1.7, vmax=1.7)
+                plt.axis("off")
+                plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+                plt.margins(0, 0)
+                plt.gca().xaxis.set_major_locator(plt.NullLocator())
+                plt.gca().yaxis.set_major_locator(plt.NullLocator())
+                plt.savefig(
+                    filename, transparent=True, bbox_inches="tight", pad_inches=0
+                )
 
     return energy, "temp.png"
 
