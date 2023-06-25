@@ -45,7 +45,10 @@ image = np.transpose(sample["sample"][0].cpu().numpy(), (1, 2, 0))
 #image_tensor = sample["sample"][0].cpu()
 #image_tensor = torch.transpose(image_tensor, 0, 2).numpy()
 #image = np.transpose(image_tensor, (1, 2, 0))
-image = image / 255.0
+#image = image / 255.0
 
-plt.imshow(image)
-plt.show()
+#plt.imshow(image)
+#plt.show()
+plt.imsave("output.png", image)
+
+print("Image saved successfully.")  
