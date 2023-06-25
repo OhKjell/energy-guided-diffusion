@@ -24,7 +24,7 @@ def energy_fn(pred_x_0, unit_idx=0):
         pred_x_0.clone(), size=(100, 100), mode="bilinear", align_corners=False
     ).mean(1, keepdim=True) # resize to 100x100 and convert to grayscale
     
-    return dict(train=models['task_driven']['train'](x)[..., unit_idx])
+    return dict(train=models['v4_multihead_attention']['train'](x)[..., unit_idx])
 
 
 diffusion = EGG(
