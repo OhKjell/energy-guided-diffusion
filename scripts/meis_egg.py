@@ -73,7 +73,7 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
                     filename, transparent=True, bbox_inches="tight", pad_inches=0
                 )
 
-    return energy, samples[-1]
+    return energy, sample
 
 
 if __name__ == "__main__":
