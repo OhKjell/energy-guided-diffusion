@@ -398,6 +398,8 @@ class GaussianDiffusion:
         model,
         x,
         t,
+        #modified
+        *args,
         clip_denoised=True,
         denoised_fn=None,
         cond_fn=None,
@@ -632,7 +634,7 @@ class GaussianDiffusion:
             #     cond_fn=cond_fn,
             #     model_kwargs=model_kwargs,
             # )
-            out = checkpoint(self.p_sample, model, img, t, clip_denoised=clip_denoised, denoised_fn=denoised_fn, cond_fn=cond_fn, model_kwargs=model_kwargs)
+            out = checkpoint(self.p_sample, model, img, t, clip_denoised, denoised_fn, cond_fn, model_kwargs)
 
 
             energy = energy_fn(out["pred_xstart"])
