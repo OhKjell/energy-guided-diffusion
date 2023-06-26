@@ -639,7 +639,7 @@ class GaussianDiffusion:
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
                 if normalize_grad:
                     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
-                    grad /= (grad_norm + 1e-8)
+                    grad2 /= (grad_norm + 1e-8)
                 update2 = grad2 * energy_scale
                 out["sample"] = out["sample"] - update2
 
