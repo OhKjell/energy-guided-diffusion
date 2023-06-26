@@ -60,45 +60,46 @@ def compare_images(model, image1, image2):
 
     similarity_score = torch.nn.functional.cosine_similarity(image1, image2)
 
-    return similarity_score.item(), similarity_score
+    return 1 - similarity_score
 
-energy_scale = 20
-batch_size = 10  # Number of iterations per batch
-path_1 = "data/Standard_Golden_Retriever.jpeg"
-path_2 = "data/Canadian_Golden_Retriever.jpeg"
-path_3 = "data/Cat03.jpg"
-if torch.cuda.is_available():
-    print("cuda")
-image_1 = load_and_resize_image(path_1)
-image_2 = load_and_resize_image(path_2)
-image_3 = load_and_resize_image(path_3).requires_grad_()
-#model = torch.load("models/vgg").to(torch.device("cuda"))
-model = torch.load("models/vgg")
-score = []
+# """ energy_scale = 20
+# batch_size = 10  # Number of iterations per batch
+# path_1 = "data/Standard_Golden_Retriever.jpeg"
+# path_2 = "data/Canadian_Golden_Retriever.jpeg"
+# path_3 = "data/Cat03.jpg"
+# if torch.cuda.is_available():
+#     print("cuda")
+# image_1 = load_and_resize_image(path_1)
+# image_2 = load_and_resize_image(path_2)
+# image_3 = load_and_resize_image(path_3).requires_grad_()
+# #model = torch.load("models/vgg").to(torch.device("cuda"))
+# model = torch.load("models/vgg")
+# score = []
 
-total_iterations = 50
-num_batches = total_iterations // batch_size
+# total_iterations = 50
+# num_batches = total_iterations // batch_size
 
-for batch in range(num_batches):
-    for i in range(batch_size):
-        iteration = batch * batch_size + i
-        similarity, similarity_score = compare_images(model, image_1, image_3)
-        score.append(similarity)
-        print(score[-1])
-        loss = 1 - similarity_score
-        grad = torch.autograd.grad(outputs=loss, inputs=image_3, create_graph=True)[0]
-        grad_norm = torch.norm(grad, p=2)  # Calculate the norm of gradients
-        grad /= (grad_norm + 1e-8)  # Normalize gradients
-        grad = grad * energy_scale
-        image_3 = image_3 - grad
+# for batch in range(num_batches):
+#     for i in range(batch_size):
+#         iteration = batch * batch_size + i
+#         similarity, similarity_score = compare_images(model, image_1, image_3)
+#         score.append(similarity)
+#         print(score[-1])
+#         loss = 1 - similarity_score
+#         grad = torch.autograd.grad(outputs=loss, inputs=image_3, create_graph=True)[0]
+#         grad_norm = torch.norm(grad, p=2)  # Calculate the norm of gradients
+#         grad /= (grad_norm + 1e-8)  # Normalize gradients
+#         grad = grad * energy_scale
+#         image_3 = image_3 - grad
 
-        vutils.save_image(image_3, f"output/image_{iteration}.png")
+#         vutils.save_image(image_3, f"output/image_{iteration}.png")
 
-        # Add garbage collection to free up GPU memory
-        del loss, grad, grad_norm
-        gc.collect()
-        #torch.cuda.empty_cache()
+#         # Add garbage collection to free up GPU memory
+#         del loss, grad, grad_norm
+#         gc.collect()
+#         #torch.cuda.empty_cache()
 
-    # Perform garbage collection and empty GPU cache after each batch
-    gc.collect()
-   # torch.cuda.empty_cache()
+#     # Perform garbage collection and empty GPU cache after each batch
+#     gc.collect()
+#    # torch.cuda.empty_cache()
+#  """
