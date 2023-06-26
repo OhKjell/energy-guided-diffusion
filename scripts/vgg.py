@@ -42,13 +42,21 @@ def load_and_resize_image(image_path):
 
     return image
 
+
 def create_model():
+    try:
+        model = torch.load("models/vgg")
+        return model
+    except FileNotFoundError:
+        pass
+    
     model = ModifiedVGG()
     if torch.cuda.is_available():
         model = model.cuda()
     model = model.eval()
     torch.save(model, "models/vgg")
     return model
+
 
 def compare_images(model, image1, image2):
     #if torch.cuda.is_available():

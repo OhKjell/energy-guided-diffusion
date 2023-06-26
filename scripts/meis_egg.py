@@ -123,7 +123,7 @@ if __name__ == "__main__":
     model = EGG(num_steps=num_timesteps)
     
     #vgg model
-    vgg_model = torch.load("./models/vgg").to(device)
+    vgg_model = vgg.create_model()
 
     train_scores = []
     val_scores = []
