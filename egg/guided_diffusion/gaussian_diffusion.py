@@ -632,6 +632,7 @@ class GaussianDiffusion:
             )
 
             energy = energy_fn(out["pred_xstart"])
+            print(type(out["pred_xstart"]))
             #new energy fn
             if previous_img is not None:
                 energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
