@@ -13,6 +13,8 @@ import torch as th
 
 from .nn import mean_flat
 from .losses import normal_kl, discretized_gaussian_log_likelihood
+from torch.utils.checkpoint import checkpoint
+
 
 def get_named_beta_schedule(schedule_name, num_diffusion_timesteps):
     """
@@ -621,15 +623,17 @@ class GaussianDiffusion:
             #re - instantiate requires_grad for backpropagation
             img = img.requires_grad_()
 
-            out = self.p_sample(
-                model,
-                img,
-                t,
-                clip_denoised=clip_denoised,
-                denoised_fn=denoised_fn,
-                cond_fn=cond_fn,
-                model_kwargs=model_kwargs,
-            )
+            # out = self.p_sample(
+            #     model,
+            #     img,
+            #     t,
+            #     clip_denoised=clip_denoised,
+            #     denoised_fn=denoised_fn,
+            #     cond_fn=cond_fn,
+            #     model_kwargs=model_kwargs,
+            # )
+            out = checkpoint(self.p_sample, model, img, t, clip_denoised=clip_denoised, denoised_fn=denoised_fn, cond_fn=cond_fn, model_kwargs=model_kwargs)
+
 
             energy = energy_fn(out["pred_xstart"])
             print(type(out["pred_xstart"]))
