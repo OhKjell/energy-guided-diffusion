@@ -19,6 +19,7 @@ from tqdm import tqdm
 
 from egg.diffusion import EGG
 from egg.models import models
+import scripts.vgg as vgg
 
 # experiment settings
 num_timesteps = 100
@@ -28,15 +29,17 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 
 
-def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None, run=1):
+def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1, previous_img = None):
     if seed is not None:
         torch.manual_seed(seed)
 
     cur_t = num_timesteps - 1
 
-    samples = model.sample(
+    samples = model.sample_frame(
         energy_fn=energy_fn,
+        energy_fn2= energy_fn2,
         energy_scale=energy_scale
+        previous_img = previous_img
     )
 
     for j, sample in enumerate(samples):
@@ -70,7 +73,7 @@ def do_run(model, energy_fn, desc="progress", grayscale=False, seed=None, run=1)
                     filename, transparent=True, bbox_inches="tight", pad_inches=0
                 )
 
-    return energy, "temp.png"
+    return energy, samples[-1]
 
 
 if __name__ == "__main__":
@@ -118,11 +121,15 @@ if __name__ == "__main__":
         }
 
     model = EGG(num_steps=num_timesteps)
+    
+    #vgg model
+    vgg_model = torch.load("models/vgg").to(device)
 
     train_scores = []
     val_scores = []
     cross_val_scores = []
     run = 1
+    image = None
     for seed in seeds:
         
         for unit_idx in units:
@@ -132,10 +139,14 @@ if __name__ == "__main__":
                 energy_fn=partial(
                     energy_fn, unit_idx=unit_idx, models=models[model_type]
                 ),
+                energy_fn2 = partial(
+                    vgg.compare_images, model = vgg_model
+                )
                 desc=f"diffMEI_{unit_idx}",
                 grayscale=True,
                 seed=seed,
                 run=run
+                previous_img=image
             )
             end = time.time()
 
