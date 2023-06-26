@@ -38,7 +38,7 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
     samples = model.sample_frame(
         energy_fn=energy_fn,
         energy_fn2= energy_fn2,
-        energy_scale=energy_scale
+        energy_scale=energy_scale,
         previous_img = previous_img
     )
 
@@ -141,11 +141,11 @@ if __name__ == "__main__":
                 ),
                 energy_fn2 = partial(
                     vgg.compare_images, model = vgg_model
-                )
+                ),
                 desc=f"diffMEI_{unit_idx}",
                 grayscale=True,
                 seed=seed,
-                run=run
+                run=run,
                 previous_img=image
             )
             end = time.time()

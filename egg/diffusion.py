@@ -103,7 +103,7 @@ class EGG(nn.Module):
         num_samples=1,
         *,
         use_alpha_bar=False,
-        normalize_grad=True
+        normalize_grad=True,
         previous_img=None
     ):
         """

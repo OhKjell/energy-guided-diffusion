@@ -581,7 +581,7 @@ class GaussianDiffusion:
         device=None,
         progress=True,
         energy_fn=None,
-        energy_fn2=None
+        energy_fn2=None,
         energy_scale=1.0,
         use_alpha_bar=False,
         normalize_grad=True,
