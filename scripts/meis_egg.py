@@ -24,7 +24,7 @@ import scripts.vgg as vgg
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-seeds = [0, 0, 0]
+seeds = [0]
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
 
     np.random.seed(42)
-    units = np.random.choice(np.arange(len(available_units))[available_units], 5)
+    units = np.random.choice(np.arange(len(available_units))[available_units], 2)
 
     # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
     # wandb.config.update(
@@ -133,36 +133,38 @@ if __name__ == "__main__":
     for seed in seeds:
         
         for unit_idx in units:
-            start = time.time()
-            score, image = do_run(
-                model=model,
-                energy_fn=partial(
-                    energy_fn, unit_idx=unit_idx, models=models[model_type]
-                ),
-                energy_fn2 = partial(
-                    vgg.compare_images, model = vgg_model
-                ),
-                desc=f"diffMEI_{unit_idx}",
-                grayscale=True,
-                seed=seed,
-                run=run,
-                previous_img=image
-            )
-            end = time.time()
+            image = None
+            for frame in range(5):
+                start = time.time()
+                score, image = do_run(
+                    model=model,
+                    energy_fn=partial(
+                        energy_fn, unit_idx=unit_idx, models=models[model_type]
+                    ),
+                    energy_fn2 = partial(
+                        vgg.compare_images, model = vgg_model
+                    ),
+                    desc=f"diffMEI_{unit_idx}",
+                    grayscale=True,
+                    seed=seed,
+                    run=frame,
+                    previous_img=image
+                )
+                end = time.time()
 
-            #  wandb.log(
-            #     {
-            #         "image": wandb.Image(image),
-            #         **score,
-            #         "unit_idx": unit_idx,
-            #         "seed": seed,
-            #         "time": end - start,
-            #     }
-            # )
+                #  wandb.log(
+                #     {
+                #         "image": wandb.Image(image),
+                #         **score,
+                #         "unit_idx": unit_idx,
+                #         "seed": seed,
+                #         "time": end - start,
+                #     }
+                # )
 
-            train_scores.append(score["train"].item())
-            val_scores.append(score["val"].item())
-            cross_val_scores.append(score["cross-val"].item())
+                train_scores.append(score["train"].item())
+                val_scores.append(score["val"].item())
+                cross_val_scores.append(score["cross-val"].item())
         energy_scale = energy_scale + 5
         run = run +1
 
