@@ -642,7 +642,7 @@ class GaussianDiffusion:
                 update2 = grad2 * energy_scale
                 out["sample"] = out["sample"] - update2
 
-                norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
+            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
 
             
 
