@@ -25,6 +25,7 @@ services:
     volumes:
       - .:/src
 #      - /root/.cache/:/root/.cache/
+      - ./models:/src/models
     entrypoint: [ "python" ]
     env_file:
       - .env
