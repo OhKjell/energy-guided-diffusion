@@ -127,7 +127,7 @@ class EGG(nn.Module):
         `num_samples` parameter. The samples are returned as a tensor of shape `(num_samples, 3, image_size, image_size)`.
         The function also has optional parameters for using alpha
         """
-        return self.diffusion.p_sample_loop_progressive(
+        return self.diffusion.p_sample_loop_progressive_video(
             self.model,
             (
                 num_samples,
