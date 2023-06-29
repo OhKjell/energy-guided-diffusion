@@ -636,7 +636,6 @@ class GaussianDiffusion:
 
 
             energy = energy_fn(out["pred_xstart"])
-            print(type(out["pred_xstart"]))
             #new energy fn
             if previous_img is not None:
                 energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
@@ -649,7 +648,8 @@ class GaussianDiffusion:
 
             norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
 
-            
+            if previous_img is not None:
+                print("here")
 
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
