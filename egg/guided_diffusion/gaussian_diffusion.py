@@ -635,29 +635,35 @@ class GaussianDiffusion:
             )
 
 
-            energy = energy_fn(out["pred_xstart"])
+            
             #new energy fn
-            if previous_img is not None:
+            
+
+            
+            if previous_img is None:
+                energy = energy_fn(out["pred_xstart"])
+                norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
+
+                if normalize_grad:
+                    norm_grad = norm_grad / th.norm(norm_grad)
+
+                update = norm_grad * energy_scale
+                if use_alpha_bar:
+                    alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
+                    update = update * (1 - alpha_bar).sqrt()
+            else:
                 energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
-                grad2 = th.autograd.grad(outputs=energy2, inputs=img, retain_graph=True)[0]
+                energy = energy_fn(out["pred_xstart"])
+                energy_sum = energy2 + energy['train']
+                grad2 = th.autograd.grad(outputs=energy_sum, inputs=img)[0]
                 if normalize_grad:
                     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
                     grad2 /= (grad_norm + 1e-8)
                 update2 = grad2 * energy_scale
                 out["sample"] = out["sample"] - update2
 
-            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
 
-            if previous_img is not None:
-                print("here")
 
-            if normalize_grad:
-                norm_grad = norm_grad / th.norm(norm_grad)
-
-            update = norm_grad * energy_scale
-            if use_alpha_bar:
-                alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
-                update = update * (1 - alpha_bar).sqrt()
 
             out["sample"] = out["sample"] - update
 
