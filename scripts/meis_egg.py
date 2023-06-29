@@ -152,7 +152,7 @@ if __name__ == "__main__":
                     previous_img=image
                 )
                 end = time.time()
-                plt.imshow(image.cpu().detach().squeeze())
+                plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
                 plt.savefig(f"output/{str(frame)}_{str(unit_idx)}.png")
 
                 #  wandb.log(
