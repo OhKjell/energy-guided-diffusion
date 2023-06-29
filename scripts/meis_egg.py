@@ -20,6 +20,7 @@ from tqdm import tqdm
 from egg.diffusion import EGG
 from egg.models import models
 import scripts.vgg as vgg
+import matplotlib.pyplot as plt
 
 # experiment settings
 num_timesteps = 100
@@ -69,9 +70,9 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
-                plt.savefig(
-                    filename, transparent=True, bbox_inches="tight", pad_inches=0
-                )
+                #plt.savefig(
+                #    filename, transparent=True, bbox_inches="tight", pad_inches=0
+                #)
 
     return energy, sample["sample"]
 
@@ -151,6 +152,8 @@ if __name__ == "__main__":
                     previous_img=image
                 )
                 end = time.time()
+                plt.imshow(image.cpu().detach().squeeze())
+                plt.savefig(f"output/{str(frame)}_{str(unit_idx)}.png")
 
                 #  wandb.log(
                 #     {
