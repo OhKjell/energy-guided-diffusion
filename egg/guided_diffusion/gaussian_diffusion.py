@@ -652,12 +652,13 @@ class GaussianDiffusion:
                     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                     update = update * (1 - alpha_bar).sqrt()
             else:
-
-                energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
                 energy1 = energy_fn(out["pred_xstart"])
-                #energy_sum = energy2 + energy['train']
                 grad1 = th.autograd.grad(outputs=energy1['train'], inputs=img, retain_graph=True)[0]
+                energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
+                #energy_sum = energy2 + energy['train']
+               
+               
                 # if normalize_grad:
                 #     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
                 #     grad2 /= (grad_norm + 1e-8)
