@@ -68,7 +68,7 @@ def compare_images(model, image1, image2):
 
     similarity_score = torch.nn.functional.cosine_similarity(image1, image2)
 
-    return 1 - similarity_score
+    return similarity_score
 
 # """ energy_scale = 20
 # batch_size = 10  # Number of iterations per batch
