@@ -46,7 +46,6 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
     for j, sample in enumerate(samples):
         cur_t -= 1
         if (j % 10 == 0) or cur_t == -1:
-            print()
 
             energy = energy_fn(sample["pred_xstart"])
 
