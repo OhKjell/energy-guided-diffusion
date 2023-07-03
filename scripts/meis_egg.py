@@ -135,7 +135,7 @@ if __name__ == "__main__":
         
         for unit_idx in units:
             image = None
-            for frame in range(5):
+            for frame in range(3):
                 start = time.time()
                 score, image = do_run(
                     model=model,
@@ -153,7 +153,7 @@ if __name__ == "__main__":
                 )
                 end = time.time()
                 plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
-                plt.savefig(f"output/{str(frame)}_{str(unit_idx)}.png")
+                plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
 
                 #  wandb.log(
                 #     {
