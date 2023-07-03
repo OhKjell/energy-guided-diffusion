@@ -656,7 +656,7 @@ class GaussianDiffusion:
                 energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
                 energy1 = energy_fn(out["pred_xstart"])
                 #energy_sum = energy2 + energy['train']
-                grad1 = th.autograd.grad(outputs=energy1, inputs=img)[0]
+                grad1 = th.autograd.grad(outputs=energy1['train'], inputs=img)[0]
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
                 # if normalize_grad:
                 #     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
