@@ -82,7 +82,7 @@ if __name__ == "__main__":
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
 
     np.random.seed(42)
-    units = np.random.choice(np.arange(len(available_units))[available_units], 2)
+    units = np.random.choice(np.arange(len(available_units))[available_units], 3)
 
     # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
     # wandb.config.update(
@@ -134,7 +134,7 @@ if __name__ == "__main__":
         
         for unit_idx in units:
             image = None
-            for frame in range(3):
+            for frame in range(10):
                 start = time.time()
                 score, image = do_run(
                     model=model,
