@@ -70,6 +70,15 @@ def compare_images(model, image1, image2):
 
     return similarity_score
 
+
+def image_similarity_energy(image1, image2):
+    # Calculate the mean squared error (MSE) between the two images
+    mse = torch.mean((image1 - image2) ** 2)
+
+    # Return the negative MSE as the energy value
+    energy = -mse
+    return energy
+
 # """ energy_scale = 20
 # batch_size = 10  # Number of iterations per batch
 # path_1 = "data/Standard_Golden_Retriever.jpeg"

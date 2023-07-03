@@ -141,9 +141,10 @@ if __name__ == "__main__":
                     energy_fn=partial(
                         energy_fn, unit_idx=unit_idx, models=models[model_type]
                     ),
-                    energy_fn2 = partial(
-                        vgg.compare_images, model = vgg_model
-                    ),
+                    # energy_fn2 = partial(
+                    #     vgg.compare_images, model = vgg_model
+                    # ),
+                    energy_fn2=vgg.image_similarity_energy,
                     desc=f"diffMEI_{unit_idx}",
                     grayscale=True,
                     seed=seed,

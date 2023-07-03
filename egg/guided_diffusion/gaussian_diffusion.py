@@ -654,7 +654,8 @@ class GaussianDiffusion:
             else:
                 energy1 = energy_fn(out["pred_xstart"])
                 grad1 = th.autograd.grad(outputs=energy1['train'], inputs=img, retain_graph=True)[0]
-                energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
+                #energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
+                energy2 = energy_fn2(out["pred_xstart"], previous_img)
                 print(energy2)
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
                 #energy_sum = energy2 + energy['train']
