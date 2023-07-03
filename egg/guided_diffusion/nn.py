@@ -154,7 +154,7 @@ class CheckpointFunction(th.autograd.Function):
         #modiefied:
         #print(type(ctx))
 
-        ctx.input_tensors = [x.detach().requires_grad_(True) for x in ctx.input_tensors]
+        ctx.input_tensors = [x.detach().clone().requires_grad_(True) for x in ctx.input_tensors]
         with th.enable_grad():
             # Fixes a bug where the first op in run_function modifies the
             # Tensor storage in place, which is not allowed for detach()'d
