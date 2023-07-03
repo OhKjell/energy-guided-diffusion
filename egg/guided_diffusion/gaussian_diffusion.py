@@ -662,7 +662,7 @@ class GaussianDiffusion:
                 # if normalize_grad:
                 #     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
                 #     grad2 /= (grad_norm + 1e-8)
-                update = grad2 * energy_scale + grad1 * energy_scale   
+                update = grad2 * 20 + grad1 * energy_scale   
 
 
 
