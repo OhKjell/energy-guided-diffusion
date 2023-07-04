@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
 
                 # Plot and save the grayscale image
-                plt.imshow(np.transpose(image_gray, (1,2,0)), cmap='gray')  # Use 'gray' colormap for grayscale
+                plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
                 plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
                 plt.close()
 
