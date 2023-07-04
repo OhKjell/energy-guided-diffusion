@@ -82,7 +82,7 @@ if __name__ == "__main__":
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
 
     np.random.seed(42)
-    units = np.random.choice(np.arange(len(available_units))[available_units], 3)
+    units = np.random.choice(np.arange(len(available_units))[available_units], 2)
 
     # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
     # wandb.config.update(
@@ -152,8 +152,15 @@ if __name__ == "__main__":
                     previous_img=image
                 )
                 end = time.time()
-                plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
+                #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
+                #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
+
+                image_gray = image.cpu().detach().squeeze().numpy()  # Convert tensor to numpy array
+
+                # Plot and save the grayscale image
+                plt.imshow(np.transpose(image_gray, (1,2,0)), cmap='gray')  # Use 'gray' colormap for grayscale
                 plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
+                plt.close()
 
                 #  wandb.log(
                 #     {

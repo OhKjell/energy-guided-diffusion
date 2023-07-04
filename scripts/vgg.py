@@ -72,10 +72,17 @@ def compare_images(model, image1, image2):
 
 
 def image_similarity_energy(image1, image2):
-    # Calculate the mean squared error (MSE) between the two images
-    mse = torch.mean((image1 - image2) ** 2)
 
-    # Return the negative MSE as the energy value
+
+
+    image1_gray = torch.mean(image1, dim=1, keepdim=True)
+    image2_gray = torch.mean(image2, dim=1, keepdim=True)
+
+    # Calculate energy (mean absolute difference)
+    mse = torch.mean((image1_gray - image2_gray) ** 2)
+    #mse = torch.mean((image1 - image2) ** 2)
+
+    # Return the negative MSE
     energy = -mse
     return energy
 
