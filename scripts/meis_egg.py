@@ -157,7 +157,6 @@ if __name__ == "__main__":
                     grayscale=True,
                     seed=seed,
                     run=frame,
-                    previous_img=image
                 )
                 end = time.time()
 
@@ -175,7 +174,6 @@ if __name__ == "__main__":
                 train_scores.append(score["train"].item())
                 val_scores.append(score["val"].item())
                 cross_val_scores.append(score["cross-val"].item())
-        energy_scale = energy_scale + 5
 
     print("Train:", train_scores)
     print("Val:", val_scores)
