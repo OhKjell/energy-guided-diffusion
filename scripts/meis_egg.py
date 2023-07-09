@@ -90,6 +90,10 @@ if __name__ == "__main__":
     if os.path.exists("output"):
         shutil.rmtree("output")
     os.makedirs("output")
+    
+    if os.path.exists("frames"):
+        shutil.rmtree("frames")
+    os.makedirs("frames")
 
     data_driven_corrs = np.load("./data/data_driven_corr.npy")
     units = np.load("./data/pretrained_resnet_unit_correlations.npy")
