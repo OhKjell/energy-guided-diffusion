@@ -74,7 +74,7 @@ def create_model(create=False):
     return model
 
 
-def compare_images(model, image1, image2):
+def compare_images(image1, image2, model):
     #if torch.cuda.is_available():
      #   image1 = image1.cuda()
       #  image2 = image2.cuda()
