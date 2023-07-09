@@ -34,7 +34,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(5)
+number_frames = np.arange(2)
 create_vgg = True
 
 
@@ -186,8 +186,8 @@ if __name__ == "__main__":
                 
                 # Write the image to the video file
                 #video_writer.write(image_gray)
-
-                image_gray_list.append(image_gray)
+                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                image_gray_list.append(image_gray_uint8)
 
 
                 # Plot and save the grayscale image
