@@ -34,7 +34,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(50)
+number_frames = np.arange(5)
 create_vgg = True
 
 
@@ -149,6 +149,7 @@ if __name__ == "__main__":
     train_scores = []
     val_scores = []
     cross_val_scores = []
+    image_gray_list = []
 
     for seed in seeds:
         
@@ -181,10 +182,12 @@ if __name__ == "__main__":
 
 
                 # Convert the grayscale image to uint8 format
-                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
                 
                 # Write the image to the video file
-                video_writer.write(image_gray_uint8)
+                #video_writer.write(image_gray)
+
+                image_gray_list.append(image_gray)
 
 
                 # Plot and save the grayscale image
@@ -197,7 +200,11 @@ if __name__ == "__main__":
                 val_scores.append(score["val"].item())
                 cross_val_scores.append(score["cross-val"].item())
 
+        for image_gray_uint8 in image_gray_list:
+            video_writer.write(image_gray_uint8)
+
     print("Train:", train_scores)
     print("Val:", val_scores)
     print("Cross-val:", cross_val_scores)
+
     video_writer.release()
