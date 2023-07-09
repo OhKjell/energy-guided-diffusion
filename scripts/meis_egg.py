@@ -147,11 +147,16 @@ if __name__ == "__main__":
         for unit_idx in units:
             image = None
             for frame in range(5):
+                if frame == 0:
+                    energy_fn_2 = None
+                else:
+                    energy_fn_2=partial(energy_fn2, image2=image)
+                    
                 start = time.time()
                 score, image = do_run(
                     model=model,
                     energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
-                    energy_fn2=partial(energy_fn2, image2=image,),
+                    energy_fn2=energy_fn_2,
                     desc=f"diffMEI_{unit_idx}",
                     grayscale=True,
                     seed=seed,
