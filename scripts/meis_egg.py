@@ -26,15 +26,16 @@ import shutil
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 20  # 20
+energy_scale = 5  # 20
 energy_scale2 = 5
 seeds = np.arange(1)
 unit_seed=5
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
-energyfunction = "MSE" #"MSE" "VGG" "None"
+energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 3
 number_frames = np.arange(10)
+create_vgg = True
 
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     
     #vgg model
     if energyfunction == "VGG":
-        vgg_model = vgg.create_model()
+        vgg_model = vgg.create_model(create_vgg)
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
 
     #MSE
