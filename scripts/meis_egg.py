@@ -22,6 +22,7 @@ import scripts.vgg as vgg
 import matplotlib.pyplot as plt
 import os
 import shutil
+import glob
 import cv2
 
 # experiment settings
@@ -155,6 +156,11 @@ if __name__ == "__main__":
         
         for unit_idx in units:
             image = None
+
+            frame_dir = f"frames/diffMEI_{unit_idx}_seed_{seed}"
+            os.makedirs(frame_dir, exist_ok=True)
+            frame_idx = 0
+
             for frame in number_frames:
                 if frame == 0:
                     energy_fn_2 = None
@@ -180,7 +186,10 @@ if __name__ == "__main__":
 
                 image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
 
-
+                
+                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
+                frame_idx += 1
                 # Convert the grayscale image to uint8 format
                 #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
                 
@@ -200,11 +209,22 @@ if __name__ == "__main__":
                 val_scores.append(score["val"].item())
                 cross_val_scores.append(score["cross-val"].item())
 
-        for image_gray_uint8 in image_gray_list:
-            video_writer.write(image_gray_uint8)
+        video_name = f"diffMEI_{unit_idx}_seed_{seed}.avi"
+        output_path = os.path.join(frame_dir, video_name)
+        frame_files = sorted(glob.glob(os.path.join(frame_dir, "*.png")))
+
+        frame = cv2.imread(frame_files[0])
+        height, width, _ = frame.shape
+        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+        video_writer = cv2.VideoWriter(output_path, fourcc, 10.0, (width, height))
+
+        for frame_file in frame_files:
+            frame = cv2.imread(frame_file)
+            video_writer.write(frame)
+
+            video_writer.release()
 
     print("Train:", train_scores)
     print("Val:", val_scores)
     print("Cross-val:", cross_val_scores)
 
-    video_writer.release()
