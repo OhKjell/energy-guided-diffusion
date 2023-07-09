@@ -586,9 +586,9 @@ class GaussianDiffusion:
         energy_fn=None,
         energy_fn2=None,
         energy_scale=1.0,
+        energy_scale2=1.0,
         use_alpha_bar=False,
         normalize_grad=True,
-        previous_img=None
         ):
         """
         Generate samples from the model and yield intermediate samples from
@@ -633,14 +633,10 @@ class GaussianDiffusion:
                  cond_fn=cond_fn,
                  model_kwargs=model_kwargs,
             )
-
-
             
             #new energy fn
-            
-
-            
-            if previous_img is None:
+                      
+            if energy_fn2 is None:
                 energy = energy_fn(out["pred_xstart"])
                 norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
 
@@ -652,22 +648,19 @@ class GaussianDiffusion:
                     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                     update = update * (1 - alpha_bar).sqrt()
             else:
+
                 energy1 = energy_fn(out["pred_xstart"])
                 grad1 = th.autograd.grad(outputs=energy1['train'], inputs=img, retain_graph=True)[0]
 
-                #energy2 = energy_fn2(image1=out["pred_xstart"], image2=previous_img)
-
-                energy2 = energy_fn2(out["pred_xstart"], previous_img)
+                energy2 = energy_fn2(out["pred_xstart"])
                 print(energy2)
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
-                
-                #energy_sum = energy2 + energy['train']
-               
+              
                
                 # if normalize_grad:
                 #     grad_norm = th.norm(grad2, p=2)  # Calculate the norm of gradients
                 #     grad2 /= (grad_norm + 1e-8)
-                update = -grad2 * 20 + grad1 * energy_scale   
+                update = grad2 * energy_scale2 + grad1 * energy_scale   
 
 
 

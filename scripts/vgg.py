@@ -83,8 +83,7 @@ def image_similarity_energy(image1, image2):
     #mse = torch.mean((image1 - image2) ** 2)
 
     # Return the negative MSE
-    energy = -mse
-    return energy
+    return mse
 
 # """ energy_scale = 20
 # batch_size = 10  # Number of iterations per batch

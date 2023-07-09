@@ -100,11 +100,11 @@ class EGG(nn.Module):
         energy_fn,
         energy_fn2,
         energy_scale=1,
+        energy_scale2=1,
         num_samples=1,
         *,
         use_alpha_bar=False,
         normalize_grad=True,
-        previous_img=None
     ):
         """
         This function samples from a diffusion model using a given energy function and other optional parameters.
@@ -141,7 +141,7 @@ class EGG(nn.Module):
             energy_fn=energy_fn,
             energy_fn2=energy_fn2,
             energy_scale=energy_scale,
+            energy_scale2=energy_scale2,
             use_alpha_bar=use_alpha_bar,
             normalize_grad=normalize_grad,
-            previous_img = previous_img
         )

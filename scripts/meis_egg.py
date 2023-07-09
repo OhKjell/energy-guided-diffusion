@@ -25,9 +25,11 @@ import matplotlib.pyplot as plt
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
+energy_scale2 = 5
 seeds = [0]
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
+energyfunction = "MSE" #VGG
 
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1, previous_img = None):
@@ -121,15 +123,25 @@ if __name__ == "__main__":
         }
 
     model = EGG(num_steps=num_timesteps)
+
+    energy_fn2 = None
     
     #vgg model
-    vgg_model = vgg.create_model()
+    if energyfunction == "VGG":
+        vgg_model = vgg.create_model()
+        energy_fn2 = partial(vgg.compare_images, model = vgg_model)
+
+    #MSE
+    if energyfunction == "MSE":
+         energy_fn2=vgg.image_similarity_energy
+
 
     train_scores = []
     val_scores = []
     cross_val_scores = []
     run = 1
     image = None
+
     for seed in seeds:
         
         for unit_idx in units:
@@ -138,13 +150,8 @@ if __name__ == "__main__":
                 start = time.time()
                 score, image = do_run(
                     model=model,
-                    energy_fn=partial(
-                        energy_fn, unit_idx=unit_idx, models=models[model_type]
-                    ),
-                    # energy_fn2 = partial(
-                    #     vgg.compare_images, model = vgg_model
-                    # ),
-                    energy_fn2=vgg.image_similarity_energy,
+                    energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
+                    energy_fn2=partial(energy_fn2, image2=image,),
                     desc=f"diffMEI_{unit_idx}",
                     grayscale=True,
                     seed=seed,
@@ -152,6 +159,7 @@ if __name__ == "__main__":
                     previous_img=image
                 )
                 end = time.time()
+
                 #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
                 #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
 
@@ -162,15 +170,6 @@ if __name__ == "__main__":
                 plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
                 plt.close()
 
-                #  wandb.log(
-                #     {
-                #         "image": wandb.Image(image),
-                #         **score,
-                #         "unit_idx": unit_idx,
-                #         "seed": seed,
-                #         "time": end - start,
-                #     }
-                # )
 
                 train_scores.append(score["train"].item())
                 val_scores.append(score["val"].item())
