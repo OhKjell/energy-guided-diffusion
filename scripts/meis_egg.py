@@ -21,6 +21,8 @@ from egg.diffusion import EGG
 from egg.models import models
 import scripts.vgg as vgg
 import matplotlib.pyplot as plt
+import os
+import shutil
 
 # experiment settings
 num_timesteps = 100
@@ -30,8 +32,9 @@ seeds = [0]
 unit_seed=5
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
-energyfunction = "MSE" #VGG
-number_units = 1
+energyfunction = "None" #"MSE" "VGG" "None"
+number_units = 3
+number_frames = np.arange(10)
 
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
@@ -80,6 +83,11 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
 
 
 if __name__ == "__main__":
+
+    if os.path.exists("output"):
+        shutil.rmtree("output")
+    os.makedirs("output")
+
     data_driven_corrs = np.load("./data/data_driven_corr.npy")
     units = np.load("./data/pretrained_resnet_unit_correlations.npy")
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
@@ -146,11 +154,13 @@ if __name__ == "__main__":
         
         for unit_idx in units:
             image = None
-            for frame in range(5):
+            for frame in number_frames:
                 if frame == 0:
                     energy_fn_2 = None
                 else:
-                    energy_fn_2=partial(energy_fn2, image2=image)
+                    if energyfunction != "None":
+                        energy_fn_2=partial(energy_fn2, image2=image)
+                    else: energy_fn_2=None
                     
                 start = time.time()
                 score, image = do_run(
