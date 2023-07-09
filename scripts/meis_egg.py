@@ -34,7 +34,7 @@ energyfunction = "MSE" #VGG
 number_units = 1
 
 
-def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1, previous_img = None):
+def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
     if seed is not None:
         torch.manual_seed(seed)
 
@@ -44,7 +44,6 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
         energy_fn=energy_fn,
         energy_fn2= energy_fn2,
         energy_scale=energy_scale,
-        previous_img = previous_img
     )
 
     for j, sample in enumerate(samples):
