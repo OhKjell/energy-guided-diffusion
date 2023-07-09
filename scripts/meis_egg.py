@@ -28,13 +28,13 @@ import shutil
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 5
-seeds = np.arange(10)
+seeds = np.arange(1)
 unit_seed=5
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
-energyfunction = "None" #"MSE" "VGG" "None"
+energyfunction = "MSE" #"MSE" "VGG" "None"
 number_units = 3
-number_frames = [0]#np.arange(10)
+number_frames = np.arange(10)
 
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
