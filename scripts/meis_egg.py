@@ -1,7 +1,6 @@
 """
 Run diffusion MEIs on a set of units.
 """
-
 import gc
 import sys
 import time
@@ -23,18 +22,19 @@ import scripts.vgg as vgg
 import matplotlib.pyplot as plt
 import os
 import shutil
+import cv2
 
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 5
 seeds = np.arange(1)
-unit_seed=5
+unit_seed=10
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
-number_units = 3
-number_frames = np.arange(10)
+number_units = 1
+number_frames = np.arange(50)
 create_vgg = True
 
 
@@ -97,15 +97,14 @@ if __name__ == "__main__":
     np.random.seed(unit_seed)
     units = np.random.choice(np.arange(len(available_units))[available_units], number_units)
 
-    # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
-    # wandb.config.update(
-    #     dict(
-    #         energy_scale=energy_scale,
-    #         norm_constraint=norm_constraint,
-    #         model_type=model_type,
-    #         units=units,
-    #     )
-    # )
+
+        # Initialize the video writer
+    video_name = "output/video.avi"
+    fps = 10
+    frame_width, frame_height = 640, 480
+    video_writer = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+
+
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
@@ -150,7 +149,6 @@ if __name__ == "__main__":
     train_scores = []
     val_scores = []
     cross_val_scores = []
-    image = None
 
     for seed in seeds:
         
@@ -181,6 +179,14 @@ if __name__ == "__main__":
 
                 image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
 
+
+                # Convert the grayscale image to uint8 format
+                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                
+                # Write the image to the video file
+                video_writer.write(image_gray_uint8)
+
+
                 # Plot and save the grayscale image
                 plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
                 plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
@@ -194,3 +200,4 @@ if __name__ == "__main__":
     print("Train:", train_scores)
     print("Val:", val_scores)
     print("Cross-val:", cross_val_scores)
+    video_writer.release()
