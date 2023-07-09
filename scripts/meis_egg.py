@@ -27,7 +27,7 @@ import shutil
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-energy_scale2 = 20
+energy_scale2 = 5
 seeds = np.arange(1)
 unit_seed=5
 norm_constraint = 25  # 25
@@ -47,6 +47,7 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
         energy_fn=energy_fn,
         energy_fn2= energy_fn2,
         energy_scale=energy_scale,
+        energy_scale2=energy_scale2
     )
 
     for j, sample in enumerate(samples):
