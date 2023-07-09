@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
                 # Plot and save the grayscale image
                 plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
+                plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
                 plt.close()
 
 
