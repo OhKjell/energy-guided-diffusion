@@ -600,8 +600,8 @@ class GaussianDiffusion:
         """
         if energy_fn is None:
             raise ValueError("energy_fn must be specified for progressive sampling")
-        if energy_fn2 is None:
-            raise ValueError("energy_fn2 must be specified for progressive sampling")
+        #if energy_fn2 is None:
+        #    raise ValueError("energy_fn2 must be specified for progressive sampling")
 
         if device is None:
             device = next(model.parameters()).device
