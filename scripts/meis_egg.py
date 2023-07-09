@@ -27,9 +27,11 @@ num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 5
 seeds = [0]
+unit_seed=5
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #VGG
+number_units = 1
 
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1, previous_img = None):
@@ -83,8 +85,8 @@ if __name__ == "__main__":
     units = np.load("./data/pretrained_resnet_unit_correlations.npy")
     available_units = (data_driven_corrs > 0.5) * (units > 0.5)
 
-    np.random.seed(42)
-    units = np.random.choice(np.arange(len(available_units))[available_units], 2)
+    np.random.seed(unit_seed)
+    units = np.random.choice(np.arange(len(available_units))[available_units], number_units)
 
     # wandb.init(project="egg", entity="sinzlab", name=f"diffmeis_{time.time()}")
     # wandb.config.update(
@@ -139,14 +141,13 @@ if __name__ == "__main__":
     train_scores = []
     val_scores = []
     cross_val_scores = []
-    run = 1
     image = None
 
     for seed in seeds:
         
         for unit_idx in units:
             image = None
-            for frame in range(10):
+            for frame in range(5):
                 start = time.time()
                 score, image = do_run(
                     model=model,
@@ -175,7 +176,6 @@ if __name__ == "__main__":
                 val_scores.append(score["val"].item())
                 cross_val_scores.append(score["cross-val"].item())
         energy_scale = energy_scale + 5
-        run = run +1
 
     print("Train:", train_scores)
     print("Val:", val_scores)
