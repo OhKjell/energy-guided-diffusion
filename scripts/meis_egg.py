@@ -35,7 +35,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(2)
+number_frames = np.arange(120)
 create_vgg = True
 
 
@@ -100,10 +100,10 @@ if __name__ == "__main__":
 
 
         # Initialize the video writer
-    video_name = "output/video.avi"
-    fps = 10
-    frame_width, frame_height = 640, 480
-    video_writer = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+    # video_name = "output/video.avi"
+    # fps = 10
+    # frame_width, frame_height = 640, 480
+    # video_writer = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
 
 
 
@@ -195,14 +195,14 @@ if __name__ == "__main__":
                 
                 # Write the image to the video file
                 #video_writer.write(image_gray)
-                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                image_gray_list.append(image_gray_uint8)
+                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                #image_gray_list.append(image_gray_uint8)
 
 
                 # Plot and save the grayscale image
-                plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
-                plt.close()
+                #plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                #plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
+                #plt.close()
 
 
                 train_scores.append(score["train"].item())
@@ -216,7 +216,7 @@ if __name__ == "__main__":
         frame = cv2.imread(frame_files[0])
         height, width, _ = frame.shape
         fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-        video_writer = cv2.VideoWriter(output_path, fourcc, 10.0, (width, height))
+        video_writer = cv2.VideoWriter(output_path, fourcc, 30.0, (width, height))
 
         for frame_file in frame_files:
             frame = cv2.imread(frame_file)
