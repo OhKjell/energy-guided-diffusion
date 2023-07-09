@@ -26,7 +26,7 @@ import shutil
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 5  # 20
+energy_scale = 10  # 20
 energy_scale2 = 10
 seeds = np.arange(1)
 unit_seed=5
