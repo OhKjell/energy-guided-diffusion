@@ -27,17 +27,17 @@ import cv2
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 5  # 20
-energy_scale2 = 10
+energy_scale = 20  # 20
+energy_scale2 = 2
 seeds = np.arange(1)
-unit_seed=42
+unit_seed=40#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
-number_units = 2
-number_frames = np.arange(10)
+number_units = 1
+number_frames = np.arange(40)
 create_vgg = True
-
+fps = 20
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
     if seed is not None:
@@ -91,9 +91,13 @@ if __name__ == "__main__":
         shutil.rmtree("output")
     os.makedirs("output")
     
-    if os.path.exists("frames"):
-        shutil.rmtree("frames")
-    os.makedirs("frames")
+    if os.path.exists("output/frames"):
+        shutil.rmtree("output/frames")
+    os.makedirs("output/frames")
+
+    if os.path.exists("output/video"):
+        shutil.rmtree("output/video")
+    os.makedirs("output/video")
 
     data_driven_corrs = np.load("./data/data_driven_corr.npy")
     units = np.load("./data/pretrained_resnet_unit_correlations.npy")
@@ -161,9 +165,12 @@ if __name__ == "__main__":
         for unit_idx in units:
             image = None
 
-            frame_dir = f"frames/diffMEI_{unit_idx}_seed_{seed}"
+            frame_dir = f"output/frames/diffMEI_{unit_idx}_seed_{seed}"
             os.makedirs(frame_dir, exist_ok=True)
             frame_idx = 0
+
+            video_dir = f"output/video/diffMEI_{unit_idx}_seed_{seed}"
+            os.makedirs(video_dir, exist_ok=True)
 
             for frame in number_frames:
                 if frame == 0:
@@ -191,9 +198,9 @@ if __name__ == "__main__":
                 image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
 
                 
-                image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
-                frame_idx += 1
+                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                #cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
+                
                 # Convert the grayscale image to uint8 format
                 #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
                 
@@ -206,9 +213,9 @@ if __name__ == "__main__":
                 
                 # Plot and save the grayscale image
                 plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
+                plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
                 plt.close()
-
+                frame_idx += 1
 
                 train_scores.append(score["train"].item())
                 val_scores.append(score["val"].item())
@@ -218,10 +225,9 @@ if __name__ == "__main__":
 
             folder_path = frame_dir
             # Output video path and filename
-            output_path = f"{frame_dir}/{unit_idx}.avi"
+            output_path = f"{video_dir}/{unit_idx}.avi"
 
             # Frame rate of the output video
-            fps = 20
 
             # Get the list of image files in the folder
             image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
