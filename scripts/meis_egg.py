@@ -27,15 +27,15 @@ import cv2
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 10  # 20
+energy_scale = 5  # 20
 energy_scale2 = 10
 seeds = np.arange(1)
-unit_seed=0
+unit_seed=42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 2
-number_frames = np.arange(5)
+number_frames = np.arange(10)
 create_vgg = True
 
 
@@ -203,10 +203,11 @@ if __name__ == "__main__":
                 #image_gray_list.append(image_gray_uint8)
 
 
+                
                 # Plot and save the grayscale image
-                #plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                #plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
-                #plt.close()
+                plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                plt.savefig(f"output/unit={str(unit_idx)}_seed={str(seed)}_frame={str(frame)}.png")
+                plt.close()
 
 
                 train_scores.append(score["train"].item())
@@ -215,35 +216,35 @@ if __name__ == "__main__":
 
 
 
-        folder_path = frame_dir
-        # Output video path and filename
-        output_path = f"{frame_dir}/{unit_idx}.avi"
+            folder_path = frame_dir
+            # Output video path and filename
+            output_path = f"{frame_dir}/{unit_idx}.avi"
 
-        # Frame rate of the output video
-        fps = 20
+            # Frame rate of the output video
+            fps = 20
 
-        # Get the list of image files in the folder
-        image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+            # Get the list of image files in the folder
+            image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
 
-        # Load the first image to get the frame size
-        first_image_path = os.path.join(folder_path, image_files[0])
-        first_image = cv2.imread(first_image_path)
-        print(type(first_image))
-        frame_height, frame_width, _ = first_image.shape
+            # Load the first image to get the frame size
+            first_image_path = os.path.join(folder_path, image_files[0])
+            first_image = cv2.imread(first_image_path)
+            print(type(first_image))
+            frame_height, frame_width, _ = first_image.shape
 
-        # Initialize the video writer
-        video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+            # Initialize the video writer
+            video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
 
-        # Write each image to the video writer
-        for image_file in image_files:
-            image_path = os.path.join(folder_path, image_file)
-            image = cv2.imread(image_path)
-            video_writer.write(image)
+            # Write each image to the video writer
+            for image_file in image_files:
+                image_path = os.path.join(folder_path, image_file)
+                image = cv2.imread(image_path)
+                video_writer.write(image)
 
-        # Release the video writer and close the video file
-        video_writer.release()
+            # Release the video writer and close the video file
+            video_writer.release()
 
-        print("Video created successfully.")
+            print("Video created successfully.")
 
 
 
