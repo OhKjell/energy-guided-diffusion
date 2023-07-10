@@ -27,15 +27,15 @@ import cv2
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 5  # 20
-energy_scale2 = 5
+energy_scale = 10  # 20
+energy_scale2 = 10
 seeds = np.arange(1)
-unit_seed=10
+unit_seed=0
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG" #"MSE" "VGG" "None"
-number_units = 1
-number_frames = np.arange(120)
+number_units = 2
+number_frames = np.arange(5)
 create_vgg = True
 
 
@@ -213,20 +213,40 @@ if __name__ == "__main__":
                 val_scores.append(score["val"].item())
                 cross_val_scores.append(score["cross-val"].item())
 
-        video_name = f"diffMEI_{unit_idx}_seed_{seed}.avi"
-        output_path = os.path.join(frame_dir, video_name)
-        frame_files = sorted(glob.glob(os.path.join(frame_dir, "*.png")))
 
-        frame = cv2.imread(frame_files[0])
-        height, width, _ = frame.shape
-        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-        video_writer = cv2.VideoWriter(output_path, fourcc, 30.0, (width, height))
 
-        for frame_file in frame_files:
-            frame = cv2.imread(frame_file)
-            video_writer.write(frame)
+        folder_path = frame_dir
+        # Output video path and filename
+        output_path = f"{frame_dir}/{unit_idx}.avi"
 
-            video_writer.release()
+        # Frame rate of the output video
+        fps = 20
+
+        # Get the list of image files in the folder
+        image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+
+        # Load the first image to get the frame size
+        first_image_path = os.path.join(folder_path, image_files[0])
+        first_image = cv2.imread(first_image_path)
+        print(type(first_image))
+        frame_height, frame_width, _ = first_image.shape
+
+        # Initialize the video writer
+        video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+
+        # Write each image to the video writer
+        for image_file in image_files:
+            image_path = os.path.join(folder_path, image_file)
+            image = cv2.imread(image_path)
+            video_writer.write(image)
+
+        # Release the video writer and close the video file
+        video_writer.release()
+
+        print("Video created successfully.")
+
+
+
 
     print("Train:", train_scores)
     print("Val:", val_scores)
