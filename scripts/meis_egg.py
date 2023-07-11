@@ -28,8 +28,8 @@ import cv2
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-energy_scale2 = 20
-seeds = np.arange(1)
+energy_scale2 = 5
+seeds = [0,0]#np.arange(1)
 unit_seed=42#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
@@ -167,139 +167,157 @@ if __name__ == "__main__":
     cross_val_scores = []
     image_gray_list = []
 
-    for seed in seeds:
+    for model_idx in range(2):
+
+        if model_idx == 0:
+            model_dir = f"output/MSE"
+        else:
+            model_dir = f"output/VGG"
         
-        for unit_idx in units:
-            image = None
+        os.makedirs(model_dir, exist_ok=True)
 
-            frame_dir = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_gray"
+        for seed in seeds:
+            out_dir = f"{model_dir}/{energy_scale2}"
             os.makedirs(frame_dir, exist_ok=True)
+            
+            for unit_idx in units:
+                image = None
 
-            frame_dir_color = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_color"
-            os.makedirs(frame_dir_color, exist_ok=True)
+                frame_dir = f"{out_dir}/frames/diffMEI_{unit_idx}_seed_{seed}_gray"
+                #frame_dir = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_gray"
+                os.makedirs(frame_dir, exist_ok=True)
 
-            frame_idx = 0
+                frame_dir_color = f"{out_dir}/frames/diffMEI_{unit_idx}_seed_{seed}_color"
+                #frame_dir_color = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_color"
+                os.makedirs(frame_dir_color, exist_ok=True)
 
-            video_dir = f"output/video/diffMEI_{unit_idx}_seed_{seed}"
-            os.makedirs(video_dir, exist_ok=True)
+                frame_idx = 0
 
-            for frame in number_frames:
-                if frame == 0:
-                    energy_fn_2 = None
-                else:
-                    if energyfunction != "None":
-                        energy_fn_2=partial(energy_fn2, image2=image)
-                    else: energy_fn_2=None
+                video_dir = f"output/video/diffMEI_{unit_idx}_seed_{seed}"
+                os.makedirs(video_dir, exist_ok=True)
+
+                for frame in number_frames:
+                    if frame == 0:
+                        energy_fn_2 = None
+                    else:
+                        if energyfunction != "None":
+                            energy_fn_2=partial(energy_fn2, image2=image)
+                        else: energy_fn_2=None
+                        
+                    start = time.time()
+                    score, image = do_run(
+                        model=model,
+                        energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
+                        energy_fn2=energy_fn_2,
+                        desc=f"diffMEI_{unit_idx}",
+                        grayscale=True,
+                        seed=seed,
+                        run=frame,
+                    )
+                    end = time.time()
+
+                    #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
+                    #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
+
                     
-                start = time.time()
-                score, image = do_run(
-                    model=model,
-                    energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
-                    energy_fn2=energy_fn_2,
-                    desc=f"diffMEI_{unit_idx}",
-                    grayscale=True,
-                    seed=seed,
-                    run=frame,
-                )
-                end = time.time()
-
-                #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
-                #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
-
-                
-                
-                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                #cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
-                
-                # Convert the grayscale image to uint8 format
-                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                
-                # Write the image to the video file
-                #video_writer.write(image_gray)
-                #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                #image_gray_list.append(image_gray_uint8)
+                    
+                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                    #cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
+                    
+                    # Convert the grayscale image to uint8 format
+                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                    
+                    # Write the image to the video file
+                    #video_writer.write(image_gray)
+                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
+                    #image_gray_list.append(image_gray_uint8)
 
 
 
-                plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
-                plt.savefig(f"{frame_dir_color}/{frame_idx:05}.png")
-                plt.close()
-                
-                # Plot and save the grayscale image
-                image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
-                plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                plt.axis('off')
-                plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
-                plt.close()
-                frame_idx += 1
+                    plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
+                    plt.savefig(f"{frame_dir_color}/{frame_idx:05}.png")
+                    plt.close()
+                    
+                    # Plot and save the grayscale image
+                    image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
+                    plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                    plt.axis('off')
+                    plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
+                    plt.close()
+                    frame_idx += 1
 
-                train_scores.append(score["train"].item())
-                val_scores.append(score["val"].item())
-                cross_val_scores.append(score["cross-val"].item())
-
-
-
-            folder_path = frame_dir
-            # Output video path and filename
-            output_path = f"{video_dir}/{unit_idx}_gray.avi"
-
-            # Frame rate of the output video
-
-            # Get the list of image files in the folder
-            image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
-
-            # Load the first image to get the frame size
-            first_image_path = os.path.join(folder_path, image_files[0])
-            first_image = cv2.imread(first_image_path)
-            print(type(first_image))
-            frame_height, frame_width, _ = first_image.shape
-
-            # Initialize the video writer
-            video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
-
-            # Write each image to the video writer
-            for image_file in image_files:
-                image_path = os.path.join(folder_path, image_file)
-                image = cv2.imread(image_path)
-                video_writer.write(image)
-
-            # Release the video writer and close the video file
-            video_writer.release()
-
-
-            folder_path = frame_dir_color
-            # Output video path and filename
-            output_path = f"{video_dir}/{unit_idx}_color.avi"
-
-            # Frame rate of the output video
-
-            # Get the list of image files in the folder
-            image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
-
-            # Load the first image to get the frame size
-            first_image_path = os.path.join(folder_path, image_files[0])
-            first_image = cv2.imread(first_image_path)
-            print(type(first_image))
-            frame_height, frame_width, _ = first_image.shape
-
-            # Initialize the video writer
-            video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
-
-            # Write each image to the video writer
-            for image_file in image_files:
-                image_path = os.path.join(folder_path, image_file)
-                image = cv2.imread(image_path)
-                video_writer.write(image)
-
-            # Release the video writer and close the video file
-            video_writer.release()
-
-            print("Video created successfully.")
+                    train_scores.append(score["train"].item())
+                    val_scores.append(score["val"].item())
+                    cross_val_scores.append(score["cross-val"].item())
 
 
 
+                folder_path = frame_dir
+                # Output video path and filename
+                output_path = f"{video_dir}/{unit_idx}_gray.avi"
 
-    print("Train:", train_scores)
-    print("Val:", val_scores)
-    print("Cross-val:", cross_val_scores)
+                # Frame rate of the output video
+
+                # Get the list of image files in the folder
+                image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+
+                # Load the first image to get the frame size
+                first_image_path = os.path.join(folder_path, image_files[0])
+                first_image = cv2.imread(first_image_path)
+                print(type(first_image))
+                frame_height, frame_width, _ = first_image.shape
+
+                # Initialize the video writer
+                video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+
+                # Write each image to the video writer
+                for image_file in image_files:
+                    image_path = os.path.join(folder_path, image_file)
+                    image = cv2.imread(image_path)
+                    video_writer.write(image)
+
+                # Release the video writer and close the video file
+                video_writer.release()
+
+
+                folder_path = frame_dir_color
+                # Output video path and filename
+                output_path = f"{video_dir}/{unit_idx}_color.avi"
+
+                # Frame rate of the output video
+
+                # Get the list of image files in the folder
+                image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+
+                # Load the first image to get the frame size
+                first_image_path = os.path.join(folder_path, image_files[0])
+                first_image = cv2.imread(first_image_path)
+                print(type(first_image))
+                frame_height, frame_width, _ = first_image.shape
+
+                # Initialize the video writer
+                video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+
+                # Write each image to the video writer
+                for image_file in image_files:
+                    image_path = os.path.join(folder_path, image_file)
+                    image = cv2.imread(image_path)
+                    video_writer.write(image)
+
+                # Release the video writer and close the video file
+                video_writer.release()
+
+                print("Video created successfully.")
+
+
+            energy_scale2 += 5
+
+        print("Train:", train_scores)
+        print("Val:", val_scores)
+        print("Cross-val:", cross_val_scores)
+        vgg_model = vgg.create_model(create_vgg)
+        energy_fn2 = partial(vgg.compare_images, model = vgg_model)
+        energy_scale2 = 5
+
+
 
