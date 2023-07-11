@@ -206,8 +206,7 @@ if __name__ == "__main__":
                 #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
                 #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
 
-                image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
-
+                
                 
                 #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
                 #cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
@@ -227,6 +226,7 @@ if __name__ == "__main__":
                 plt.close()
                 
                 # Plot and save the grayscale image
+                image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
                 plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
                 plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
                 plt.close()
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
             folder_path = frame_dir
             # Output video path and filename
-            output_path = f"{video_dir}/{unit_idx}.avi"
+            output_path = f"{video_dir}/{unit_idx}_gray.avi"
 
             # Frame rate of the output video
 
@@ -268,7 +268,7 @@ if __name__ == "__main__":
 
             folder_path = frame_dir_color
             # Output video path and filename
-            output_path = f"{video_dir}/{unit_idx}.avi"
+            output_path = f"{video_dir}/{unit_idx}_color.avi"
 
             # Frame rate of the output video
 
