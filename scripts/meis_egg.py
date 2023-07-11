@@ -28,7 +28,7 @@ import cv2
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-energy_scale2 = 5
+energy_scale2 = 20
 seeds = np.arange(1)
 unit_seed=42#42
 norm_constraint = 25  # 25

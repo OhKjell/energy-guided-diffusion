@@ -656,9 +656,9 @@ class GaussianDiffusion:
                 print(energy2)
                 grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
               
-                if normalize_grad:
-                    grad1 = grad1 / th.norm(grad1)
-                    grad2 = grad2 / th.norm(grad2)
+                # if normalize_grad:
+                #     grad1 = grad1 / th.norm(grad1)
+                #     grad2 = grad2 / th.norm(grad2)
 
 
                 update = grad2 * energy_scale2 + grad1 * energy_scale   
