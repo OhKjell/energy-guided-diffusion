@@ -27,7 +27,7 @@ import cv2
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 20  # 20
+energy_scale = 5  # 20
 energy_scale2 = 2
 seeds = np.arange(1)
 unit_seed=42#42
@@ -35,7 +35,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "None" #"MSE" "VGG" "None"
 number_units = 3
-number_frames = np.arange(1)
+number_frames = np.arange(3)
 create_vgg = False
 fps = 20
 
