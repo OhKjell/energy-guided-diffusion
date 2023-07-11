@@ -29,7 +29,7 @@ import cv2
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 5
-seeds = np.arange(2)
+seeds = np.arange(1)
 unit_seed=42#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
@@ -200,7 +200,7 @@ if __name__ == "__main__":
                 #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
                 #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
 
-                image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
+                #image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
 
                 
                 #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
@@ -213,11 +213,11 @@ if __name__ == "__main__":
                 #video_writer.write(image_gray)
                 #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
                 #image_gray_list.append(image_gray_uint8)
-
+                plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
 
                 
                 # Plot and save the grayscale image
-                plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                #plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
                 plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
                 plt.close()
                 frame_idx += 1

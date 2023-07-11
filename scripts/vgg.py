@@ -6,7 +6,7 @@ from PIL import Image
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import gc
-torch.backends.cuda.max_split_size_mb = 1  # Set the max_split_size_mb value to adjust memory splitting
+#torch.backends.cuda.max_split_size_mb = 1  # Set the max_split_size_mb value to adjust memory splitting
 
 class ModifiedVGG(nn.Module):
     def __init__(self):
