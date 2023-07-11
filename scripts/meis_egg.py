@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
         for seed in seeds:
             out_dir = f"{model_dir}/{energy_scale2}"
-            os.makedirs(frame_dir, exist_ok=True)
+            os.makedirs(out_dir, exist_ok=True)
             
             for unit_idx in units:
                 image = None
