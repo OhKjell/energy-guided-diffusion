@@ -91,15 +91,15 @@ def image_similarity_energy(image1, image2):
 
 
 
-    image1_gray = torch.mean(image1, dim=1, keepdim=True)
-    image2_gray = torch.mean(image2, dim=1, keepdim=True)
+    #image1_gray = torch.mean(image1, dim=1, keepdim=True)
+    #image2_gray = torch.mean(image2, dim=1, keepdim=True)
 
     # Calculate energy (mean absolute difference)
-    mse = torch.mean((image1_gray - image2_gray) ** 2)
-    #mse = torch.mean((image1 - image2) ** 2)
+    #mse = torch.mean((image1_gray - image2_gray) ** 2)
+    mse = torch.mean((image1 - image2) ** 2)
 
     # Return the negative MSE
-    return mse
+    return -mse
 
 # """ energy_scale = 20
 # batch_size = 10  # Number of iterations per batch
