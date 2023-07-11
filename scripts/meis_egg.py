@@ -29,13 +29,13 @@ import cv2
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 5
-seeds = [0,0]#np.arange(1)
+seeds = [0,0,0,0]#np.arange(1)
 unit_seed=42#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(1)
+number_frames = np.arange(100)
 create_vgg = True
 fps = 20
 unit_ids = [1118]
