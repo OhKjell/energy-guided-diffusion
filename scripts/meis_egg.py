@@ -177,7 +177,7 @@ if __name__ == "__main__":
         os.makedirs(model_dir, exist_ok=True)
 
         for seed in seeds:
-            out_dir = f"{model_dir}/{energy_scale2}"
+            out_dir = f"{model_dir}/energy_{energy_scale2}"
             os.makedirs(out_dir, exist_ok=True)
             
             for unit_idx in units:
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
                 frame_idx = 0
 
-                video_dir = f"output/video/diffMEI_{unit_idx}_seed_{seed}"
+                video_dir = f"{out_dir}/video/diffMEI_{unit_idx}_seed_{seed}"
                 os.makedirs(video_dir, exist_ok=True)
 
                 for frame in number_frames:
