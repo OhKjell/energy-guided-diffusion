@@ -8,37 +8,37 @@ import matplotlib.pyplot as plt
 import gc
 #torch.backends.cuda.max_split_size_mb = 1  # Set the max_split_size_mb value to adjust memory splitting
 
+# class ModifiedVGG(nn.Module):
+#     def __init__(self):
+#         super(ModifiedVGG, self).__init__()
+#         self.vgg = models.vgg16(pretrained=True)
+#         self.vgg.classifier = self.vgg.classifier[:-1]
+#         self.conv = nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=0)
+#         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+#     def forward(self, x):
+#         x = self.normalize(x)
+#         x = self.conv(x)
+#         x = self.vgg.features(x)
+#         x = self.vgg.avgpool(x)
+#         x = torch.flatten(x, 1)
+#         x = self.vgg.classifier(x)
+#         return x
+
 class ModifiedVGG(nn.Module):
     def __init__(self):
         super(ModifiedVGG, self).__init__()
         self.vgg = models.vgg16(pretrained=True)
-        self.vgg.classifier = self.vgg.classifier[:-1]
+        self.vgg.features = self.vgg.features[:5]  # Use only the first 5 layers
         self.conv = nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=0)
-        self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        self.normalize = nn.BatchNorm2d(3)
 
     def forward(self, x):
         x = self.normalize(x)
         x = self.conv(x)
         x = self.vgg.features(x)
-        x = self.vgg.avgpool(x)
         x = torch.flatten(x, 1)
-        x = self.vgg.classifier(x)
         return x
-
-# class ModifiedVGG(nn.Module):
-#     def __init__(self):
-#         super(ModifiedVGG, self).__init__()
-#         self.vgg = models.vgg16(pretrained=True)
-#         self.vgg.features = self.vgg.features[:5]  # Use only the first 5 layers
-#         self.conv = nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=0)
-#         self.normalize = nn.BatchNorm2d(3)
-
-#     def forward(self, x):
-#         x = self.normalize(x)output
-#         x = self.conv(x)
-#         x = self.vgg.features(x)
-#         x = torch.flatten(x, 1)
-#         return x
     
 def load_and_resize_image(image_path):
     # Open the image using PIL
@@ -84,22 +84,23 @@ def compare_images(image1, image2, model):
 
     similarity_score = torch.nn.functional.cosine_similarity(image1, image2)
 
-    return similarity_score
+    return -similarity_score
 
 
-def image_similarity_energy(image1, image2):
+def image_similarity_energy(image1, image2, grayscale=True):
+    mse = 0
 
-
-
-    #image1_gray = torch.mean(image1, dim=1, keepdim=True)
-    #image2_gray = torch.mean(image2, dim=1, keepdim=True)
+    if grayscale == True:
+        image1_gray = torch.mean(image1, dim=1, keepdim=True)
+        image2_gray = torch.mean(image2, dim=1, keepdim=True)
 
     # Calculate energy (mean absolute difference)
-    #mse = torch.mean((image1_gray - image2_gray) ** 2)
-    mse = torch.mean((image1 - image2) ** 2)
+        mse = torch.mean((image1_gray - image2_gray) ** 2)
+    else:
+        mse = torch.mean((image1 - image2) ** 2)
 
     # Return the negative MSE
-    return -mse
+    return mse
 
 # """ energy_scale = 20
 # batch_size = 10  # Number of iterations per batch

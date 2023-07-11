@@ -661,7 +661,7 @@ class GaussianDiffusion:
                 #     grad2 = grad2 / th.norm(grad2)
 
 
-                update = -grad2 * energy_scale2 + grad1 * energy_scale   
+                update = grad2 * energy_scale2 + grad1 * energy_scale   
 
 
 
