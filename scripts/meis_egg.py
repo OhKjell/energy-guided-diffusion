@@ -35,7 +35,7 @@ norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(3)
+number_frames = np.arange(1)
 create_vgg = True
 fps = 20
 unit_ids = [1118]
@@ -228,6 +228,7 @@ if __name__ == "__main__":
                 # Plot and save the grayscale image
                 image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
                 plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                plt.axis('off')
                 plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
                 plt.close()
                 frame_idx += 1
