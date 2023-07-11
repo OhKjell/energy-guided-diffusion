@@ -33,10 +33,10 @@ seeds = np.arange(2)
 unit_seed=42#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
-energyfunction = "MSE" #"MSE" "VGG" "None"
+energyfunction = "VGG" #"MSE" "VGG" "None"
 number_units = 1
 number_frames = np.arange(5)
-create_vgg = False
+create_vgg = True
 fps = 10
 unit_ids = [1118]
 
