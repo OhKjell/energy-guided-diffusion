@@ -28,16 +28,17 @@ import cv2
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-energy_scale2 = 2
+energy_scale2 = 5
 seeds = np.arange(1)
 unit_seed=42#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
-energyfunction = "None" #"MSE" "VGG" "None"
-number_units = 3
-number_frames = np.arange(3)
+energyfunction = "MSE" #"MSE" "VGG" "None"
+number_units = 1
+number_frames = np.arange(20)
 create_vgg = False
-fps = 20
+fps = 10
+unit_ids = [1118]
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
     if seed is not None:
@@ -105,6 +106,10 @@ if __name__ == "__main__":
 
     np.random.seed(unit_seed)
     units = np.random.choice(np.arange(len(available_units))[available_units], number_units)
+    
+    
+    if unit_ids != None:
+        units = unit_ids
 
 
         # Initialize the video writer
