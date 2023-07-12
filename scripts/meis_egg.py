@@ -188,7 +188,7 @@ if __name__ == "__main__":
                 unit_dir = f"{model_dir}/diffMEI_{unit_idx}_seed_{seed}_gray"
                 os.makedirs(unit_dir, exist_ok=True)
 
-                for energyscale2 in escale2:
+                for energy_scale2 in escale2:
 
                     energy_dir = f"{unit_dir}/energy_scale_{energy_scale2}"
                     os.makedirs(energy_dir, exist_ok=True)
