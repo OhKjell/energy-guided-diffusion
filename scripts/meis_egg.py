@@ -41,7 +41,7 @@ fps = 20
 unit_ids = None #None [id]
 #for vgg
 vgg_gray=True
-escale2 = [0, 1]
+escale2 = [0, 1, 2, 3, 4, 5]
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
     #move out
@@ -199,10 +199,12 @@ if __name__ == "__main__":
                     frame_dir_color = f"{energy_dir}/frames_color"
                     os.makedirs(frame_dir_color, exist_ok=True)
 
-                    frame_idx = 0
+                    
 
                     video_dir = f"{energy_dir}/videos"
                     os.makedirs(video_dir, exist_ok=True)
+
+                    frame_idx = 0
 
                     if seed is not None:
                         torch.manual_seed(seed)
@@ -248,64 +250,64 @@ if __name__ == "__main__":
 
 
 
-                #MAKE VIDEOS
+                    #MAKE VIDEOS
 
-                folder_path = frame_dir
-                # Output video path and filename
-                output_path = f"{video_dir}/{unit_idx}_gray.avi"
+                    folder_path = frame_dir
+                    # Output video path and filename
+                    output_path = f"{video_dir}/{unit_idx}_gray.avi"
 
-                # Frame rate of the output video
+                    # Frame rate of the output video
 
-                # Get the list of image files in the folder
-                image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+                    # Get the list of image files in the folder
+                    image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
 
-                # Load the first image to get the frame size
-                first_image_path = os.path.join(folder_path, image_files[0])
-                first_image = cv2.imread(first_image_path)
-                print(type(first_image))
-                frame_height, frame_width, _ = first_image.shape
+                    # Load the first image to get the frame size
+                    first_image_path = os.path.join(folder_path, image_files[0])
+                    first_image = cv2.imread(first_image_path)
+                    print(type(first_image))
+                    frame_height, frame_width, _ = first_image.shape
 
-                # Initialize the video writer
-                video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+                    # Initialize the video writer
+                    video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
 
-                # Write each image to the video writer
-                for image_file in image_files:
-                    image_path = os.path.join(folder_path, image_file)
-                    image = cv2.imread(image_path)
-                    video_writer.write(image)
+                    # Write each image to the video writer
+                    for image_file in image_files:
+                        image_path = os.path.join(folder_path, image_file)
+                        image = cv2.imread(image_path)
+                        video_writer.write(image)
 
-                # Release the video writer and close the video file
-                video_writer.release()
+                    # Release the video writer and close the video file
+                    video_writer.release()
 
 
-                folder_path = frame_dir_color
-                # Output video path and filename
-                output_path = f"{video_dir}/{unit_idx}_color.avi"
+                    folder_path = frame_dir_color
+                    # Output video path and filename
+                    output_path = f"{video_dir}/{unit_idx}_color.avi"
 
-                # Frame rate of the output video
+                    # Frame rate of the output video
 
-                # Get the list of image files in the folder
-                image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
+                    # Get the list of image files in the folder
+                    image_files = sorted([f for f in os.listdir(folder_path) if f.endswith(".png")])
 
-                # Load the first image to get the frame size
-                first_image_path = os.path.join(folder_path, image_files[0])
-                first_image = cv2.imread(first_image_path)
-                print(type(first_image))
-                frame_height, frame_width, _ = first_image.shape
+                    # Load the first image to get the frame size
+                    first_image_path = os.path.join(folder_path, image_files[0])
+                    first_image = cv2.imread(first_image_path)
+                    print(type(first_image))
+                    frame_height, frame_width, _ = first_image.shape
 
-                # Initialize the video writer
-                video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
+                    # Initialize the video writer
+                    video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"MJPG"), fps, (frame_width, frame_height))
 
-                # Write each image to the video writer
-                for image_file in image_files:
-                    image_path = os.path.join(folder_path, image_file)
-                    image = cv2.imread(image_path)
-                    video_writer.write(image)
+                    # Write each image to the video writer
+                    for image_file in image_files:
+                        image_path = os.path.join(folder_path, image_file)
+                        image = cv2.imread(image_path)
+                        video_writer.write(image)
 
-                # Release the video writer and close the video file
-                video_writer.release()
+                    # Release the video writer and close the video file
+                    video_writer.release()
 
-                print("Video created successfully.")
+                    print("Video created successfully.")
 
 
         #SET ENERGy FUNCTION TO VGG
