@@ -28,23 +28,24 @@ import cv2
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-energy_scale2 = 5
-seeds = [0,0,0,0]#np.arange(1)
-unit_seed=42#42
+#energy_scale2 = 1
+seeds = [0]#np.arange(1)
+unit_seed=27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
-number_units = 1
-number_frames = np.arange(100)
+number_units = 2
+number_frames = np.arange(1)
 create_vgg = True
 fps = 20
-unit_ids = [1118]
+unit_ids = None #None [id]
 #for vgg
 vgg_gray=True
+escale2 = [0, 1]
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
-    if seed is not None:
-        torch.manual_seed(seed)
+    #move out
+    
 
     cur_t = num_timesteps - 1
 
@@ -167,6 +168,9 @@ if __name__ == "__main__":
     cross_val_scores = []
     image_gray_list = []
 
+    image = None
+
+
     for model_idx in range(2):
 
         if model_idx == 0:
@@ -177,80 +181,74 @@ if __name__ == "__main__":
         os.makedirs(model_dir, exist_ok=True)
 
         for seed in seeds:
-            out_dir = f"{model_dir}/energy_{energy_scale2}"
-            os.makedirs(out_dir, exist_ok=True)
+            
             
             for unit_idx in units:
-                image = None
 
-                frame_dir = f"{out_dir}/frames/diffMEI_{unit_idx}_seed_{seed}_gray"
-                #frame_dir = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_gray"
-                os.makedirs(frame_dir, exist_ok=True)
+                unit_dir = f"{model_dir}/diffMEI_{unit_idx}_seed_{seed}_gray"
+                os.makedirs(unit_dir, exist_ok=True)
 
-                frame_dir_color = f"{out_dir}/frames/diffMEI_{unit_idx}_seed_{seed}_color"
-                #frame_dir_color = f"output/frames/diffMEI_{unit_idx}_seed_{seed}_color"
-                os.makedirs(frame_dir_color, exist_ok=True)
+                for energyscale2 in escale2:
 
-                frame_idx = 0
+                    energy_dir = f"{unit_dir}/energy_scale_{energy_scale2}"
+                    os.makedirs(energy_dir, exist_ok=True)
 
-                video_dir = f"{out_dir}/video/diffMEI_{unit_idx}_seed_{seed}"
-                os.makedirs(video_dir, exist_ok=True)
+                    frame_dir = f"{energy_dir}/frames_gray"
+                    os.makedirs(frame_dir, exist_ok=True)
 
-                for frame in number_frames:
-                    if frame == 0:
-                        energy_fn_2 = None
-                    else:
-                        if energyfunction != "None":
-                            energy_fn_2=partial(energy_fn2, image2=image)
-                        else: energy_fn_2=None
+                    frame_dir_color = f"{energy_dir}/frames_color"
+                    os.makedirs(frame_dir_color, exist_ok=True)
+
+                    frame_idx = 0
+
+                    video_dir = f"{energy_dir}/videos"
+                    os.makedirs(video_dir, exist_ok=True)
+
+                    if seed is not None:
+                        torch.manual_seed(seed)
+
+                    #FRAME LOOP
+                    for frame in number_frames:
+                        if frame == 0:
+                            energy_fn_2 = None
+                        else:
+                            if energyfunction != "None":
+                                energy_fn_2=partial(energy_fn2, image2=image)
+                            else: energy_fn_2=None
+                            
+                        start = time.time()
+                        score, image = do_run(
+                            model=model,
+                            energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
+                            energy_fn2=energy_fn_2,
+                            desc=f"diffMEI_{unit_idx}",
+                            grayscale=True,
+                            seed=seed,
+                            run=frame,
+                        )
+                        end = time.time()
+
+                        #SAVE IMAGES
+
+                        plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
+                        plt.savefig(f"{frame_dir_color}/{frame_idx:05}.png")
+                        plt.close()
                         
-                    start = time.time()
-                    score, image = do_run(
-                        model=model,
-                        energy_fn=partial(energy_fn, unit_idx=unit_idx, models=models[model_type]),
-                        energy_fn2=energy_fn_2,
-                        desc=f"diffMEI_{unit_idx}",
-                        grayscale=True,
-                        seed=seed,
-                        run=frame,
-                    )
-                    end = time.time()
+                        # Plot and save the grayscale image
+                        image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
+                        plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
+                        plt.axis('off')
+                        plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
+                        plt.close()
+                        frame_idx += 1
 
-                    #plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
-                    #plt.savefig(f"output/{str(unit_idx)}_{str(frame)}.png")
-
-                    
-                    
-                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                    #cv2.imwrite(f"{frame_dir}/{frame_idx:05}.png", image_gray_uint8)
-                    
-                    # Convert the grayscale image to uint8 format
-                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                    
-                    # Write the image to the video file
-                    #video_writer.write(image_gray)
-                    #image_gray_uint8 = (image_gray * 255).astype(np.uint8)
-                    #image_gray_list.append(image_gray_uint8)
+                        train_scores.append(score["train"].item())
+                        val_scores.append(score["val"].item())
+                        cross_val_scores.append(score["cross-val"].item())
 
 
 
-                    plt.imshow(np.transpose(image.cpu().detach().squeeze(), (1,2,0)))
-                    plt.savefig(f"{frame_dir_color}/{frame_idx:05}.png")
-                    plt.close()
-                    
-                    # Plot and save the grayscale image
-                    image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
-                    plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
-                    plt.axis('off')
-                    plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
-                    plt.close()
-                    frame_idx += 1
-
-                    train_scores.append(score["train"].item())
-                    val_scores.append(score["val"].item())
-                    cross_val_scores.append(score["cross-val"].item())
-
-
+                #MAKE VIDEOS
 
                 folder_path = frame_dir
                 # Output video path and filename
@@ -310,14 +308,13 @@ if __name__ == "__main__":
                 print("Video created successfully.")
 
 
-            energy_scale2 += 5
+        #SET ENERGy FUNCTION TO VGG
 
         print("Train:", train_scores)
         print("Val:", val_scores)
         print("Cross-val:", cross_val_scores)
         vgg_model = vgg.create_model(create_vgg)
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
-        energy_scale2 = 5
 
 
 
