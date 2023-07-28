@@ -4,9 +4,9 @@ import numpy as np
 import os
 import pickle
 from tqdm import tqdm
-from datasets.natural_stimuli.create_dataset import get_img
-from datasets.whitenoise_salamander_loaders import average_repeated_stimuli_responses
-from utils.global_functions import (
+from dynamic.datasets.natural_stimuli.create_dataset import get_img
+#from datasets.whitenoise_salamander_loaders import average_repeated_stimuli_responses
+from dynamic.utils.global_functions import (
     get_exclude_cells_based_on_explainable_variance_threshold,
     get_exclude_cells_based_on_correlation_threshold,
     set_random_seed,
