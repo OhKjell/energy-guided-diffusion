@@ -26,7 +26,7 @@ import glob
 import cv2
 
 
-from dynamic.utils.global_functions import *
+#from dynamic.utils.global_functions import *
 from IPython.display import Video
 from dynamic.models.helper_functions import get_model_and_dataloader, get_model_temp_reach, get_model_and_dataloader_for_nm
 from dynamic.evaluations.single_cell_performance import get_performance_for_single_cell
