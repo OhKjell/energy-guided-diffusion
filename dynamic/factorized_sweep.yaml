@@ -1,0 +1,47 @@
+program: run_factorized_cnn.py
+method: bayes
+metric:
+  name: correlation/valid
+  goal: maximize
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 0.1
+  gamma:
+    distribution: log_uniform_values
+    min: 0.001
+    max: 100
+  l1:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 100
+  gamma_temp:
+    distribution: log_uniform_values
+    min: 0.001
+    max: 100
+  spatial_input_kernel_size:
+    min: 9
+    max: 21
+  spatial_hidden_kernel_size:
+    min: 5
+    max: 13
+  temporal_hidden_kernel_size:
+    min: 7
+    max: 25
+  num_of_frames:
+    min: 12
+    max: 25
+  hidden_channels:
+    distribution: categorical
+    values:
+      - 8
+      - 16
+      - 32
+  final_nonlinearity:
+    values:
+      - 1
+  layers:
+    min: 1
+    max: 4
+

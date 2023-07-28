@@ -1,0 +1,43 @@
+program: run_cnn.py
+method: bayes
+metric:
+  name: correlation/valid
+  goal: maximize
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 0.1
+  gamma:
+    distribution: log_uniform_values
+    min: 0.001
+    max: 100
+  l1:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 100
+  gamma_temp:
+    distribution: log_uniform_values
+    min: 0.001
+    max: 100
+  input_kernel_size:
+    min: 9
+    max: 21
+  hidden_channels:
+    distribution: categorical
+    values:
+      - 8
+      - 16
+  hidden_kernel_size:
+    min: 3
+    max: 10
+  final_nonlinearity:
+    values:
+      - 0
+      - 1
+  num_of_frames:
+      min: 15
+      max: 25
+  layers:
+     value: 3
+      

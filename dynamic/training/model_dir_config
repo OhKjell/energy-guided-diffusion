@@ -1,0 +1,16 @@
+lr: learning rate
+l: number of layers
+ch: number of hidden channels
+t: number of frames in time dimension
+g: gamma - input regularization parameter for core
+bs: batch_size
+tr: number of trials to use
+s: subsampling value
+ik: input kernel size
+hk: hidden kernel size
+l1: l1 regularization coefficient for readout
+c: cell index - if None then all cells
+cr: crop
+p: padding
+mu: initial mu range for
+sg: initial sigma range
