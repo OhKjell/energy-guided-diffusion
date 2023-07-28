@@ -15,8 +15,8 @@ home = Path(__file__).absolute().parent.parent
 
 
 # MODIFIED
-with open(f"{home}/data/marmorset_data/responses/config.yaml", "rb") as config_file:
-     global_config = yaml.unsafe_load(config_file)
+#with open(f"{home}/data/marmorset_data/responses/config.yaml", "rb") as config_file:
+#     global_config = yaml.unsafe_load(config_file)
 # /MODIFIED
 
 
