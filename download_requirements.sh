@@ -9,5 +9,9 @@ curl -L https://api.wandb.ai/artifactsV2/gcp-us/sinzlab/QXJ0aWZhY3Q6NDYzNDUyODA0
 curl -L https://api.wandb.ai/artifactsV2/gcp-us/sinzlab/QXJ0aWZhY3Q6NDYzNDUyODI3/32ef7776f79ea9895c9df78ed294fe85/pretrained_resnet_unit_correlations.npy > ./data/pretrained_resnet_unit_correlations.npy
 curl -L https://api.wandb.ai/artifactsV2/gcp-us/sinzlab/QXJ0aWZhY3Q6NDYzNDUyODUz/5f7c67355d51a99d2f822f2015891420/data_driven_corr.npy > ./data/data_driven_corr.npy
 
+#curl -u username:password -O "https://owncloud.example.com/remote.php/webdav/example.txt"
+
+
+
 mkdir "models"
 curl https://openaipublic.blob.core.windows.net/diffusion/jul-2021/256x256_diffusion_uncond.pt > ./models/256x256_diffusion_uncond.pt

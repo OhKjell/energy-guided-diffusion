@@ -3,6 +3,7 @@ __pycache__/
 classify_image_graph_def.pb
 
 data/
+dynamic/data/
 model_weights/
 lib/
 results/
