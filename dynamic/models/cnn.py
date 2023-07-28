@@ -16,7 +16,7 @@ from nnfabrik.utility.nn_helpers import get_dims_for_loader_dict
 from torch import nn
 from torch.nn import functional as F
 
-from datasets.whitenoise_salamander_loaders import get_dataloader_dims
+from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
 from evaluations.factorized_cnn_visualization import (
     visualized_factorized_filters,
     visualize_temporal_kernels,
