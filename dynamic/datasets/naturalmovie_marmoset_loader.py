@@ -1,4 +1,4 @@
-from datasets.FrameWiseDataset import FrameWiseDataset
+from dynamic.datasets.FrameWiseDataset import FrameWiseDataset
 from torch.utils.data import DataLoader
 import numpy as np
 import os
