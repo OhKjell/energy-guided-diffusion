@@ -118,118 +118,118 @@ home = Path(__file__).absolute().parent.parent
 #     '05': None}
 
 
-def get_exclude_cells_based_on_explainable_variance_threshold(
-    retina_index, config=global_config, threshold=None
-):
-    if threshold is None or (threshold <= 0):
-        threshold = -10
-    reliabilities = config["cell_explainable_variance"][f"0{retina_index+1}"]
-    # already_excluded_cells = config['exclude_cells'][f'0{retina_index+1}']
-    newly_excluded_cells = [
-        x for x in range(len(reliabilities)) if reliabilities[x] < threshold
-    ]
-    return list(set(newly_excluded_cells))
+# def get_exclude_cells_based_on_explainable_variance_threshold(
+#     retina_index, config=global_config, threshold=None
+# ):
+#     if threshold is None or (threshold <= 0):
+#         threshold = -10
+#     reliabilities = config["cell_explainable_variance"][f"0{retina_index+1}"]
+#     # already_excluded_cells = config['exclude_cells'][f'0{retina_index+1}']
+#     newly_excluded_cells = [
+#         x for x in range(len(reliabilities)) if reliabilities[x] < threshold
+#     ]
+#     return list(set(newly_excluded_cells))
 
 
-def get_exclude_cells_based_on_correlation_threshold(
-    retina_index, config=global_config, threshold=None
-):
-    if (threshold is None) or (threshold <= 0):
-        threshold = -10
-    reliabilities = config["cell_oracle_correlations"][f"0{str(retina_index + 1)}"]
-    # already_excluded_cells = config['exclude_cells'][f'0{str(retina_index + 1)}']
-    newly_excluded_cells = [
-        x for x in range(len(reliabilities)) if reliabilities[x] < threshold
-    ]
-    return list(set(newly_excluded_cells))
+# def get_exclude_cells_based_on_correlation_threshold(
+#     retina_index, config=global_config, threshold=None
+# ):
+#     if (threshold is None) or (threshold <= 0):
+#         threshold = -10
+#     reliabilities = config["cell_oracle_correlations"][f"0{str(retina_index + 1)}"]
+#     # already_excluded_cells = config['exclude_cells'][f'0{str(retina_index + 1)}']
+#     newly_excluded_cells = [
+#         x for x in range(len(reliabilities)) if reliabilities[x] < threshold
+#     ]
+#     return list(set(newly_excluded_cells))
 
 
-def get_exclude_cells_based_on_thresholds(
-    retina_index,
-    config=global_config,
-    explainable_variance_threshold=None,
-    correlation_threshold=None,
-):
-    ev_excluded = get_exclude_cells_based_on_explainable_variance_threshold(
-        retina_index, config, explainable_variance_threshold
-    )
-    oc_excluded = get_exclude_cells_based_on_correlation_threshold(
-        retina_index, config, correlation_threshold
-    )
-    return list(set(ev_excluded + oc_excluded))
+# def get_exclude_cells_based_on_thresholds(
+#     retina_index,
+#     config=global_config,
+#     explainable_variance_threshold=None,
+#     correlation_threshold=None,
+# ):
+#     ev_excluded = get_exclude_cells_based_on_explainable_variance_threshold(
+#         retina_index, config, explainable_variance_threshold
+#     )
+#     oc_excluded = get_exclude_cells_based_on_correlation_threshold(
+#         retina_index, config, correlation_threshold
+#     )
+#     return list(set(ev_excluded + oc_excluded))
 
 
-def get_cell_numbers_after_crop(
-    retina_index,
-    config=global_config,
-    correlation_threshold=None,
-    explained_variance_threshold=None,
-):
-    already_excluded_cells = config["exclude_cells"][f"0{retina_index + 1}"]
-    excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
-        retina_index, config, correlation_threshold
-    )
-    excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
-        retina_index, config, explained_variance_threshold
-    )
-    excluded_cells = list(
-        set(excluded_from_ev + excluded_from_corr + already_excluded_cells)
-    )
-    return config["cell_numbers"][f"0{retina_index+1}"] - len(excluded_cells)
+# def get_cell_numbers_after_crop(
+#     retina_index,
+#     config=global_config,
+#     correlation_threshold=None,
+#     explained_variance_threshold=None,
+# ):
+#     already_excluded_cells = config["exclude_cells"][f"0{retina_index + 1}"]
+#     excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
+#         retina_index, config, correlation_threshold
+#     )
+#     excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
+#         retina_index, config, explained_variance_threshold
+#     )
+#     excluded_cells = list(
+#         set(excluded_from_ev + excluded_from_corr + already_excluded_cells)
+#     )
+#     return config["cell_numbers"][f"0{retina_index+1}"] - len(excluded_cells)
 
 
-def get_cell_names(
-    retina_index,
-    config=global_config,
-    correlation_threshold=None,
-    explained_variance_threshold=None,
-):
-    if 'exclude_cells' in config.keys():
-        already_excluded_cells = config["exclude_cells"][f"0{retina_index + 1}"]
-    else:
-        already_exclude_cells = []
-    excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
-        retina_index, config, correlation_threshold
-    )
-    excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
-        retina_index, config, explained_variance_threshold
-    )
-    cell_names = [
-        x
-        for x in range(config["cell_numbers"][f"0{retina_index+1}"])
-        if x not in excluded_from_corr
-        and x not in excluded_from_ev
-        and x not in already_excluded_cells
-    ]
-    return cell_names
+# def get_cell_names(
+#     retina_index,
+#     config=global_config,
+#     correlation_threshold=None,
+#     explained_variance_threshold=None,
+# ):
+#     if 'exclude_cells' in config.keys():
+#         already_excluded_cells = config["exclude_cells"][f"0{retina_index + 1}"]
+#     else:
+#         already_exclude_cells = []
+#     excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
+#         retina_index, config, correlation_threshold
+#     )
+#     excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
+#         retina_index, config, explained_variance_threshold
+#     )
+#     cell_names = [
+#         x
+#         for x in range(config["cell_numbers"][f"0{retina_index+1}"])
+#         if x not in excluded_from_corr
+#         and x not in excluded_from_ev
+#         and x not in already_excluded_cells
+#     ]
+#     return cell_names
 
 
-def get_cell_numbers(retina_index, config=global_config):
-    return config["cell_numbers"][f"0{retina_index+1}"]
+# def get_cell_numbers(retina_index, config=global_config):
+#     return config["cell_numbers"][f"0{retina_index+1}"]
 
 
-def get_exclude_cells(retina_index, config=global_config):
-    exclude_cells = config["exclude_cells"]
-    return exclude_cells[f"0{retina_index+1}"]
+# def get_exclude_cells(retina_index, config=global_config):
+#     exclude_cells = config["exclude_cells"]
+#     return exclude_cells[f"0{retina_index+1}"]
 
 
-def get_all_cell_numbers_after_crop(config=global_config):
-    cell_numbers = config["cell_numbers"]
-    exclude_cells = config["exclude_cells"]
-    cell_numbers_after_crop = {
-        "01": cell_numbers["01"] - len(exclude_cells["01"]),
-        "02": cell_numbers["02"] - len(exclude_cells["02"]),
-        "03": cell_numbers["03"] - len(exclude_cells["03"]),
-        "04": cell_numbers["04"] - len(exclude_cells["04"]),
-        "05": cell_numbers["05"] - len(exclude_cells["05"]),
-    }
-    return cell_numbers_after_crop
+# def get_all_cell_numbers_after_crop(config=global_config):
+#     cell_numbers = config["cell_numbers"]
+#     exclude_cells = config["exclude_cells"]
+#     cell_numbers_after_crop = {
+#         "01": cell_numbers["01"] - len(exclude_cells["01"]),
+#         "02": cell_numbers["02"] - len(exclude_cells["02"]),
+#         "03": cell_numbers["03"] - len(exclude_cells["03"]),
+#         "04": cell_numbers["04"] - len(exclude_cells["04"]),
+#         "05": cell_numbers["05"] - len(exclude_cells["05"]),
+#     }
+#     return cell_numbers_after_crop
 
 
-def set_random_seed(seed, deterministic: bool = True):
-    random.seed(seed)
-    np.random.seed(seed)
-    # if deterministic:
-    #     torch.backends.cudnn.benchmark = False
-    #     torch.backends.cudnn.deterministic = True
-    torch.manual_seed(seed)
+# def set_random_seed(seed, deterministic: bool = True):
+#     random.seed(seed)
+#     np.random.seed(seed)
+#     # if deterministic:
+#     #     torch.backends.cudnn.benchmark = False
+#     #     torch.backends.cudnn.deterministic = True
+#     torch.manual_seed(seed)
