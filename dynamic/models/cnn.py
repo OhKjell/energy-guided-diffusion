@@ -21,10 +21,10 @@ from torch.nn import functional as F
 #     visualized_factorized_filters,
 #     visualize_temporal_kernels,
 # )
-from dynamic.models.model_visualizations import (
-    visualize_all_gaussian_readout,
-    visualize_filters,
-)
+# from dynamic.models.model_visualizations import (
+#     visualize_all_gaussian_readout,
+#     visualize_filters,
+# )
 from dynamic.models.readouts import (
     initialize_full_gaussian_readout,
     initialize_multiple_full_gaussian_readouts,
