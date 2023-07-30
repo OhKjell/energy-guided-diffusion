@@ -6,21 +6,21 @@ import torch
 import numpy as np
 import yaml
 from neuralpredictors.layers.readouts import FullGaussian2d, MultipleFullGaussian2d
-from dynamic.datasets.stas import (
-    get_rf_center_grid,
-    recalculate_positions_after_convs,
-    normalize_source_grid,
-    calculate_pca_on_cropped_stas,
-)
+# from dynamic.datasets.stas import (
+#     get_rf_center_grid,
+#     recalculate_positions_after_convs,
+#     normalize_source_grid,
+#     calculate_pca_on_cropped_stas,
+# )
 from nnfabrik.utility.nn_helpers import get_dims_for_loader_dict
 from torch import nn
 from torch.nn import functional as F
 
-from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
-from dynamic.evaluations.factorized_cnn_visualization import (
-    visualized_factorized_filters,
-    visualize_temporal_kernels,
-)
+# from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
+# from dynamic.evaluations.factorized_cnn_visualization import (
+#     visualized_factorized_filters,
+#     visualize_temporal_kernels,
+# )
 from dynamic.models.model_visualizations import (
     visualize_all_gaussian_readout,
     visualize_filters,
@@ -31,10 +31,10 @@ from dynamic.models.readouts import (
 )
 from dynamic.utils.global_functions import (
     set_random_seed,
-    get_exclude_cells_based_on_thresholds,
+    #get_exclude_cells_based_on_thresholds,
     home,
     model_seed,
-    global_config,
+    #global_config,
     get_exclude_cells,
 )
 
