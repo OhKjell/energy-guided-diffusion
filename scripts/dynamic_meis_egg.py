@@ -24,6 +24,7 @@ import os
 import shutil
 import glob
 import cv2
+from dynamic.utils.load_model import get_model_and_dataloader_for_nm_new
 
 
 #from dynamic.utils.global_functions import *
@@ -48,7 +49,7 @@ model_fn = 'models.FactorizedEncoder.build_trained'
 #build dynamic model
 
 
-dynamic_model = get_model_and_dataloader_for_nm(
+dynamic_model = get_model_and_dataloader_for_nm_new(
             directory,
             filename,
             model_fn=model_fn,
