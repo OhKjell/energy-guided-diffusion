@@ -1,4 +1,4 @@
-from utils.global_functions import home
+from dynamic.utils.global_functions import home
 import yaml
 import matplotlib.pyplot as plt
 from nnfabrik import builder
