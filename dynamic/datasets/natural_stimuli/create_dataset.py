@@ -5,7 +5,7 @@ from tqdm import tqdm
 from PIL import Image
 from matplotlib import animation
 import torch
-#from dynamic.utils.global_functions import home
+from utils.global_functions import home
 import matplotlib.pyplot as plt
 import math
 
