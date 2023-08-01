@@ -5,14 +5,14 @@ import torch
 import numpy as np
 import os
 import yaml
-from datasets.stas import visualize_weights
+from dynamic.datasets.stas import visualize_weights
 
 # from models.model_visualizations import visualize_all_gaussian_readout, home
 import matplotlib.animation as animation
 import seaborn as sns
 
-from models.helper_functions import get_seed_model_versions
-from utils.global_functions import home
+from dynamic.models.helper_functions import get_seed_model_versions
+from dynamic.utils.global_functions import home
 
 sns.set()
 
