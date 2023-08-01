@@ -4,7 +4,7 @@ import os, random
 from functools import lru_cache
 import torch
 import pickle
-from utils.global_functions import dataset_seed, set_random_seed
+from dynamic.utils.global_functions import dataset_seed, set_random_seed
 from collections import namedtuple
 default_image_datapoint = namedtuple("DefaultDataPoint", ["images", "responses"])
 
