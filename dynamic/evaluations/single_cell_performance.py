@@ -7,27 +7,27 @@ from tqdm import tqdm
 from nnfabrik import builder
 import os
 import seaborn as sns
-import models
-from datasets.stas import get_stas_from_pcs, get_cropped_stas, plot_all_stas
-from evaluations.ln_model_performance import (
+import dynamic.models
+from dynamic.datasets.stas import get_stas_from_pcs, get_cropped_stas, plot_all_stas
+from dynamic.evaluations.ln_model_performance import (
     get_ln_model_cell_performance_dict,
     get_model_and_dataloader_for_ln,
     get_parameters_from_ln_model_file_name,
     get_ln_model_performance_on_test,
 )
-from models.helper_functions import get_seed_model_versions
-from models.helper_functions import (
+from dynamic.models.helper_functions import get_seed_model_versions
+from dynamic.models.helper_functions import (
     get_model_and_dataloader,
     get_model_and_dataloader_for_nm,
     get_wn_model_and_dataloader_for_nm,
 )
-from models.ln_model import Model
-from training.regularizers import TimeLaplaceL23d
-from training.trainers import model_step
-from training.measures import correlation, variance_of_predictions
+from dynamic.models.ln_model import Model
+from dynamic.training.regularizers import TimeLaplaceL23d
+from dynamic.training.trainers import model_step
+from dynamic.training.measures import correlation, variance_of_predictions
 import random
 import numpy as np
-from utils.global_functions import (
+from dynamic.utils.global_functions import (
     global_config,
     model_seed,
     dataset_seed,

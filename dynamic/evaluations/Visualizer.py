@@ -1,10 +1,10 @@
 from pathlib import Path
 import os
 
-from evaluations.single_cell_performance import get_performance_for_single_cell
-from models.cnn import Encoder
-from models.helper_functions import plot_responses_vs_predictions
-from utils.global_functions import cuda, get_cell_numbers_after_crop, get_cell_names
+from dynamic.evaluations.single_cell_performance import get_performance_for_single_cell
+from dynamic.models.cnn import Encoder
+from dynamic.models.helper_functions import plot_responses_vs_predictions
+from dynamic.utils.global_functions import cuda, get_cell_numbers_after_crop, get_cell_names
 
 
 class Visualizer:

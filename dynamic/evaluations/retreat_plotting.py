@@ -5,15 +5,15 @@ import yaml
 from matplotlib import animation
 import os
 
-from datasets.stas import (
+from dynamic.datasets.stas import (
     crop_around_receptive_field,
     visualize_weights,
     separate_time_space_sta,
     get_cell_svd,
 )
-from meis.MEI import fit_gaussian
-from meis.visualizer import save_all_mei_videos, get_logged_array
-from utils.global_functions import (
+from dynamic.meis.MEI import fit_gaussian
+from dynamic.meis.visualizer import save_all_mei_videos, get_logged_array
+from dynamic.utils.global_functions import (
     home,
     get_cell_names,
     get_cell_numbers_after_crop,

@@ -5,7 +5,7 @@ import pandas
 import numpy as np
 import yaml
 
-from utils.global_functions import home
+from dynamic.utils.global_functions import home
 
 
 def visualize_parameters_performance(
