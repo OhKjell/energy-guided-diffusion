@@ -1,6 +1,6 @@
 import numpy as np
 import pickle
-from utils.global_functions import home
+from dynamic.utils.global_functions import home
 
 
 def shift_responses(response_dict, test_frames=5067):
