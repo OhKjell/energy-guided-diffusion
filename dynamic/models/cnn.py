@@ -72,7 +72,7 @@ class Encoder(nn.Module):
     @staticmethod
     def build_trained(dataloaders, model_dir, model_name, data_dir, device="cpu"):
         # get parameters from config file
-        with open(f"{model_dir}/{model_name}/config/config.yaml", "r") as config_file:
+        with open(f"/{model_dir}/{model_name}/config/config.yaml", "r") as config_file:
             config = yaml.unsafe_load(config_file)
             model_config = config["model_config"]
             if 'config' in config.keys():
