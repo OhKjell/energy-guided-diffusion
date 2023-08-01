@@ -24,8 +24,7 @@ import os
 import shutil
 import glob
 import cv2
-from dynamic.utils.load_model import get_model_and_dataloader_for_nm_new
-
+from dynamic.models.helper_functions import get_model_and_dataloader, get_model_temp_reach, get_model_and_dataloader_for_nm
 
 #from dynamic.utils.global_functions import *
 # from IPython.display import Video
