@@ -48,7 +48,7 @@ model_fn = 'models.FactorizedEncoder.build_trained'
 #build dynamic model
 
 
-dynamic_model = get_model_and_dataloader_for_nm_new(
+dynamic_model = get_model_and_dataloader_for_nm(
             directory,
             filename,
             model_fn=model_fn,
