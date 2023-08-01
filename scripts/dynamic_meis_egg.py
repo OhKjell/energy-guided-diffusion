@@ -43,7 +43,7 @@ data_type = 'marmoset'
 directory = "src/dynamic/dynamic_models"
 filename = "dynamic_model"
 device = 'cuda'
-model_fn = 'models.FactorizedEncoder.build_trained'
+model_fn = 'dynamic.dynamic_models.FactorizedEncoder.build_trained'
 seed = 8
 
 #build dynamic model
