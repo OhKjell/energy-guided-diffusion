@@ -17,7 +17,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
-from evaluations.factorized_cnn_visualization import (
+from dynamic.evaluations.factorized_cnn_visualization import (
     visualized_factorized_filters,
     visualize_temporal_kernels,
 )
