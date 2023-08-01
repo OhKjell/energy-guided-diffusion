@@ -331,7 +331,7 @@ def get_model_and_dataloader_for_nm(
     print(f"data_dir: {home}")
     dataloader_config[
         "neuronal_data_dir"
-    ] = f"{home_dir}/data/{data_type}_data/responses/"
+    ] = f"{home_dir}/dynamic_data/data/{data_type}_data/responses/"
     dataloader_config["config"] = config_dict
     if num_of_trials_to_use is not None:
         dataloader_config["num_of_trials_to_use"] = num_of_trials_to_use
