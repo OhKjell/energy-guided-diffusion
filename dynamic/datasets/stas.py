@@ -8,10 +8,10 @@ from matplotlib import animation, gridspec
 import torch
 from tqdm import tqdm
 
-from evaluations.parameter_dependant_performance import get_model_overall_spatial_reach
+from dynamic.evaluations.parameter_dependant_performance import get_model_overall_spatial_reach
 
 # from training.measures import correlation
-from utils.global_functions import (
+from dynamic.utils.global_functions import (
     get_exclude_cells_based_on_correlation_threshold,
     get_exclude_cells_based_on_explainable_variance_threshold,
     home,

@@ -4,14 +4,14 @@ import yaml
 import math
 from nnfabrik.utility.nn_helpers import get_dims_for_loader_dict
 from torch.utils.data import DataLoader, BatchSampler, SequentialSampler
-from utils.global_functions import (
+from dynamic.utils.global_functions import (
     set_random_seed,
     get_exclude_cells_based_on_correlation_threshold,
     get_exclude_cells_based_on_explainable_variance_threshold,
 )
 import numpy as np
 import pickle
-from datasets.TrialWiseDataset import TrialWiseDataset
+from dynamic.datasets.TrialWiseDataset import TrialWiseDataset
 
 
 def get_trial_wise_validation_split(train_image_path, train_frac, seed=None):
