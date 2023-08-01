@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 import os
 import yaml
 
-from datasets.stas import (
+from dynamic.datasets.stas import (
     get_rf_center_grid,
     calculate_pca_on_cropped_stas,
     normalize_source_grid,
@@ -20,9 +20,9 @@ from datasets.stas import (
     plot_all_stas,
     get_receptive_field_center,
 )
-from models.helper_functions import get_possible_seeds
+from dynamic.models.helper_functions import get_possible_seeds
 
-from utils.global_functions import get_cell_names, home, global_config
+from dynamic.utils.global_functions import get_cell_names, home, global_config
 import torch
 
 
