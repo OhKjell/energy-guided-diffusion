@@ -3,8 +3,8 @@ import numpy as np
 from nnfabrik import builder
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from datasets.stas import show_sta
-from utils.global_functions import home, dataset_seed
+from dynamic.datasets.stas import show_sta
+from dynamic.utils.global_functions import home, dataset_seed
 
 
 def estimate_sta(dataloaders, num_of_frames, rf_size, dataset_config, device='cuda'):

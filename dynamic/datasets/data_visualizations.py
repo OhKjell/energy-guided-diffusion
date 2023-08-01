@@ -8,8 +8,8 @@ import random
 from matplotlib import animation
 from sklearn.linear_model import LinearRegression
 
-from models.model_visualizations import get_receptive_field
-from utils.global_functions import (
+from dynamic.models.model_visualizations import get_receptive_field
+from dynamic.utils.global_functions import (
     big_crops,
     cell_numbers_after_crop,
     cell_numbers,

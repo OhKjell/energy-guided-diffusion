@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from utils.global_functions import model_seed
+from dynamic.utils.global_functions import model_seed
 
 
 def make_seed_compatible(directory):

@@ -13,12 +13,12 @@ from tqdm import tqdm
 import models
 # from line_profiler_pycharm import profile
 import wandb
-from datasets.stas import (create_cell_file_from_config_version,
+from dynamic.datasets.stas import (create_cell_file_from_config_version,
                            crop_around_receptive_field, get_cell_sta, show_sta)
-from models.helper_functions import get_model_and_dataloader
-from models.ln_model import FactorizedModel, Model
-from training.measures import correlation, variance_of_predictions
-from utils.global_functions import (dataset_seed, global_config, home,
+from dynamic.models.helper_functions import get_model_and_dataloader
+from dynamic.models.ln_model import FactorizedModel, Model
+from dynamic.training.measures import correlation, variance_of_predictions
+from dynamic.utils.global_functions import (dataset_seed, global_config, home,
                                     model_seed)
 
 scaler = GradScaler()

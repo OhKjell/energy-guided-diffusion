@@ -8,14 +8,14 @@ import torch
 import yaml
 import math
 import seaborn as sns
-from evaluations.ln_model_performance import get_ln_model_cell_performance_dict
-from evaluations.single_cell_performance import get_basic_cnn_cell_performance_dict
-from training.measures import (
+from dynamic.evaluations.ln_model_performance import get_ln_model_cell_performance_dict
+from dynamic.evaluations.single_cell_performance import get_basic_cnn_cell_performance_dict
+from dynamic.training.measures import (
     correlation,
     oracle_corr_conservative,
     oracle_corr_jackknife,
 )
-from utils.global_functions import (
+from dynamic.utils.global_functions import (
     get_cell_names,
     get_cell_numbers_after_crop,
     get_cell_numbers,

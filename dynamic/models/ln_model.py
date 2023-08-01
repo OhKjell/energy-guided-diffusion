@@ -10,9 +10,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from tqdm import tqdm
-from utils.global_functions import model_seed, set_random_seed
-from datasets.stas import crop_around_receptive_field, get_cell_sta
-from training.regularizers import l1_regularization
+from dynamic.utils.global_functions import model_seed, set_random_seed
+from dynamic.datasets.stas import crop_around_receptive_field, get_cell_sta
+from dynamic.training.regularizers import l1_regularization
 import torch.nn.init as init
 
 

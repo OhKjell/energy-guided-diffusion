@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils.global_functions import cuda
+from dynamic.utils.global_functions import cuda
 
 
 def correlation(output, target, eps, dim=0):

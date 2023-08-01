@@ -1,7 +1,7 @@
-from utils.global_functions import dataset_seed
+from dynamic.utils.global_functions import dataset_seed
 from nnfabrik import builder
 import os
-from utils.global_functions import big_crops
+from dynamic.utils.global_functions import big_crops
 import numpy as np
 
 basepath = "/Users/m_vys/Documents/doktorat/CRC1456/retinal_circuit_modeling/"
