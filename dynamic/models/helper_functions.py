@@ -303,7 +303,7 @@ def get_model_and_dataloader_for_nm(
         model_config["config"] = config_dict
     else:
         config_dict = model_config["config"]
-    dataset_fn = "datasets.frame_movie_loader"
+    dataset_fn = "dynamic.datasets.frame_movie_loader"
     config["base_path"] = home_dir
     if dataloader_config is None:
         dataloader_config = config["dataloader_config"]
