@@ -1320,7 +1320,7 @@ config: &id001
   fixation_file:
     '01': dynamic_data/data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
     '02': dynamic_data/data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
-  image_path: data/marmoset_data/stimuli_padded_4/
+  image_path: dynamic_data/data/marmoset_data/stimuli_padded_4/
   keys:
     '01':
       experiment_name: null
