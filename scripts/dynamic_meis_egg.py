@@ -44,6 +44,7 @@ directory = "dynamic/dynamic_models"
 filename = "lr_0.0060_l_4_ch_[8, 16, 32, 64]_t_27_bs_16_tr_10_ik_27x(21, 21)x(21, 21)_hk_5x(5, 5)x(5, 5)_g_48.0000_gt_0.0740_l1_0.0230_l2_0.0000_sg_0.25_d_1_dt_1_hd_1-2-3_hdt_1-1-1_p_0_bn_1_s_1norm_0_fn_1_0_h_80_w_90"
 device = 'cuda'
 model_fn = 'models.FactorizedEncoder.build_trained'
+seed = 8
 
 #build dynamic model
 
