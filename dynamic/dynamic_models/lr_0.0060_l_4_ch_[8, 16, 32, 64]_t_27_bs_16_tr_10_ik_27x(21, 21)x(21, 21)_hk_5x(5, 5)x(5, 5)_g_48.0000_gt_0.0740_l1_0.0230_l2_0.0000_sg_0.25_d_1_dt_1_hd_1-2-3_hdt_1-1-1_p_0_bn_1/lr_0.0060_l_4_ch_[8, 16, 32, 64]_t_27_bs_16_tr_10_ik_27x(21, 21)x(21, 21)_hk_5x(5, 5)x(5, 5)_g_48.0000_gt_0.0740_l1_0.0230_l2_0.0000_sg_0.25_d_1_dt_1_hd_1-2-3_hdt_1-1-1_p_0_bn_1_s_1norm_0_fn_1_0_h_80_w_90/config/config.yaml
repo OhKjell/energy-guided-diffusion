@@ -1318,24 +1318,24 @@ config: &id001
   - cell_responses_01_fixation_movie.pkl
   - cell_responses_02_fixation_movie.pkl
   fixation_file:
-    '01': data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
-    '02': data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
+    '01': dynamic_data/data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
+    '02': dynamic_data/data/marmoset_data/fixations/complete_fixations_seed2022_s4.txt
   image_path: data/marmoset_data/stimuli_padded_4/
   keys:
     '01':
       experiment_name: null
       name: 20220412_173245_16_fixationmovieflip 20220412_183618_17_fixationmovieflip
-      raw_response_files: ./data/marmoset_data/responses/06_fixationmovieflip_bw_25500run5100freeze_seed2022.pkl
-        ./data/marmoset_data/responses/08_fixationmovieflip_bw_25500run5100freeze_seed2023.pkl
+      raw_response_files: ./dynamic_data/data/marmoset_data/responses/06_fixationmovieflip_bw_25500run5100freeze_seed2022.pkl
+        ./dynamic_data/data/marmoset_data/responses/08_fixationmovieflip_bw_25500run5100freeze_seed2023.pkl
       unified_response_file: ./data/marmoset_data/responses/cell_responses_01_fixation_movie_shifted.pkl
     '02':
       name: 20220413_041727_02_fixationmovieflip
-      raw_response_file: ./data/marmoset_data/responses/06_fixationmovieflip_marmo_85Hz_seed2022.pkl
-      unified_response_file: ./data/marmoset_data/responses/cell_responses_01_fixation_movie.pkl
+      raw_response_file: ./dynamic_data/data/marmoset_data/responses/06_fixationmovieflip_marmo_85Hz_seed2022.pkl
+      unified_response_file: ./dynamic_data/data/marmoset_data/responses/cell_responses_01_fixation_movie.pkl
   resize_ratio: 0.25
-  response_path: data/marmoset_data/responses
+  response_path: dynamic_data/data/marmoset_data/responses
   sta_file: cell_data_01_NC_stas_cell
-  stas_path: data/marmoset_data/stas
+  stas_path: dynamic_data/data/marmoset_data/stas
 dataloader_config:
   all_image_path: /scratch/usr/nibmvyst/data/marmoset_data/stimuli_padded_4/
   basepath: /scratch/usr/nibmvyst/
@@ -1438,7 +1438,7 @@ model_config:
   temporal_hidden_kern: 5
   temporal_input_kern: 27
   use_grid_mean_predictor: 0
-model_dir: models/factorized_4_ev_0.15_cnn/marmoset/retina02/cell_None/readout_isotropic/gmp_0
+model_dir: dynamic_models/factorized_4_ev_0.15_cnn/marmoset/retina02/cell_None/readout_isotropic/gmp_0
 model_name: lr_0.0060_l_4_ch_[8, 16, 32, 64]_t_27_bs_16_tr_10_ik_27x(21, 21)x(21,
   21)_hk_5x(5, 5)x(5, 5)_g_48.0000_gt_0.0740_l1_0.0230_l2_0.0000_sg_0.25_d_1_dt_1_hd_1-2-3_hdt_1-1-1_p_0_bn_1_s_1norm_0_fn_1_0_h_80_w_90
 optimizer_config:
