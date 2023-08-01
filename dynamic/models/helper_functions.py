@@ -1,8 +1,8 @@
 import yaml
 import matplotlib.pyplot as plt
 
-from datasets.stas import unnormalize_source_grid, calculate_position_before_convs
-from evaluations.parameter_dependant_performance import (
+from dynamic.datasets.stas import unnormalize_source_grid, calculate_position_before_convs
+from dynamic.evaluations.parameter_dependant_performance import (
     get_model_config_and_corr,
     get_model_temp_reach,
     get_model_1st_layer_spatial_reach,
@@ -10,12 +10,12 @@ from evaluations.parameter_dependant_performance import (
     get_model_1st_layer_temp_reach,
     get_model_overall_spatial_reach,
 )
-from training.regularizers import TimeLaplaceL23d
-from utils.global_functions import home, model_seed, global_config
+from dynamic.training.regularizers import TimeLaplaceL23d
+from dynamic.utils.global_functions import home, model_seed, global_config
 import torch
 import numpy as np
 from nnfabrik import builder
-import models
+import dynamic.models
 import os
 
 
