@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import torch
 import numpy as np
-from datasets.natural_stimuli.create_dataset import get_img, crop_based_on_fixation
+from dynamic.datasets.natural_stimuli.create_dataset import get_img, crop_based_on_fixation
 from tqdm import tqdm
 from collections import namedtuple
 
