@@ -2,12 +2,12 @@ import torch
 from neuralpredictors.layers.readouts import FullGaussian2d
 from torch.nn import ModuleDict
 
-from datasets.stas import (
+from dynamic.datasets.stas import (
     get_rf_center_grid,
     recalculate_positions_after_convs,
     normalize_source_grid,
 )
-from utils.global_functions import global_config
+from dynamic.utils.global_functions import global_config
 
 
 class InitializedMultipleFullGaussian2d(ModuleDict):

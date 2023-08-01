@@ -6,7 +6,7 @@ import torch
 import numpy as np
 import yaml
 from neuralpredictors.layers.readouts import FullGaussian2d, MultipleFullGaussian2d
-from datasets.stas import (
+from dynamic.datasets.stas import (
     get_rf_center_grid,
     recalculate_positions_after_convs,
     normalize_source_grid,
@@ -16,20 +16,20 @@ from nnfabrik.utility.nn_helpers import get_dims_for_loader_dict
 from torch import nn
 from torch.nn import functional as F
 
-from datasets.whitenoise_salamander_loaders import get_dataloader_dims
+from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
 from evaluations.factorized_cnn_visualization import (
     visualized_factorized_filters,
     visualize_temporal_kernels,
 )
-from models.model_visualizations import (
+from dynamic.models.model_visualizations import (
     visualize_all_gaussian_readout,
     visualize_filters,
 )
-from models.readouts import (
+from dynamic.models.readouts import (
     initialize_full_gaussian_readout,
     initialize_multiple_full_gaussian_readouts,
 )
-from utils.global_functions import (
+from dynamic.utils.global_functions import (
     set_random_seed,
     get_exclude_cells_based_on_thresholds,
     home,
@@ -38,7 +38,7 @@ from utils.global_functions import (
     get_exclude_cells,
 )
 
-from models.cores import Basic3dCore, Factorized3dCore
+from dynamic.models.cores import Basic3dCore, Factorized3dCore
 
 
 class Encoder(nn.Module):

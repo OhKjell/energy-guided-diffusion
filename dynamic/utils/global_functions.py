@@ -12,7 +12,7 @@ model_seed = 8
 mei_seed = 28
 
 home = Path(__file__).absolute().parent.parent
-with open(f"{home}/data/salamander_data/responses/config.yaml", "rb") as config_file:
+with open(f"{home}/dynamic_data/data/marmorset_data/responses/config.yaml", "rb") as config_file:
     global_config = yaml.unsafe_load(config_file)
 # big_crops = {#'01': (50, 50, 75, 65)
 #              '01': (40, 40, 65, 55),

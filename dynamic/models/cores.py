@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from neuralpredictors import regularizers
 from neuralpredictors.layers.cores import Core
-from training.regularizers import TimeLaplaceL23d
+from dynamic.training.regularizers import TimeLaplaceL23d
 import torch
 from torch import nn
 from neuralpredictors.layers.activations import AdaptiveELU
 import math
-from models.batch_norm_scale import Bias3DLayer, Scale3DLayer
+from dynamic.models.batch_norm_scale import Bias3DLayer, Scale3DLayer
 
 
 class Core3d(Core):
