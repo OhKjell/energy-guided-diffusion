@@ -40,7 +40,7 @@ from dynamic.models.helper_functions import get_model_and_dataloader
 
 
 data_type = 'marmoset'
-directory = "home/dortelt/praktikum/energy-guided-diffusion/dynamic/dynamic_models"
+directory = "src/dynamic/dynamic_models"
 filename = "dynamic_model"
 device = 'cuda'
 model_fn = 'models.FactorizedEncoder.build_trained'
