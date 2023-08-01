@@ -338,7 +338,7 @@ def get_model_and_dataloader_for_nm(
 
     # dataloader_config
     # dataloader_config['path'] = 'vystrcilova/retinal_circuit_modeling/data'c
-    print(dataloader_config[fi])
+    #print(dataloader_config[fi])
     dataloaders = builder.get_data(dataset_fn, dataloader_config)
 
     # model_fn = 'models.multi_retina_regular_cnn_model'
