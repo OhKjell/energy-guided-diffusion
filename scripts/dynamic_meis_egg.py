@@ -61,6 +61,13 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 
 
 print("yeaahh")
+tier = 'train'
+inputs, targets = next(iter(dataloader[tier][f'0{retina_index+1}']))
+
+print(inputs.shape) 
+
+# the targets shape is (batch_size, num_of_neurons, time_chunk)
+print(targets.shape)
 
 tensor_shape = (1, 1, 40, 50, 50)
 tensor = torch.zeros(tensor_shape)
