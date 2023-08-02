@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 
 
-
+retina_index = 1
 data_type = 'marmoset'
 directory = "src/dynamic/dynamic_models"
 filename = "dynamic_model"
