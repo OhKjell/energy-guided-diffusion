@@ -368,7 +368,7 @@ class FactorizedEncoder(Encoder):
         )
         print(seed)
         state_dict = torch.load(
-            f"{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
+            f"/{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
             map_location=torch.device(device),
         )["model"]
         # if 'readout._mu' in state_dict.keys():
