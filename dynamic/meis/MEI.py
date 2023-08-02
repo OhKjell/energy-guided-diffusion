@@ -4,17 +4,17 @@ from pathlib import Path
 import numpy as np
 import torch
 import wandb
-from mei.optimization import MEI
+from dynamic.mei.optimization import MEI
 from numpy.linalg import cholesky, inv
 from scipy.stats import multivariate_normal
 from torch import nn
 
-from models.helper_functions import get_center_coordinates
-from meis.postprocessing import CenteredSigmoid
-from meis.preconditions import (GaussianBlur3d, MultipleConditions,
+from dynamic.models.helper_functions import get_center_coordinates
+from dynamic.meis.postprocessing import CenteredSigmoid
+from dynamic.meis.preconditions import (GaussianBlur3d, MultipleConditions,
                                 SuppressGradient)
-from meis.readouts import SingleCellMEIEncoder
-from utils.global_functions import get_cell_names, home
+from dynamic.meis.readouts import SingleCellMEIEncoder
+from dynamic.utils.global_functions import get_cell_names, home
 
 
 class ExcitingMEI(MEI):

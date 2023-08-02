@@ -5,24 +5,24 @@ import string
 
 import torch
 from torch import optim
-from mei.objectives import EvaluationObjective, PostProcessedInputObjective
-from mei.stoppers import NumIterations
+from dynamic.mei.objectives import EvaluationObjective, PostProcessedInputObjective
+from dynamic.mei.stoppers import NumIterations
 
-import models
-import wandb
-from models.helper_functions import get_seed_model_versions
-from meis.MEI import (ExcitingEnsembleMEI, ExcitingMEI, SuppressiveSurroundMEI,
+import dynamic.models
+import dynamic.wandb
+from dynamic.models.helper_functions import get_seed_model_versions
+from dynamic.meis.MEI import (ExcitingEnsembleMEI, ExcitingMEI, SuppressiveSurroundMEI,
                       optimize)
-from meis.postprocessing import (ChangeStdAndClip, MaxNorm,
+from dynamic.meis.postprocessing import (ChangeStdAndClip, MaxNorm,
                                  PNormConstraintAndClip,
                                  ThresholdCenteredSigmoid, TorchL2NormAndClip)
-from meis.preconditions import GaussianBlur3d, MultipleConditions
-from meis.stoppers import ActivationIncrease
-from meis.tracking import (GradientObjective, LoggingTracker,
+from dynamic.meis.preconditions import GaussianBlur3d, MultipleConditions
+from dynamic.meis.stoppers import ActivationIncrease
+from dynamic.meis.tracking import (GradientObjective, LoggingTracker,
                            SuppressiveLoggingTracker)
-from meis.visualizer import get_logged_array
-from models.helper_functions import get_model_and_dataloader, get_model_temp_reach, get_model_and_dataloader_for_nm
-from utils.global_functions import (get_cell_names, global_config, home,
+from dynamic.meis.visualizer import get_logged_array
+from dynamic.models.helper_functions import get_model_and_dataloader, get_model_temp_reach, get_model_and_dataloader_for_nm
+from dynamic.utils.global_functions import (get_cell_names, global_config, home,
                                     mei_seed)
 
 parser = argparse.ArgumentParser()

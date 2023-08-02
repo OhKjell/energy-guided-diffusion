@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from datasets.stas import (calculate_position_before_convs,
+from dynamic.datasets.stas import (calculate_position_before_convs,
                            crop_around_receptive_field, normalize_source_grid,
                            unnormalize_source_grid)
 

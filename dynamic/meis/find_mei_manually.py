@@ -6,12 +6,12 @@ import torch
 
 import models
 import wandb
-from meis.helper_functions import get_seed_model_versions
-from meis.postprocessing import ChangeStdAndClip, PNormConstraintAndClip
-from meis.tracking import GradientObjective, LoggingTracker
-from meis.visualizer import get_logged_array, save_mei_video
-from models.helper_functions import get_model_and_dataloader
-from utils.global_functions import cuda, get_cell_names, home, mei_seed
+from dynamic.meis.helper_functions import get_seed_model_versions
+from dynamic.meis.postprocessing import ChangeStdAndClip, PNormConstraintAndClip
+from dynamic.meis.tracking import GradientObjective, LoggingTracker
+from dynamic.meis.visualizer import get_logged_array, save_mei_video
+from dynamic.models.helper_functions import get_model_and_dataloader
+from dynamic.utils.global_functions import cuda, get_cell_names, home, mei_seed
 
 
 def optimize(

@@ -2,8 +2,8 @@ from typing import Any, Optional, Tuple
 
 import numpy as np
 import torch
-from mei.domain import State
-from mei.stoppers import OptimizationStopper
+from dynamic.mei.domain import State
+from dynamic.mei.stoppers import OptimizationStopper
 
 
 class ActivationIncrease(OptimizationStopper):

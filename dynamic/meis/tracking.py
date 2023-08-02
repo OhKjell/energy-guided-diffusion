@@ -7,12 +7,12 @@ import matplotlib.colors
 import numpy as np
 from matplotlib import animation, cm
 from matplotlib import pyplot as plt
-from mei.domain import State
-from mei.objectives import RegularIntervalObjective
-from mei.tracking import Tracker
+from dynamic.mei.domain import State
+from dynamic.mei.objectives import RegularIntervalObjective
+from dynamic.mei.tracking import Tracker
 
 import wandb
-from meis.visualizer import save_mei_video
+from dynamic.meis.visualizer import save_mei_video
 
 
 class LoggingTracker(Tracker):
