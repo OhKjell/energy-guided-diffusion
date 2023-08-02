@@ -47,11 +47,6 @@ model_fn = 'dynamic.models.FactorizedEncoder.build_trained'
 seed = 8
 
 #build dynamic model
-def get_initial_input(model, init_variance):
-    input_shape=(1, 1, get_model_temp_reach(model.config_dict), inputs.shape[-2], inputs.shape[-1])
-    dist = torch.distributions.Normal(0, init_variance)
-    initial_input = dist.sample(input_shape).double()
-    return initial_input
 
 dynamic_model = get_model_and_dataloader_for_nm(
             directory,
@@ -67,7 +62,11 @@ dynamic_model = get_model_and_dataloader_for_nm(
 
 print("yeaahh")
 
-initial_input = get_initial_input(dynamic_model, init_variance=0.1)
-activation = get_model_activation(dynamic_model, initial_input)
+tensor_shape = (1, 1, 40, 50, 50)
+tensor = torch.zeros(tensor_shape)
+
+print(dynamic_model.config_dict)
+
+activation = get_model_activation(dynamic_model, tensor)
 print(activation.shape)
 print(activation)
