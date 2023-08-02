@@ -7,9 +7,9 @@ import numpy as np
 from matplotlib import animation, cm
 from matplotlib import pyplot as plt
 import torch
-from dynamic.datasets.stas import plot_all_stas, visualize_weights
-from dynamic.meis.MEI import get_mei_area
-from dynamic.utils.global_functions import get_cell_names, home
+#from dynamic.datasets.stas import plot_all_stas, visualize_weights
+#from dynamic.meis.MEI import get_mei_area
+#from dynamic.utils.global_functions import get_cell_names, home
 
 
 class LoggedEMEI:
