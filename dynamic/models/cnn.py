@@ -380,8 +380,6 @@ class FactorizedEncoder(Encoder):
         model.load_state_dict(state_dict)
         model.config_dict = config_dict
         model.to(device)
-        print("JAAAAAAAAAAAAAAA")
-        print(model.config_dict)
         return model
 
     @staticmethod

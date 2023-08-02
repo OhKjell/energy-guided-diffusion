@@ -48,7 +48,7 @@ seed = 8
 
 #build dynamic model
 
-dynamic_model = get_model_and_dataloader_for_nm(
+dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
             directory,
             filename,
             model_fn=model_fn,
@@ -65,8 +65,7 @@ print("yeaahh")
 tensor_shape = (1, 1, 40, 50, 50)
 tensor = torch.zeros(tensor_shape)
 print("##################################")
-print(dynamic_model)
 
-activation = get_model_activation(dynamic_model, tensor)
+activation = get_model_activations(dynamic_model, tensor)
 print(activation.shape)
 print(activation)
