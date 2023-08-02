@@ -85,6 +85,10 @@ print(cell_indices)
 
 print("##########################")
 
+for key in dataloaders.keys():
+    print(key)
+    print(dataloader[key].dataset.n_neurons)
+print("##########################")
 activation = get_model_activations(dynamic_model, tensor)
 print(activation.shape)
 print(activation)
