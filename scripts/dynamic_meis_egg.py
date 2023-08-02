@@ -69,6 +69,10 @@ print(inputs.shape)
 # the targets shape is (batch_size, num_of_neurons, time_chunk)
 print(targets.shape)
 
+print("HHHHHHHHHHHHHHHHHHHHHHHHHHH")
+print(dynamic_model.config_dict["img_h"])
+print(dynamic_model.config_dict["img_w"])
+
 tensor_shape = (1, 1, 40, 50, 50)
 tensor = torch.zeros(tensor_shape)
 print("##################################")
