@@ -87,7 +87,7 @@ print("##########################")
 
 for key in dataloader.keys():
     print(key)
-    print(dataloader[key].dataset.n_neurons)
+    print(dynamic_model.config_dict["n_neurons_dict"])
 print("##########################")
 activation = get_model_activations(dynamic_model, tensor)
 print(activation.shape)
