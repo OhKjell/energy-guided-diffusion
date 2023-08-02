@@ -357,7 +357,7 @@ def get_model_and_dataloader_for_nm(
         model_config={
             "model_dir": directory,
             "model_name": filename,
-            "data_dir": home_dir,
+            "data_dir": f"{home_dir}/dynamic_data",
             "device": device,
         },
         dataloaders=dataloaders,
