@@ -65,7 +65,7 @@ print("yeaahh")
 tensor_shape = (1, 1, 40, 50, 50)
 tensor = torch.zeros(tensor_shape)
 
-print(dynamic_model.shape)
+print(dynamic_model)
 
 activation = get_model_activation(dynamic_model, tensor)
 print(activation.shape)
