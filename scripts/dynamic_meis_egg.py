@@ -15,6 +15,7 @@ from torch import nn
 from torchvision import transforms
 from torchvision.transforms import functional as TF
 from tqdm import tqdm
+from dynamic.utils.global_functions import get_cell_names
 
 from egg.diffusion import EGG
 from egg.models import models
@@ -76,6 +77,13 @@ print(dynamic_model.config_dict["img_w"])
 tensor_shape = (1, 1, 40, 50, 50)
 tensor = torch.zeros(tensor_shape)
 print("##################################")
+
+cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
+cell_indices = list(range(len(cell_names)))
+print(cell_names)
+print(cell_indices)
+
+print("##########################")
 
 activation = get_model_activations(dynamic_model, tensor)
 print(activation.shape)
