@@ -85,7 +85,7 @@ print(cell_indices)
 
 print("##########################")
 
-for key in dataloaders.keys():
+for key in dataloader.keys():
     print(key)
     print(dataloader[key].dataset.n_neurons)
 print("##########################")
