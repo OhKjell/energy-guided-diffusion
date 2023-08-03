@@ -75,7 +75,7 @@ print(dynamic_model.config_dict["img_h"])
 print(dynamic_model.config_dict["img_w"])
 
 tensor_shape = (1, 1, 40, 80, 90)
-tensor = torch.zeros(tensor_shape)
+tensor = torch.zeros(tensor_shape).double()
 print("##################################")
 
 cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
@@ -93,4 +93,6 @@ print(get_model_temp_reach(dynamic_model.config_dict))
 #activation = get_model_activations(dynamic_model, tensor)
 #print(activation.shape)
 #print(activation)
+print("##########################")
+
 output = dynamic_model(tensor)
