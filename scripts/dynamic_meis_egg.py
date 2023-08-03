@@ -113,12 +113,12 @@ model = EGG(num_steps=num_timesteps)
 
 
 
-def tmpt_func(x):
+def tmp_func(x):
     return 0
 
 
 samples = model.sample(
-        energy_fn=None,
+        energy_fn=tmp_func,
         energy_scale=0,
         num_samples=10
     )
