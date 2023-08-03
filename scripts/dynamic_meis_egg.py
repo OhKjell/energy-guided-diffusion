@@ -115,7 +115,7 @@ model = EGG(num_steps=num_timesteps)
 
 def tmp_func(x):
     
-    return {"train": x}
+    return {"train": torch.nn.functional.cosine_similarity(x, x)}
 
 
 samples = model.sample(
