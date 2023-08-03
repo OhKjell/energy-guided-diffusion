@@ -131,6 +131,7 @@ for i, samples in enumerate(outputs):
     #    print(type(sample))
         #samples_dir = f"{output_dir}/output_{i}"
         #os.makedirs(samples_dir, exist_ok=True)
+    print(f"HHHHHHHH:: {samples.shape}")
     plt.imshow(np.transpose(samples["sample"].cpu().detach().squeeze(), (1,2,0)))
     plt.savefig(f"{output_dir}/{j}.png")
     plt.close()
