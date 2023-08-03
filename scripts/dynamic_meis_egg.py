@@ -122,16 +122,17 @@ def tmp_func(x):
 outputs = model.sample(
         energy_fn=tmp_func,
         energy_scale=0,
-        num_samples=2
+        num_samples=5
     )
 for i, samples in enumerate(outputs):
     pass
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
-    samples_dir = f"{output_dir}/output_{j}"
-    os.makedirs(samples_dir, exist_ok=True)
+    #samples_dir = f"{output_dir}/output_{j}"
+    #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.savefig(f"{samples_dir}/{j}.png")
+    plt.axis("off")
+    plt.savefig(f"{output_dir}/image_{j}.png")
     plt.close()
 
                         
