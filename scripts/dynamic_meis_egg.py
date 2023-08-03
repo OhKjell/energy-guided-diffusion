@@ -41,6 +41,19 @@ from dynamic.meis.visualizer import get_model_activations
 num_timesteps = 100
 
 
+def get_gpu_memory(device=0):
+    properties = torch.cuda.get_device_properties(device)
+    total_memory = properties.total_memory
+    available_memory = total_memory - torch.cuda.memory_allocated(device)
+    print(f"Total GPU memory: {total_memory / (1024**3):.2f} GiB")
+    print(f"Used GPU memory: {torch.cuda.memory_allocated(device) / (1024**3):.2f} GiB")
+    print(f"Available GPU memory: {available_memory / (1024**3):.2f} GiB")
+
+# Call the function with device=0 (assuming you have one GPU)
+get_gpu_memory()
+
+
+
 
 retina_index = 1
 data_type = 'marmoset'
