@@ -124,7 +124,7 @@ outputs = model.sample(
         energy_scale=0,
         num_samples=2
     )
-print(type(outputs))
+print(outputs.values())
 for i, samples in enumerate(outputs):
     print(type(samples))
     for j, sample in enumerate(samples):
