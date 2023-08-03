@@ -38,6 +38,9 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
+num_timesteps = 100
+
+
 
 retina_index = 1
 data_type = 'marmoset'
@@ -96,4 +99,32 @@ print(get_model_temp_reach(dynamic_model.config_dict))
 print("##########################")
 
 output = dynamic_model(tensor)
-print(output[0])
+print(output)
+
+### diffusion model
+
+
+if os.path.exists("output"):
+    shutil.rmtree("output")
+    os.makedirs("output")
+
+output_dir = f"output"
+model = EGG(num_steps=num_timesteps)
+
+
+
+def tmpt_func(x):
+    return 0
+
+
+samples = model.sample(
+        energy_fn=None,
+        energy_scale=0,
+        num_samples=10
+    )
+
+for i, sample in enumerate(samples):
+    plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
+    plt.savefig(f"{output_dir}/{i}.png")
+    plt.close()
+                        
