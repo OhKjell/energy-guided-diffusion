@@ -120,7 +120,7 @@ def tmp_func(x):
 samples = model.sample(
         energy_fn=tmp_func,
         energy_scale=0,
-        num_samples=10
+        num_samples=5
     )
 
 for i, sample in enumerate(samples):
