@@ -95,5 +95,5 @@ print(get_model_temp_reach(dynamic_model.config_dict))
 #print(activation)
 print("##########################")
 
-output = dynamic_model(tensor)
+output = dynamic_model(tensor, datakey=0)
 print(output)
