@@ -87,7 +87,7 @@ print("##########################")
 
 for key in dataloader.keys():
     print(key)
-    print(dynamic_model.config_dict["n_neurons_dict"])
+    print(dynamic_model.config_dict["n_neurons_dict"]["02"])
 print("##########################")
 print(get_model_temp_reach(dynamic_model.config_dict))
 #activation = get_model_activations(dynamic_model, tensor)
