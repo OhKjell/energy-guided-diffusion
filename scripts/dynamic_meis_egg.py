@@ -114,7 +114,7 @@ model = EGG(num_steps=num_timesteps)
 
 
 def tmp_func(x):
-    return {"train": 0}
+    return {"train": 0.0}
 
 
 samples = model.sample(
