@@ -114,9 +114,8 @@ model = EGG(num_steps=num_timesteps)
 
 
 def tmp_func(x):
-    number = 5
-    tmp = torch.tensor(number)
-    return {"train": tmp}
+    
+    return {"train": x}
 
 
 samples = model.sample(
