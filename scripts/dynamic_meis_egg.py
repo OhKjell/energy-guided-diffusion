@@ -119,16 +119,17 @@ def tmp_func(x):
     return {"train": x[0][0][0][0]}
 
 
-samples = model.sample(
+outputs = model.sample(
         energy_fn=tmp_func,
         energy_scale=0,
         num_samples=2
     )
-
-for i, sample in enumerate(samples):
-    plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
-    plt.savefig(f"{output_dir}/{i}.png")
-    plt.close()
-
+for i, samples in enumerate(outputs):
+    for j, sample in enumerate(samples):
+        samples_dir = f"{output_dir}/output_{i}"
+        os.makedirs(samples_dir, exist_ok=True)
+        plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
+        plt.savefig(f"{samples_dir}/{j}.png")
+        plt.close()
 
                         
