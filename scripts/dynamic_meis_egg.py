@@ -122,11 +122,11 @@ def tmp_func(x):
 samples = model.sample(
         energy_fn=tmp_func,
         energy_scale=0,
-        num_samples=1
+        num_samples=2
     )
 
-for i, sample in enumerate(samples):
-    plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
-    plt.savefig(f"{output_dir}/{i}.png")
-    plt.close()
+print(samples.shape)
+plt.imshow(np.transpose(samples[-1]["sample"].cpu().detach().squeeze(), (1,2,0)))
+plt.savefig(f"{output_dir}/{i}.png")
+plt.close()
                         
