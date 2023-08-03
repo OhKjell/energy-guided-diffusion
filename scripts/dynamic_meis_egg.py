@@ -125,8 +125,10 @@ samples = model.sample(
         num_samples=2
     )
 
-print(samples.shape)
-plt.imshow(np.transpose(samples[-1]["sample"].cpu().detach().squeeze(), (1,2,0)))
-plt.savefig(f"{output_dir}/{i}.png")
-plt.close()
+for i, sample in enumerate(samples):
+    plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
+    plt.savefig(f"{output_dir}/{i}.png")
+    plt.close()
+
+
                         
