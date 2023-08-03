@@ -124,16 +124,13 @@ outputs = model.sample(
         energy_scale=0,
         num_samples=2
     )
-#print(outputs.values())
 for i, samples in enumerate(outputs):
-    print(type(samples))
-    #for j, sample in enumerate(samples):
-    #    print(type(sample))
-        #samples_dir = f"{output_dir}/output_{i}"
-        #os.makedirs(samples_dir, exist_ok=True)
-    print(f"HHHHHHHH:: {samples['sample'].shape}")
-    plt.imshow(np.transpose(samples["sample"].cpu().detach().squeeze(), (1,2,0)))
-    plt.savefig(f"{output_dir}/{j}.png")
+    pass
+for j, sample in enumerate(samples["sample"]):
+    samples_dir = f"{output_dir}/output_{j}"
+    os.makedirs(samples_dir, exist_ok=True)
+    plt.imshow(np.transpose(sample["sample"].cpu().detach(), (1,2,0)))
+    plt.savefig(f"{samples_dir}/{j}.png")
     plt.close()
 
                         
