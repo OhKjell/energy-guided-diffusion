@@ -115,6 +115,7 @@ def initialize_full_gaussian_readout(
         config=config,
         subsample=subsample,
     )
+    print(f"THIS IS THE SOzrce girdf  {source_grid}")
     readout = FullGaussian2d(
         in_shape=(
             (core.hidden_channels[-1],)
