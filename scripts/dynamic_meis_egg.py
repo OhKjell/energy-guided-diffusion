@@ -127,6 +127,7 @@ outputs = model.sample(
 for i, samples in enumerate(outputs):
     pass
 for j, sample in enumerate(samples["sample"]):
+    print(sample.shape)
     samples_dir = f"{output_dir}/output_{j}"
     os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample["sample"].cpu().detach(), (1,2,0)))
