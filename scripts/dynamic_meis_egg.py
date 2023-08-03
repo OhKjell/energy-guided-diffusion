@@ -124,8 +124,11 @@ outputs = model.sample(
         energy_scale=0,
         num_samples=2
     )
+print(type(outputs))
 for i, samples in enumerate(outputs):
+    print(type(samples))
     for j, sample in enumerate(samples):
+        print(type(sample))
         samples_dir = f"{output_dir}/output_{i}"
         os.makedirs(samples_dir, exist_ok=True)
         plt.imshow(np.transpose(sample["sample"].cpu().detach().squeeze(), (1,2,0)))
