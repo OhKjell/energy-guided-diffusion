@@ -610,7 +610,7 @@ class GaussianDiffusion:
 
             #re - instantiate requires_grad for backpropagation
             img = img.requires_grad_()
-            print(f"SHAPE IMAGE: {img}")
+            print(f"SHAPE IMAGE: {img.shape}")
 
             split_images = th.split(img, split_size_or_sections=1, dim=0)
             out = []
@@ -632,7 +632,7 @@ class GaussianDiffusion:
                 out.append(output_frame)
                 print(i)
             
-            pred_x_tensors = [d["pred_xstart"] for d in out]
+            pred_x_tensors = [d["pred_xstart"][0] for d in out]
             fused_tensor = th.stack(pred_x_tensors, dim=0)
             fused_tensor.requires_grad_(True)
             print(f"FUSED: {fused_tensor.shape}")
