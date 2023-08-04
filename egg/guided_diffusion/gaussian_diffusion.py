@@ -630,8 +630,6 @@ class GaussianDiffusion:
                     out.append(output_frame)
                     print(i)
                     #print(th.cuda.memory_summary(device))
-                    frame.detach()
-                    th.cuda.empty_cache()
                     #print(th.cuda.memory_summary(device))
             
 
