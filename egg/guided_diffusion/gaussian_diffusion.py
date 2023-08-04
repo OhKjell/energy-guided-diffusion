@@ -610,7 +610,7 @@ class GaussianDiffusion:
             #re - instantiate requires_grad for backpropagation
             img = img.requires_grad_()
             split_images = th.split(img, split_size_or_sections=1, dim=0)
-            out = th.zeros(self.num_timesteps)
+            out = []
             for i, frame in enumerate(split_images):
                 #print(frame.shape, t.shape)
                 if i == 0:
