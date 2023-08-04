@@ -628,6 +628,7 @@ class GaussianDiffusion:
                 print(f"Used GPU memory: {th.cuda.memory_allocated(device) / (1024**3):.2f} GiB")
                 out.append(output_frame)
                 print(i)
+                frame.detach()
             
 
             energy = energy_fn(out["pred_xstart"])
