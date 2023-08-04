@@ -635,6 +635,7 @@ class GaussianDiffusion:
             fused_tensor.requires_grad_(True)
 
             energy = energy_fn(fused_tensor)
+            img = img.requires_grad_()
 
             norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
 
