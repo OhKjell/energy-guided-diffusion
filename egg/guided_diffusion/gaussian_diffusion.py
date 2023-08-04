@@ -632,7 +632,7 @@ class GaussianDiffusion:
             
             pred_x_tensors = [d["pred_xstart"] for d in out]
             fused_tensor = th.stack(pred_x_tensors, dim=0)
-            fused_tensor.requires_grad(True)
+            fused_tensor.requires_grad("True")
             
             energy = energy_fn(fused_tensor)
             
