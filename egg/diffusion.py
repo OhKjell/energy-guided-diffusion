@@ -150,7 +150,7 @@ class EGG(nn.Module):
     def sample_video(
             self,
             energy_fn,
-            energy_fn2,
+            #energy_fn2,
             energy_scale=1,
             #energy_scale2=1,
             num_samples=1,
@@ -179,7 +179,7 @@ class EGG(nn.Module):
             `num_samples` parameter. The samples are returned as a tensor of shape `(num_samples, 3, image_size, image_size)`.
             The function also has optional parameters for using alpha
             """
-            return self.diffusion.p_sample_loop_progressive_video(
+            return self.diffusion.p_sample_loop_progressive_dynamic(
                 self.model,
                 (
                     num_samples,
@@ -191,9 +191,9 @@ class EGG(nn.Module):
                 model_kwargs={},
                 progress=True,
                 energy_fn=energy_fn,
-                energy_fn2=energy_fn2,
+                #energy_fn2=energy_fn2,
                 energy_scale=energy_scale,
-                energy_scale2=energy_scale2,
+                #energy_scale2=energy_scale2,
                 use_alpha_bar=use_alpha_bar,
                 normalize_grad=normalize_grad,
             )

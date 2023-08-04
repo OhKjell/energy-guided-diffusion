@@ -571,6 +571,79 @@ class GaussianDiffusion:
 
 
 
+    def p_sample_loop_progressive_dynamic(
+        self,
+        model,
+        shape,
+        noise=None,
+        clip_denoised=True,
+        denoised_fn=None,
+        cond_fn=None,
+        model_kwargs=None,
+        device=None,
+        progress=True,
+        energy_fn=None,
+        energy_scale=1.0,
+        use_alpha_bar=False,
+        normalize_grad=True,
+    ):
+        if energy_fn is None:
+            raise ValueError("energy_fn must be specified for progressive sampling")
+
+        if device is None:
+            device = next(model.parameters()).device
+        assert isinstance(shape, (tuple, list))
+        if noise is not None:
+            img = noise
+        else:
+            img = th.randn(*shape, device=device).requires_grad_()
+        indices = list(range(self.num_timesteps))[::-1]
+
+        if progress:
+            # Lazy import so that we don't depend on tqdm.
+            from tqdm.auto import tqdm
+
+            indices = tqdm(indices)
+
+        for i in indices:
+            t = th.tensor([i] * 1, device=device)
+
+            #re - instantiate requires_grad for backpropagation
+            img = img.requires_grad_()
+            out = th.zeros(self.num_timesteps)
+            for i, frame in enumerate(img):
+                out[i] = self.p_sample(
+                    model,
+                    img,
+                    t,
+                    clip_denoised=clip_denoised,
+                    denoised_fn=denoised_fn,
+                    cond_fn=cond_fn,
+                    model_kwargs=model_kwargs,
+                )
+            
+
+            energy = energy_fn(out["pred_xstart"])
+
+            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
+
+            if normalize_grad:
+                norm_grad = norm_grad / th.norm(norm_grad)
+
+            update = norm_grad * energy_scale
+            if use_alpha_bar:
+                alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
+                update = update * (1 - alpha_bar).sqrt()
+
+            out["sample"] = out["sample"] - update
+
+            yield out
+            img = out["sample"]
+            # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
+            img.detach_()
+
+
+
 
     def p_sample_loop_progressive_video(
         self,
