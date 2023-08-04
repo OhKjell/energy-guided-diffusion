@@ -648,11 +648,16 @@ class GaussianDiffusion:
             if use_alpha_bar:
                 alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                 update = update * (1 - alpha_bar).sqrt()
+           
+            output = {"sample": None}
 
-            out["sample"] = out["sample"] - update
+            x_fused = [d["sample"][0] for d in out]
+            output["sample"] = th.stack(pred_x_tensors, dim=0)
 
-            yield out
-            img = out["sample"]
+            output["sample"] = output["sample"] - update
+
+            yield output
+            img = output["sample"]
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
             img.detach_()
 
