@@ -254,7 +254,6 @@ class GaussianDiffusion:
         """
         if model_kwargs is None:
             model_kwargs = {}
-
         B, C = x.shape[:2]
         assert t.shape == (B,)
         model_output = model(x, self._scale_timesteps(t), **model_kwargs)
@@ -613,9 +612,11 @@ class GaussianDiffusion:
             out = th.zeros(self.num_timesteps)
             for i, frame in enumerate(img):
                 frame.unsqueeze(0)
+                if i == 0:
+                    print(frame.shape, t.shape)
                 out[i] = self.p_sample(
                     model,
-                    img,
+                    frame,
                     t,
                     clip_denoised=clip_denoised,
                     denoised_fn=denoised_fn,
