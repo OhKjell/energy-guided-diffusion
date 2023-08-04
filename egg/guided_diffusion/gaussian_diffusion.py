@@ -612,6 +612,7 @@ class GaussianDiffusion:
             split_images = th.split(img, split_size_or_sections=1, dim=0)
             out = []
             for i, frame in enumerate(split_images):
+                print(i)
                 #print(frame.shape, t.shape)
                 if i == 0:
                     print(frame.shape, t.shape)
