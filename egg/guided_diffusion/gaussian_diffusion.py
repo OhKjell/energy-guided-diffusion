@@ -608,7 +608,7 @@ class GaussianDiffusion:
             t = th.tensor([i] * 1, device=device)
 
             #re - instantiate requires_grad for backpropagation
-            img = img.requires_grad_()
+            #img = img.requires_grad_()
             split_images = th.split(img, split_size_or_sections=1, dim=0)
             out = []
             for i, frame in enumerate(split_images):
@@ -625,6 +625,7 @@ class GaussianDiffusion:
                     cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                 )
+                print(f"Allocated GPU memory: {torch.cuda.memory_allocated(device) / 1024**2:.2f} MB")
                 out.append(output_frame)
                 print(i)
             
