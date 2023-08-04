@@ -615,7 +615,7 @@ class GaussianDiffusion:
                 #print(frame.shape, t.shape)
                 if i == 0:
                     print(frame.shape, t.shape)
-                out.append = self.p_sample(
+                output_frame = self.p_sample(
                     model,
                     frame,
                     t,
@@ -624,6 +624,7 @@ class GaussianDiffusion:
                     cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                 )
+                out.append(output_frame)
             
 
             energy = energy_fn(out["pred_xstart"])
