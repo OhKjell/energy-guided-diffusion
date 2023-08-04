@@ -612,6 +612,7 @@ class GaussianDiffusion:
             img = img.requires_grad_()
             out = th.zeros(self.num_timesteps)
             for i, frame in enumerate(img):
+                frame.unsqueeze(0)
                 out[i] = self.p_sample(
                     model,
                     img,
