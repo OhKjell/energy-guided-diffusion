@@ -135,7 +135,7 @@ def tmp_func(x):
 outputs = model.sample_video(
         energy_fn=tmp_func,
         energy_scale=0,
-        num_samples=3
+        num_samples=2
     )
 for i, samples in enumerate(outputs):
     pass
