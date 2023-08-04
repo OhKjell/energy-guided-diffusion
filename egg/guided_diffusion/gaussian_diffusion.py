@@ -629,6 +629,7 @@ class GaussianDiffusion:
                 out.append(output_frame)
                 print(i)
                 frame.detach()
+                th.cuda.empty_cache()
             
 
             energy = energy_fn(out["pred_xstart"])
