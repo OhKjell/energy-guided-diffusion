@@ -609,7 +609,7 @@ class GaussianDiffusion:
                 t = th.tensor([i] * 1, device=device)
 
                 #re - instantiate requires_grad for backpropagation
-                #img = img.requires_grad_()
+                img = img.requires_grad_()
                 split_images = th.split(img, split_size_or_sections=1, dim=0)
                 out = []
                 for i, frame in enumerate(split_images):
@@ -635,8 +635,7 @@ class GaussianDiffusion:
             fused_tensor.requires_grad_(True)
 
             energy = energy_fn(fused_tensor)
-            img = img.requires_grad()
-
+            
             norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
             print(img.shape)
             if normalize_grad:
