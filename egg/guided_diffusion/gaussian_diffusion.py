@@ -625,7 +625,7 @@ class GaussianDiffusion:
                     cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                 )
-                print(f"Allocated GPU memory: {th.cuda.memory_allocated(device) / 1024**2:.2f} MB")
+                print(f"Used GPU memory: {th.cuda.memory_allocated(device) / (1024**3):.2f} GiB")
                 out.append(output_frame)
                 print(i)
             
