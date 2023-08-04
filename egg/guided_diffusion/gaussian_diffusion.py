@@ -626,6 +626,7 @@ class GaussianDiffusion:
                     model_kwargs=model_kwargs,
                 )
                 out.append(output_frame)
+                print(i)
             
 
             energy = energy_fn(out["pred_xstart"])
