@@ -615,7 +615,7 @@ class GaussianDiffusion:
                 #print(frame.shape, t.shape)
                 if i == 0:
                     print(frame.shape, t.shape)
-                out[i] = self.p_sample(
+                out.append = self.p_sample(
                     model,
                     frame,
                     t,
