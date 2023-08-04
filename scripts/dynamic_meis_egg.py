@@ -129,7 +129,7 @@ model = EGG(num_steps=num_timesteps)
 def tmp_func(x):
     print(x.shape)
     print(x[0])
-    return {"train": x[0][0][0][0]}
+    return {"train": x[0][0][0][0][0]}
 
 
 outputs = model.sample_video(
