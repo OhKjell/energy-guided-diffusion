@@ -638,7 +638,7 @@ class GaussianDiffusion:
             img = img.requires_grad()
 
             norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
-
+            print(img.shape)
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
 
