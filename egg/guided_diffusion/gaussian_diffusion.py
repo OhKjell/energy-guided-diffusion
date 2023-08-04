@@ -595,7 +595,7 @@ class GaussianDiffusion:
         if noise is not None:
             img = noise
         else:
-            img = th.randn(*shape, device=device).requires_grad_()
+            img = th.randn(*shape, device=device)#.requires_grad_()
         indices = list(range(self.num_timesteps))[::-1]
 
         if progress:
@@ -624,7 +624,7 @@ class GaussianDiffusion:
                     denoised_fn=denoised_fn,
                     cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
-                ).detach()
+                )
                 print(f"Used GPU memory: {th.cuda.memory_allocated(device) / (1024**3):.2f} GiB")
                 out.append(output_frame)
                 print(i)
