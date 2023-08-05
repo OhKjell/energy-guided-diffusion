@@ -132,6 +132,7 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     output = dynamic_model(tensor)
+    print(output.shape)
     return output[0]
 
 
