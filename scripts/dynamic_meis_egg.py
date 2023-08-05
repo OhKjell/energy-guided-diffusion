@@ -76,40 +76,35 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
             data_type=data_type,
         )
 
-
-print("yeaahh")
-tier = 'train'
-inputs, targets = next(iter(dataloader[tier][f'0{retina_index+1}']))
-
-print(inputs.shape) 
-
-# the targets shape is (batch_size, num_of_neurons, time_chunk)
-print(targets.shape)
-
-print("HHHHHHHHHHHHHHHHHHHHHHHHHHH")
-print(dynamic_model.config_dict["img_h"])
-print(dynamic_model.config_dict["img_w"])
-
 tensor_shape = (1, 1, 40, 80, 90)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
-print("##################################")
 
-cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
-cell_indices = list(range(len(cell_names)))
-print(cell_names)
-print(cell_indices)
 
-print("##########################")
+output = dynamic_model(tensor)
+grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
 
-for key in dataloader.keys():
-    print(key)
-    print(dynamic_model.config_dict["n_neurons_dict"]["02"])
-print("##########################")
-print(get_model_temp_reach(dynamic_model.config_dict))
+print(grad)
+
+
+
+# print("##################################")
+
+# cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
+# cell_indices = list(range(len(cell_names)))
+# print(cell_names)
+# print(cell_indices)
+
+# print("##########################")
+
+# for key in dataloader.keys():
+#     print(key)
+#     print(dynamic_model.config_dict["n_neurons_dict"]["02"])
+# print("##########################")
+# print(get_model_temp_reach(dynamic_model.config_dict))
 #activation = get_model_activations(dynamic_model, tensor)
-#print(activation.shape)
-#print(activation)
-print("##########################")
+# #print(activation.shape)
+# #print(activation)
+# print("##########################")
 print(tensor.is_contiguous())
 output = dynamic_model(tensor)
 print(output.shape)
