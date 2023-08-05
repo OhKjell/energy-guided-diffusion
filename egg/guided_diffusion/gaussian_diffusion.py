@@ -633,14 +633,14 @@ class GaussianDiffusion:
                     output_frame["sample"] = output_frame["pred_xstart"].detach()
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
-            img = img.requires_grad_()
+            #img = img.requires_grad_()
             pred_x_tensors = [d["sample"][0] for d in out]
             fused_tensor = th.stack(pred_x_tensors, dim=0)
             fused_tensor.requires_grad_(True)
             print(f"FUSED: {fused_tensor.shape}")
             energy = energy_fn(fused_tensor)
             
-            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=img)[0]
+            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=fused_tensor)[0]
             print(norm_grad)
             print(img.shape)
             if normalize_grad:
