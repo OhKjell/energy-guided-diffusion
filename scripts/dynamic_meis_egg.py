@@ -110,7 +110,7 @@ print(get_model_temp_reach(dynamic_model.config_dict))
 #print(activation.shape)
 #print(activation)
 print("##########################")
-
+print(tensor.is_contiguous())
 output = dynamic_model(tensor)
 print(output.shape)
 #print(output)
