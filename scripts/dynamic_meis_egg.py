@@ -132,7 +132,7 @@ def tmp_func(x):
     return {"train": x[0][0][0][0]}
 
 
-outputs = model.sample(
+outputs = model.sample_video(
         energy_fn=tmp_func,
         energy_scale=0,
         num_samples=5
