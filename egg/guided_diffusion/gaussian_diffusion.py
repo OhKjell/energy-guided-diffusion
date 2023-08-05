@@ -640,7 +640,7 @@ class GaussianDiffusion:
             print(f"FUSED: {fused_tensor.shape}")
             energy = energy_fn(fused_tensor)
             
-            norm_grad = th.autograd.grad(outputs=energy['train'], inputs=fused_tensor)[0]
+            norm_grad = th.autograd.grad(outputs=energy, inputs=fused_tensor)[0]
             print(norm_grad)
             print(img.shape)
             if normalize_grad:
