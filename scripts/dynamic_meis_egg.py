@@ -111,9 +111,11 @@ print(get_model_temp_reach(dynamic_model.config_dict))
 #print(activation)
 print("##########################")
 
-# output = dynamic_model(tensor)
-# print(output.shape)
-# print(output)
+output = dynamic_model(tensor)
+print(output.shape)
+#print(output)
+norm_grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
+print(norm_grad.shape)
 
 ## diffusion model
 
@@ -146,20 +148,20 @@ def dynamic_function(x):
     return output[0][0]
 
 
-outputs = model.sample_video(
-        energy_fn=dynamic_function,
-        energy_scale=5,
-        num_samples=40
-    )
-for i, samples in enumerate(outputs):
-    pass
-for j, sample in enumerate(samples["sample"]):
-    print(sample.shape)
-    #samples_dir = f"{output_dir}/output_{j}"
-    #os.makedirs(samples_dir, exist_ok=True)
-    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.axis("off")
-    plt.savefig(f"{output_dir}/image_{j}.png")
-    plt.close()
+# outputs = model.sample_video(
+#         energy_fn=dynamic_function,
+#         energy_scale=5,
+#         num_samples=40
+#     )
+# for i, samples in enumerate(outputs):
+#     pass
+# for j, sample in enumerate(samples["sample"]):
+#     print(sample.shape)
+#     #samples_dir = f"{output_dir}/output_{j}"
+#     #os.makedirs(samples_dir, exist_ok=True)
+#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+#     plt.axis("off")
+#     plt.savefig(f"{output_dir}/image_{j}.png")
+#     plt.close()
 
                         
