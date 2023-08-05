@@ -91,7 +91,7 @@ print(dynamic_model.config_dict["img_h"])
 print(dynamic_model.config_dict["img_w"])
 
 tensor_shape = (1, 1, 40, 80, 90)
-tensor = torch.zeros(tensor_shape).to(device).double()
+tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 print("##################################")
 
 cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
