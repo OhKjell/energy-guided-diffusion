@@ -630,7 +630,7 @@ class GaussianDiffusion:
                 )
                 print(f"Used GPU memory: {th.cuda.memory_allocated(device) / (1024**3):.2f} GiB")
                 out.append(output_frame)
-                output_frame["pred_xstart"].detach()
+                output_frame["pred_xstart"] = output_frame["pred_xstart"].detach()
                 print(i)
             
             pred_x_tensors = [d["pred_xstart"][0] for d in out]
