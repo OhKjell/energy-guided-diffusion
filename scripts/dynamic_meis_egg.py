@@ -65,56 +65,56 @@ seed = 8
 
 #build dynamic model
 
-# dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
-#             directory,
-#             filename,
-#             model_fn=model_fn,
-#             device=device,
-#             data_dir=None, # if data_dir is None, root of the project is considered
-#             test=False,
-#             seed=seed,
-#             data_type=data_type,
-#         )
+dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
+            directory,
+            filename,
+            model_fn=model_fn,
+            device=device,
+            data_dir=None, # if data_dir is None, root of the project is considered
+            test=False,
+            seed=seed,
+            data_type=data_type,
+        )
 
 
-# print("yeaahh")
-# tier = 'train'
-# inputs, targets = next(iter(dataloader[tier][f'0{retina_index+1}']))
+print("yeaahh")
+tier = 'train'
+inputs, targets = next(iter(dataloader[tier][f'0{retina_index+1}']))
 
-# print(inputs.shape) 
+print(inputs.shape) 
 
-# # the targets shape is (batch_size, num_of_neurons, time_chunk)
-# print(targets.shape)
+# the targets shape is (batch_size, num_of_neurons, time_chunk)
+print(targets.shape)
 
-# print("HHHHHHHHHHHHHHHHHHHHHHHHHHH")
-# print(dynamic_model.config_dict["img_h"])
-# print(dynamic_model.config_dict["img_w"])
+print("HHHHHHHHHHHHHHHHHHHHHHHHHHH")
+print(dynamic_model.config_dict["img_h"])
+print(dynamic_model.config_dict["img_w"])
 
-# tensor_shape = (1, 1, 40, 80, 90)
-# tensor = torch.zeros(tensor_shape).to(device).double()
-# print("##################################")
+tensor_shape = (1, 1, 40, 80, 90)
+tensor = torch.zeros(tensor_shape).to(device).double()
+print("##################################")
 
-# cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
-# cell_indices = list(range(len(cell_names)))
-# print(cell_names)
-# print(cell_indices)
+cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
+cell_indices = list(range(len(cell_names)))
+print(cell_names)
+print(cell_indices)
 
-# print("##########################")
+print("##########################")
 
-# for key in dataloader.keys():
-#     print(key)
-#     print(dynamic_model.config_dict["n_neurons_dict"]["02"])
-# print("##########################")
-# print(get_model_temp_reach(dynamic_model.config_dict))
-# #activation = get_model_activations(dynamic_model, tensor)
-# #print(activation.shape)
-# #print(activation)
-# print("##########################")
+for key in dataloader.keys():
+    print(key)
+    print(dynamic_model.config_dict["n_neurons_dict"]["02"])
+print("##########################")
+print(get_model_temp_reach(dynamic_model.config_dict))
+#activation = get_model_activations(dynamic_model, tensor)
+#print(activation.shape)
+#print(activation)
+print("##########################")
 
-# output = dynamic_model(tensor)
-# print(output)
+#output = dynamic_model(tensor)
+#print(output)
 
-### diffusion model
+## diffusion model
 
 
 if os.path.exists("output"):
@@ -126,10 +126,11 @@ model = EGG(num_steps=num_timesteps)
 
 
 
-def tmp_func(x):
-    print(x.shape)
-    print(x[0])
-    return {"train": x[0][0][0][0]}
+def dynamic_function(x):
+    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+    output = dynamic_model(tensor)
+    
+    return 
 
 
 outputs = model.sample_video(
