@@ -630,7 +630,7 @@ class GaussianDiffusion:
                 )
                 print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
                 out.append(output_frame)
-                output_frame["pred_xstart"] = output_frame["pred_xstart"].detach()
+                output_frame["sample"] = output_frame["pred_xstart"].detach()
                 print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                 print(i)
             
