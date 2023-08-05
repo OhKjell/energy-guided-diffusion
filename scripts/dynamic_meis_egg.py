@@ -127,10 +127,12 @@ model = EGG(num_steps=num_timesteps)
 
 
 def dynamic_function(x):
+    x = x.permute(1, 0, 2, 3).unsqueeze(0)
+    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+    x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     output = dynamic_model(tensor)
-    
-    return 
+    return output[0]
 
 
 outputs = model.sample_video(
