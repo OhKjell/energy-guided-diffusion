@@ -639,7 +639,14 @@ class GaussianDiffusion:
             fused_tensor.requires_grad_(True)
             print(f"FUSED: {fused_tensor.shape}")
             energy = energy_fn(fused_tensor)
-            
+            if fused_tensor.requires_grad:
+                print("Tensor 'fuse' is part of the computation graph.")
+            else:
+                print("Tensor 'fuse' is not part of the computation graph.")
+            if energy.requires_grad:
+                print("Tensor 'energ' is part of the computation graph.")
+            else:
+                print("Tensor 'energy' is not part of the computation graph.")
             norm_grad = th.autograd.grad(outputs=energy, inputs=fused_tensor)[0]
             print(norm_grad)
             print(img.shape)
