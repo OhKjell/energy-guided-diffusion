@@ -134,8 +134,8 @@ def dynamic_function(x):
 
 
 outputs = model.sample_video(
-        energy_fn=tmp_func,
-        energy_scale=0,
+        energy_fn=dynamic_function,
+        energy_scale=5,
         num_samples=40
     )
 for i, samples in enumerate(outputs):
