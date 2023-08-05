@@ -605,33 +605,33 @@ class GaussianDiffusion:
             indices = tqdm(indices)
 
         for i in indices:
-            #with th.no_grad():
-            t = th.tensor([i] * 1, device=device)
+            with th.no_grad():
+                t = th.tensor([i] * 1, device=device)
 
-            #re - instantiate requires_grad for backpropagation
-            img = img.requires_grad_()
-            print(f"SHAPE IMAGE: {img.shape}")
+                #re - instantiate requires_grad for backpropagation
+                img = img.requires_grad_()
+                print(f"SHAPE IMAGE: {img.shape}")
 
-            split_images = th.split(img, split_size_or_sections=1, dim=0)
-            out = []
-            for i, frame in enumerate(split_images):
-                print(i)
-                #print(frame.shape, t.shape)
-                if i == 0:
-                    print(frame.shape, t.shape)
-                output_frame = self.p_sample(
-                    model,
-                    frame,
-                    t,
-                    clip_denoised=clip_denoised,
-                    denoised_fn=denoised_fn,
-                    cond_fn=cond_fn,
-                    model_kwargs=model_kwargs,
-                )
-                print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
-                out.append(output_frame)
-                output_frame["sample"] = output_frame["pred_xstart"].detach()
-                print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
+                split_images = th.split(img, split_size_or_sections=1, dim=0)
+                out = []
+                for i, frame in enumerate(split_images):
+                    print(i)
+                    #print(frame.shape, t.shape)
+                    if i == 0:
+                        print(frame.shape, t.shape)
+                    output_frame = self.p_sample(
+                        model,
+                        frame,
+                        t,
+                        clip_denoised=clip_denoised,
+                        denoised_fn=denoised_fn,
+                        cond_fn=cond_fn,
+                        model_kwargs=model_kwargs,
+                    )
+                    print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
+                    out.append(output_frame)
+                    output_frame["sample"] = output_frame["pred_xstart"].detach()
+                    print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                 print(i)
             
             pred_x_tensors = [d["pred_xstart"][0] for d in out]
