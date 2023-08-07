@@ -87,6 +87,7 @@ print(output[0][0].is_contiguous())
 print(output)
 
 get_gpu_memory()
+tensor = tensor.contiguous()
 grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)[0]
 
 print(grad)
