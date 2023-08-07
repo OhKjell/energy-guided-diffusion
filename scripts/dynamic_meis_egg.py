@@ -86,7 +86,8 @@ output = dynamic_model(tensor)
 # print(output.is_contiguous())
 # print(output[0][0].is_contiguous())
 # print(output)
-output.backward()
+loss = output[0][0]
+loss.backward()
 
 get_gpu_memory()
 tensor = tensor.contiguous()
