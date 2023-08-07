@@ -81,7 +81,11 @@ tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 
 
 output = dynamic_model(tensor)
-grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
+print(tensor.is_contiguous())
+print(output.is_contiguous())
+
+get_gpu_memory()
+grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)[0]
 
 print(grad)
 
