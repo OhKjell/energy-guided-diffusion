@@ -82,10 +82,13 @@ tensor = tensor.contiguous()
 
 
 output = dynamic_model(tensor)
-print(tensor.is_contiguous())
-print(output.is_contiguous())
-print(output[0][0].is_contiguous())
-print(output)
+# print(tensor.is_contiguous())
+# print(output.is_contiguous())
+# print(output[0][0].is_contiguous())
+# print(output)
+grad_safe = output.requires_grad
+
+print(grad_safe)
 
 get_gpu_memory()
 tensor = tensor.contiguous()
