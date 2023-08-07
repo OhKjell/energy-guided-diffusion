@@ -86,9 +86,7 @@ output = dynamic_model(tensor)
 # print(output.is_contiguous())
 # print(output[0][0].is_contiguous())
 # print(output)
-grad_safe = output.requires_grad
-
-print(grad_safe)
+output.backward()
 
 get_gpu_memory()
 tensor = tensor.contiguous()
