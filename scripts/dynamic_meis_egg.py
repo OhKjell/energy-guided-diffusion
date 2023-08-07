@@ -82,8 +82,8 @@ tensor = tensor.contiguous()
 
 
 output = dynamic_model(tensor)
-# print(tensor.is_contiguous())
-# print(output.is_contiguous())
+print(tensor.is_contiguous())
+print(output.is_contiguous())
 # print(output[0][0].is_contiguous())
 # print(output)
 loss = output[0].mean()
