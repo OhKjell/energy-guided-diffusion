@@ -84,6 +84,7 @@ output = dynamic_model(tensor)
 print(tensor.is_contiguous())
 print(output.is_contiguous())
 print(output[0][0].is_contiguous())
+print(output)
 
 get_gpu_memory()
 grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)[0]
