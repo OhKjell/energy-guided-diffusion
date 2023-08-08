@@ -526,6 +526,7 @@ class Factorized3dCore(nn.Module):
         for l, features in enumerate(self.features):
             if l == 0:
                 x = features(x)
+                print("WAS HERE")
             print(f"{l}: {x.is_contiguous()}")
         return x
 
