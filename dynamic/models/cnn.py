@@ -58,24 +58,24 @@ class Encoder(nn.Module):
     def forward(self, x, data_key=None):
         print("######")
         out_core = self.core(x)
-        print(out_core.is_contiguous())
-        out_core = torch.transpose(out_core, 1, 2)
-        out_core = out_core.contiguous()
-        print(out_core.is_contiguous())
-        # print('outcore shape', out_core.shape)
-        out_core = out_core.reshape(((-1,) + out_core.size()[2:]))
-        # print('outcore shape', out_core.shape)
-        # out_core = out_core.squeeze()
-        print(out_core.is_contiguous())
+        # print(out_core.is_contiguous())
+        # out_core = torch.transpose(out_core, 1, 2)
+        # out_core = out_core.contiguous()
+        # print(out_core.is_contiguous())
+        # # print('outcore shape', out_core.shape)
+        # out_core = out_core.reshape(((-1,) + out_core.size()[2:]))
+        # # print('outcore shape', out_core.shape)
+        # # out_core = out_core.squeeze()
+        # print(out_core.is_contiguous())
 
-        print("######")
-        if data_key is None:
-            readout_out = self.readout(out_core)
-        else:
-            readout_out = self.readout[data_key](out_core)
-        print(readout_out.is_contiguous)
-        out = self.nonlinearity(readout_out)
-        return out
+        # print("######")
+        # if data_key is None:
+        #     readout_out = self.readout(out_core)
+        # else:
+        #     readout_out = self.readout[data_key](out_core)
+        # print(readout_out.is_contiguous)
+        # out = self.nonlinearity(readout_out)
+        return out_core
 
     @staticmethod
     def build_trained(dataloaders, model_dir, model_name, data_dir, device="cpu"):
