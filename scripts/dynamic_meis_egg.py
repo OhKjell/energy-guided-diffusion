@@ -76,8 +76,9 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
             data_type=data_type,
         )
 
-tensor_shape = (1, 1, 40, 80, 90)
+#tensor_shape = (1, 1, 40, 80, 90)
 # tensor_shape = (1, 64, 2, 36, 46)
+tensor_shape = (1, 1, 40, 80, 90)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
 
