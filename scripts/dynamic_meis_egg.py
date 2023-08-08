@@ -81,7 +81,7 @@ tensor_shape = (1, 64, 2, 36, 46)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = torch.transpose(tensor, 1, 2)
 tensor = tensor.reshape(((-1,) + tensor.size()[2:]))
-tensor = tensor.contiguous()
+tensor = tensor.contiguous().requires_grad_()
 
 
 output = dynamic_model(tensor)
