@@ -91,7 +91,7 @@ print(output.shape)
 # print(output)
 loss = output[0].mean()
 loss = loss.contiguous()
-torch.backends.cudnn.enabled = False
+torch.backends.cudnn.enabled = True
 loss.backward()
 
 get_gpu_memory()
