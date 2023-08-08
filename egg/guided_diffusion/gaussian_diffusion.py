@@ -648,6 +648,7 @@ class GaussianDiffusion:
             # else:
             #     print("Tensor 'energy' is not part of the computation graph.")
             energy = energy_fn(img)
+            print(energy)
             norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
             print(norm_grad)
             print(img.shape)
