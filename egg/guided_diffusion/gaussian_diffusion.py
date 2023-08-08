@@ -633,7 +633,7 @@ class GaussianDiffusion:
                     output_frame["sample"] = output_frame["pred_xstart"].detach()
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
-            img = img.copy().requires_grad_()
+            img = img.clone().requires_grad_()
             # pred_x_tensors = [d["sample"][0] for d in out]
             # fused_tensor = th.stack(pred_x_tensors, dim=0)
             # fused_tensor.requires_grad_(True)
