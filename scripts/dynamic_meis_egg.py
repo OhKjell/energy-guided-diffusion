@@ -87,33 +87,6 @@ tensor = tensor.contiguous()
 
 
 
-# print("##################################")
-
-# cell_names = get_cell_names(retina_index=1, explained_variance_threshold=0.15, config=dynamic_model.config_dict['config'])
-# cell_indices = list(range(len(cell_names)))
-# print(cell_names)
-# print(cell_indices)
-
-# print("##########################")
-
-# for key in dataloader.keys():
-#     print(key)
-#     print(dynamic_model.config_dict["n_neurons_dict"]["02"])
-# print("##########################")
-# print(get_model_temp_reach(dynamic_model.config_dict))
-#activation = get_model_activations(dynamic_model, tensor)
-# #print(activation.shape)
-# #print(activation)
-# print("##########################")
-# print(tensor.is_contiguous())
-# output = dynamic_model(tensor)
-# print(output.shape)
-# #print(output)
-# norm_grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
-# print(norm_grad.shape)
-
-## diffusion model
-
 
 if os.path.exists("output"):
     shutil.rmtree("output")
@@ -134,6 +107,7 @@ def dynamic_function(x):
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+    print(x.shape)
     output = dynamic_model(tensor)
     print(output.shape)
     if output.requires_grad:
