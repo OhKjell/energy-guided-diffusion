@@ -109,7 +109,8 @@ def dynamic_function(x):
         print("Tensor 'out' is part of the computation graph.")
     else:
         print("Tensor 'pit' is not part of the computation graph.")
-    return output[0][0]
+    loss = output.mean()
+    return loss
 
 
 outputs = model.sample_video(
