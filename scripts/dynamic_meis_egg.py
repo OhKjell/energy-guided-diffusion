@@ -76,29 +76,29 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
             data_type=data_type,
         )
 
-#tensor_shape = (1, 1, 40, 80, 90)
+tensor_shape = (1, 1, 40, 80, 90)
 # tensor_shape = (1, 64, 2, 36, 46)
-tensor_shape = (1, 8, 40, 80, 90)
+# tensor_shape = (1, 8, 40, 80, 90)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
 
 
-output = dynamic_model(tensor).contiguous()
-print(tensor.is_contiguous())
-print(output.is_contiguous())
-print(output.shape)
+# output = dynamic_model(tensor).contiguous()
+# print(tensor.is_contiguous())
+# print(output.is_contiguous())
+# print(output.shape)
 # print(output[0][0].is_contiguous())
 # print(output)
-loss = output[0].mean()
-loss = loss.contiguous()
+# loss = output[0].mean()
+# loss = loss.contiguous()
 
-loss.backward()
+#oss.backward()
 
-get_gpu_memory()
-tensor = tensor.contiguous()
-grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)[0]
+# get_gpu_memory()
+# tensor = tensor.contiguous()
+# grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)[0]
 
-print(grad)
+# print(grad)
 
 
 
@@ -120,12 +120,12 @@ print(grad)
 # #print(activation.shape)
 # #print(activation)
 # print("##########################")
-print(tensor.is_contiguous())
-output = dynamic_model(tensor)
-print(output.shape)
-#print(output)
-norm_grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
-print(norm_grad.shape)
+# print(tensor.is_contiguous())
+# output = dynamic_model(tensor)
+# print(output.shape)
+# #print(output)
+# norm_grad = torch.autograd.grad(outputs=output[0][0], inputs=tensor)
+# print(norm_grad.shape)
 
 ## diffusion model
 
@@ -158,20 +158,20 @@ def dynamic_function(x):
     return output[0][0]
 
 
-# outputs = model.sample_video(
-#         energy_fn=dynamic_function,
-#         energy_scale=5,
-#         num_samples=40
-#     )
-# for i, samples in enumerate(outputs):
-#     pass
-# for j, sample in enumerate(samples["sample"]):
-#     print(sample.shape)
-#     #samples_dir = f"{output_dir}/output_{j}"
-#     #os.makedirs(samples_dir, exist_ok=True)
-#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-#     plt.axis("off")
-#     plt.savefig(f"{output_dir}/image_{j}.png")
-#     plt.close()
+outputs = model.sample_video(
+        energy_fn=dynamic_function,
+        energy_scale=5,
+        num_samples=39
+    )
+for i, samples in enumerate(outputs):
+    pass
+for j, sample in enumerate(samples["sample"]):
+    print(sample.shape)
+    #samples_dir = f"{output_dir}/output_{j}"
+    #os.makedirs(samples_dir, exist_ok=True)
+    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+    plt.axis("off")
+    plt.savefig(f"{output_dir}/image_{j}.png")
+    plt.close()
 
                         
