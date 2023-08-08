@@ -98,11 +98,6 @@ model = EGG(num_steps=num_timesteps)
 
 
 def dynamic_function(x):
-    if x.requires_grad:
-        print("Tensor 'x' is part of the computation graph.")
-    else:
-        print("Tensor 'x' is not part of the computation graph.")
-
     x = x.permute(1, 0, 2, 3).unsqueeze(0)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     x = x.mean(dim=1, keepdim=True)

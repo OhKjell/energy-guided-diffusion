@@ -63,7 +63,6 @@ class Encoder(nn.Module):
         # print('outcore shape', out_core.shape)
         # out_core = out_core.squeeze()
 
-        out_core = x
         if data_key is None:
             readout_out = self.readout(out_core)
         else:
