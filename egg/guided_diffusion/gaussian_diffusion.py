@@ -633,21 +633,22 @@ class GaussianDiffusion:
                     output_frame["sample"] = output_frame["pred_xstart"].detach()
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
-            #img = img.requires_grad_()
-            pred_x_tensors = [d["sample"][0] for d in out]
-            fused_tensor = th.stack(pred_x_tensors, dim=0)
-            fused_tensor.requires_grad_(True)
-            print(f"FUSED: {fused_tensor.shape}")
-            energy = energy_fn(fused_tensor)
-            if fused_tensor.requires_grad:
-                print("Tensor 'fuse' is part of the computation graph.")
-            else:
-                print("Tensor 'fuse' is not part of the computation graph.")
-            if energy.requires_grad:
-                print("Tensor 'energ' is part of the computation graph.")
-            else:
-                print("Tensor 'energy' is not part of the computation graph.")
-            norm_grad = th.autograd.grad(outputs=energy, inputs=fused_tensor)[0]
+            img = img.requires_grad_()
+            # pred_x_tensors = [d["sample"][0] for d in out]
+            # fused_tensor = th.stack(pred_x_tensors, dim=0)
+            # fused_tensor.requires_grad_(True)
+            # print(f"FUSED: {fused_tensor.shape}")
+            # energy = energy_fn(fused_tensor)
+            # if fused_tensor.requires_grad:
+            #     print("Tensor 'fuse' is part of the computation graph.")
+            # else:
+            #     print("Tensor 'fuse' is not part of the computation graph.")
+            # if energy.requires_grad:
+            #     print("Tensor 'energ' is part of the computation graph.")
+            # else:
+            #     print("Tensor 'energy' is not part of the computation graph.")
+            energy = energy_fn(img)
+            norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
             print(norm_grad)
             print(img.shape)
             if normalize_grad:
@@ -663,7 +664,7 @@ class GaussianDiffusion:
             x_fused = [d["sample"][0] for d in out]
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
 
-            output["sample"] = fused_tensor - update
+            output["sample"] = x_fused - update
 
             yield output
             img = output["sample"]
