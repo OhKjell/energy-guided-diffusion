@@ -83,7 +83,7 @@ tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
 
 
-output = dynamic_model(tensor)
+output = dynamic_model(tensor).contiguous()
 print(tensor.is_contiguous())
 print(output.is_contiguous())
 print(output.shape)
