@@ -90,6 +90,7 @@ print(output.shape)
 # print(output[0][0].is_contiguous())
 # print(output)
 loss = output[0].mean()
+loss = loss.contiguous()
 loss.backward()
 
 get_gpu_memory()
