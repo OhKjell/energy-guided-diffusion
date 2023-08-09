@@ -650,6 +650,7 @@ class GaussianDiffusion:
             energy = energy_fn(img_clone)
             print(energy)
             norm_grad = th.autograd.grad(outputs=energy, inputs=img_clone, allow_unused=True)[0]
+            print(norm_grad)
             print("#####")
             print(norm_grad.shape)
             print(img_clone.shape)
