@@ -664,6 +664,7 @@ class GaussianDiffusion:
             output = {"sample": None}
 
             x_fused = [d["sample"][0] for d in out]
+            x_fused = th.tensor(x_fused)
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
             print("#####")
             print(x_fused.shape)
