@@ -82,54 +82,56 @@ tensor_shape = (1, 1, 40, 80, 90)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
 
+output = dynamic_model(tensor)
+output= output.mean
+norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)[0]
+print(norm_grad.shape)
 
 
 
 
 
+# if os.path.exists("output"):
+#     shutil.rmtree("output")
+#     os.makedirs("output")
 
-if os.path.exists("output"):
-    shutil.rmtree("output")
-    os.makedirs("output")
-
-output_dir = f"output"
-model = EGG(num_steps=num_timesteps)
-
+# output_dir = f"output"
+# model = EGG(num_steps=num_timesteps)
 
 
-def dynamic_function(x):
-    x = x.permute(1, 0, 2, 3).unsqueeze(0)
-    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
-    x = x.mean(dim=1, keepdim=True)
-    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
-    print(x.shape)
-    #output = dynamic_model(tensor)
-    output= x
-    print(output.shape)
+
+# def dynamic_function(x):
+#     x = x.permute(1, 0, 2, 3).unsqueeze(0)
+#     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+#     x = x.mean(dim=1, keepdim=True)
+#     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+#     print(x.shape)
+#     output = dynamic_model(tensor)
+#     print(output.shape)
     
-    if output.requires_grad:
-        print("Tensor 'out' is part of the computation graph.")
-    else:
-        print("Tensor 'pit' is not part of the computation graph.")
-    loss = output.mean()
-    return loss
+#     if output.requires_grad:
+#         print("Tensor 'out' is part of the computation graph.")
+#     else:
+#         print("Tensor 'pit' is not part of the computation graph.")
+#     loss = output.mean()
+#     return loss
 
-def tmp(x):
-    return x[0][0][0][0]
-outputs = model.sample_video(
-        energy_fn=dynamic_function,
-        energy_scale=5,
-        num_samples=39
-    )
-for i, samples in enumerate(outputs):
-    pass
-for j, sample in enumerate(samples["sample"]):
-    print(sample.shape)
-    #samples_dir = f"{output_dir}/output_{j}"
-    #os.makedirs(samples_dir, exist_ok=True)
-    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.axis("off")
-    plt.savefig(f"{output_dir}/image_{j}.png")
-    plt.close()
+# def tmp(x):
+#     return x[0][0][0][0]
+# outputs = model.sample_video(
+#         energy_fn=dynamic_function,
+#         energy_scale=5,
+#         num_samples=39
+#     )
+# for i, samples in enumerate(outputs):
+#     pass
+# for j, sample in enumerate(samples["sample"]):
+#     print(sample.shape)
+#     #samples_dir = f"{output_dir}/output_{j}"
+#     #os.makedirs(samples_dir, exist_ok=True)
+#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+#     plt.axis("off")
+#     plt.savefig(f"{output_dir}/image_{j}.png")
+#     plt.close()
 
                         
