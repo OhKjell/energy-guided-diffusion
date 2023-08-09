@@ -107,9 +107,9 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.shape)
-    output = dynamic_model(tensor)
+    #output = dynamic_model(tensor)
     print(output.shape)
-    
+    output = x
     if output.requires_grad:
         print("Tensor 'out' is part of the computation graph.")
     else:
