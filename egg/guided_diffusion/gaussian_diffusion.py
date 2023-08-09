@@ -647,9 +647,11 @@ class GaussianDiffusion:
             #     print("Tensor 'energ' is part of the computation graph.")
             # else:
             #     print("Tensor 'energy' is not part of the computation graph.")
-            energy = energy_fn(img_clone)
+            tensor_shape = (1, 1, 40, 80, 90)
+            tensor = th.zeros(tensor_shape).to(device).double().requires_grad_()
+            energy = energy_fn(tensor)
             print(energy)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=img_clone, allow_unused=True)[0]
+            norm_grad = th.autograd.grad(outputs=energy, inputs=img_clone)[0]
             print(norm_grad)
             print("#####")
             print(norm_grad.shape)
