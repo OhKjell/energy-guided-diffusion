@@ -640,22 +640,13 @@ class GaussianDiffusion:
             # fused_tensor.requires_grad_(True)
             # print(f"FUSED: {fused_tensor.shape}")
             # energy = energy_fn(fused_tensor)
-            # if fused_tensor.requires_grad:
-            #     print("Tensor 'fuse' is part of the computation graph.")
-            # else:
-            #     print("Tensor 'fuse' is not part of the computation graph.")
-            # if energy.requires_grad:
-            #     print("Tensor 'energ' is part of the computation graph.")
-            # else:
-            #     print("Tensor 'energy' is not part of the computation graph.")
-            tensor_shape = (1, 1, 40, 80, 90)
-            tensor = th.zeros(img.shape).to(device).double().requires_grad_()
-            energy = energy_fn(tensor)
-            print(energy)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=tensor)[0]
-            print(norm_grad)
-            print("#####")
-            print(norm_grad.shape)
+
+            # tensor_shape = (1, 1, 40, 80, 90)
+            # tensor = th.zeros(img.shape).to(device).double().requires_grad_()
+            # energy = energy_fn(tensor)
+            img = img.requires_grad_()
+            energy = energy_fn(img)
+            norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
 
