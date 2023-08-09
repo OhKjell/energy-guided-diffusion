@@ -115,8 +115,7 @@ def dynamic_function(x):
     else:
         print("Tensor 'pit' is not part of the computation graph.")
     loss = output.mean()
-    norm_grad = torch.autograd.grad(outputs=loss, inputs=x)[0]
-    return norm_grad
+    return loss
 
 def tmp(x):
     return x[0][0][0][0]
