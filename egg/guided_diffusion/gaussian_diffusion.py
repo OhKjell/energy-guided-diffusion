@@ -586,7 +586,7 @@ class GaussianDiffusion:
         use_alpha_bar=False,
         normalize_grad=True,
     ):
-        th.backends.cudnn.enabled = False
+        #th.backends.cudnn.enabled = False
         if energy_fn is None:
             raise ValueError("energy_fn must be specified for progressive sampling")
 
@@ -634,7 +634,7 @@ class GaussianDiffusion:
                     output_frame["sample"] = output_frame["pred_xstart"].detach()
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
-            img_clone = img.clone().requires_grad_()
+            #img_clone = img.clone().requires_grad_()
             # pred_x_tensors = [d["sample"][0] for d in out]
             # fused_tensor = th.stack(pred_x_tensors, dim=0)
             # fused_tensor.requires_grad_(True)
@@ -649,14 +649,13 @@ class GaussianDiffusion:
             # else:
             #     print("Tensor 'energy' is not part of the computation graph.")
             tensor_shape = (1, 1, 40, 80, 90)
-            tensor = th.zeros(img_clone.shape).to(device).double().requires_grad_()
+            tensor = th.zeros(img.shape).to(device).double().requires_grad_()
             energy = energy_fn(tensor)
             print(energy)
             norm_grad = th.autograd.grad(outputs=energy, inputs=tensor)[0]
             print(norm_grad)
             print("#####")
             print(norm_grad.shape)
-            print(img_clone.shape)
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
 
