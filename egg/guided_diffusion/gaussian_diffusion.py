@@ -676,7 +676,7 @@ class GaussianDiffusion:
             output["sample"] = x_fused - update
 
             yield output
-            img = output["sample"]
+            img = output["sample"].double()
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
             img.detach_()
 
