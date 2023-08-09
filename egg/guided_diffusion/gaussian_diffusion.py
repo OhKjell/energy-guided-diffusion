@@ -652,7 +652,7 @@ class GaussianDiffusion:
             tensor = th.zeros(img_clone.shape).to(device).double().requires_grad_()
             energy = energy_fn(tensor)
             print(energy)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=img_clone)[0]
+            norm_grad = th.autograd.grad(outputs=energy, inputs=tensor)[0]
             print(norm_grad)
             print("#####")
             print(norm_grad.shape)
