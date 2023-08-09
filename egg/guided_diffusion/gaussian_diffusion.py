@@ -586,6 +586,7 @@ class GaussianDiffusion:
         use_alpha_bar=False,
         normalize_grad=True,
     ):
+        th.backends.cudnn.enabled = False
         if energy_fn is None:
             raise ValueError("energy_fn must be specified for progressive sampling")
 
