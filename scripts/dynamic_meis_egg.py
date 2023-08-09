@@ -112,9 +112,10 @@ def dynamic_function(x):
     loss = output.mean()
     return loss
 
-
+def tmp(x):
+    return x[0][0][0][0]
 outputs = model.sample_video(
-        energy_fn=dynamic_function,
+        energy_fn=tmp,
         energy_scale=5,
         num_samples=39
     )
