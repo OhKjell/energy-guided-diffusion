@@ -650,7 +650,8 @@ class GaussianDiffusion:
             energy = energy_fn(img)
             print(energy)
             norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
-            print(norm_grad)
+            print("#####")
+            print(norm_grad.shape)
             print(img.shape)
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
@@ -664,6 +665,8 @@ class GaussianDiffusion:
 
             x_fused = [d["sample"][0] for d in out]
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
+            print("#####")
+            print(x_fused.shape)
 
             output["sample"] = x_fused - update
 
