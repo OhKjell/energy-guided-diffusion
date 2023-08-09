@@ -85,7 +85,8 @@ tensor = tensor.contiguous()
 output = dynamic_model(tensor)
 output= output.mean()
 norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)
-print(norm_grad.shape)
+print(norm_grad)
+print(norm_grad[0].shape)
 
 
 
