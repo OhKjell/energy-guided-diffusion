@@ -110,7 +110,7 @@ def dynamic_function(x):
     #output = dynamic_model(tensor)
     output = x
     print(output.shape)
-    output = x
+    #output = x
     if output.requires_grad:
         print("Tensor 'out' is part of the computation graph.")
     else:
