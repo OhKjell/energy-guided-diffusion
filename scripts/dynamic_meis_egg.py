@@ -174,7 +174,7 @@ for j, sample in enumerate(samples["sample"]):
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_scale=5,
+        energy_scale=10,
         num_samples=39
     )
 print("hee")
