@@ -631,7 +631,7 @@ class GaussianDiffusion:
                     )
                     print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
                     out.append(output_frame)
-                    output_frame["sample"] = output_frame["pred_xstart"].detach()
+                    #output_frame["sample"] = output_frame["pred_xstart"].detach()
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
             #img_clone = img.clone().requires_grad_()
@@ -644,28 +644,35 @@ class GaussianDiffusion:
             # tensor_shape = (1, 1, 40, 80, 90)
             # tensor = th.zeros(img.shape).to(device).double().requires_grad_()
             # energy = energy_fn(tensor)
-            print(img.shape)
-            img = img.double().requires_grad_()
-            energy = energy_fn(img)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
-            if normalize_grad:
-                norm_grad = norm_grad / th.norm(norm_grad)
+            
+            #HEEEEEEEEEEEEEEEEEEE
+            # print(img.shape)
+            # img = img.double().requires_grad_()
+            # energy = energy_fn(img)
+            # norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
+            # if normalize_grad:
+            #     norm_grad = norm_grad / th.norm(norm_grad)
 
-            update = norm_grad * energy_scale
-            if use_alpha_bar:
-                alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
-                update = update * (1 - alpha_bar).sqrt()
+            # update = norm_grad * energy_scale
+            # if use_alpha_bar:
+            #     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
+            #     update = update * (1 - alpha_bar).sqrt()
            
-            output = {"sample": None}
+            # 
+
+            
+            #HEEEEEEEEEEEEEEEEEEE
 
             x_fused = [d["sample"][0] for d in out]
             x_fused = th.stack(x_fused, dim=0)
+            output = {"sample": None}
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
             print("#####")
             print(x_fused.shape)
 
             #output["sample"] = (x_fused - update)
             output["sample"] = x_fused
+            print(f"HERE:::::: {output['sample']}")
             yield output
             img = output["sample"].float()
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
