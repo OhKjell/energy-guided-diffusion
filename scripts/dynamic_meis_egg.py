@@ -135,17 +135,20 @@ def tmp(x):
 if os.path.exists("output"):
     shutil.rmtree("output")
     os.makedirs("output")
-output_dir = f"output"
-one_dir = f"{output_dir}/one"
-if os.path.exists(one_dir):
-    shutil.rmtree(one_dir)
-    os.makedirs(one_dir)
-two_dir = f"{output_dir}/two"
-if os.path.exists(two_dir):
-    shutil.rmtree(two_dir)
-    os.makedirs(two_dir)
-
-output_dir = f"output"
+# output_dir = f"output"
+# one_dir = f"{output_dir}/one"
+# if os.path.exists(one_dir):
+#     shutil.rmtree(one_dir)
+#     os.makedirs(one_dir)
+# two_dir = f"{output_dir}/two"
+# if os.path.exists(two_dir):
+#     shutil.rmtree(two_dir)
+#     os.makedirs(two_dir)
+one_dir = f"ouput/one_dir"
+os.makedirs(one_dir, exist_ok=True)
+two_dir = f"ouput/two_dir"
+os.makedirs(two_dir, exist_ok=True)
+#output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
 
 
