@@ -97,7 +97,7 @@ def dynamic_function(x):
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
-    print(x.shape)
+    print(type(x))
     output = dynamic_model(x)
     #output = x
     print(output.shape)
