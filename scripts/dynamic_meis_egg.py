@@ -139,7 +139,7 @@ def tmp(x):
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_scale=5,
+        energy_scale=0,
         num_samples=39
     )
 print("hee")
