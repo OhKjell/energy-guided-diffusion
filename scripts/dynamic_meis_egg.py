@@ -151,7 +151,7 @@ os.makedirs(two_dir, exist_ok=True)
 #output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
 
-test = []
+test1 = []
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_scale=0,
@@ -161,11 +161,12 @@ print("hee")
 for i, samples in enumerate(outputs):
     pass
 
-test.append(samples)
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
     #samples_dir = f"{output_dir}/output_{j}"
     #os.makedirs(samples_dir, exist_ok=True)
+
+    test1.append(sample)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
     plt.savefig(f"{one_dir}/tt_image_{j}.png")
@@ -178,18 +179,21 @@ outputs = model.sample_video(
         num_samples=39
     )
 print("hee")
+test2 = []
 for i, samples in enumerate(outputs):
     pass
 
-test.append(samples)
+
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
+    test2.append(samples)
     #samples_dir = f"{output_dir}/output_{j}"
     #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
     plt.savefig(f"{two_dir}/tt_image_{j}.png")
     plt.close()
-
-print(dynamic_function(test[0]))
-print(dynamic_function(test[1]))
+test1 = torch.stack(test1, dim=0)
+test2 = torch.stack(test2, dim=0)
+print(dynamic_function(test1))
+print(dynamic_function(test2))
