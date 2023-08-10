@@ -79,10 +79,14 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 
 
 
-tensor_shape = (1, 1, 40, 80, 90)
+tensor_shape = (39, 3, 256, 256)
+
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
 print(tensor.dtype)
+x = tensor.permute(1, 0, 2, 3).unsqueeze(0)
+x = x.mean(dim=1, keepdim=True)
+print(x.dtype)
 output = dynamic_model(tensor)
 output= output.mean()
 norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)
