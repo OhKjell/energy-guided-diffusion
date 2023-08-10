@@ -83,12 +83,7 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 
 
 
-if os.path.exists("output"):
-    shutil.rmtree("output")
-    os.makedirs("output")
 
-output_dir = f"output"
-model = EGG(num_steps=num_timesteps)
 
 
 
@@ -106,7 +101,7 @@ def dynamic_function(x):
         print("Tensor 'out' is part of the computation graph.")
     else:
         print("Tensor 'pit' is not part of the computation graph.")
-    loss = output.mean()
+    loss = output[0][0]
     return loss
 
 
@@ -137,6 +132,40 @@ def tmp(x):
     return x[0][0][0][0]
 
 
+if os.path.exists("output"):
+    shutil.rmtree("output")
+    os.makedirs("output")
+output_dir = f"output"
+one_dir = f"{output_dir}/one"
+if os.path.exists(one_dir):
+    shutil.rmtree(one_dir)
+    os.makedirs(one_dir)
+two_dir = f"{output_dir}/two"
+if os.path.exists(two_dir):
+    shutil.rmtree(two_dir)
+    os.makedirs(two_dir)
+
+output_dir = f"output"
+model = EGG(num_steps=num_timesteps)
+
+
+outputs = model.sample_video(
+        energy_fn=dynamic_function,
+        energy_scale=0,
+        num_samples=39
+    )
+print("hee")
+for i, samples in enumerate(outputs):
+    pass
+for j, sample in enumerate(samples["sample"]):
+    print(sample.shape)
+    #samples_dir = f"{output_dir}/output_{j}"
+    #os.makedirs(samples_dir, exist_ok=True)
+    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+    plt.axis("off")
+    plt.savefig(f"{one_dir}/tt_image_{j}.png")
+    plt.close()
+
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_scale=5,
@@ -151,7 +180,5 @@ for j, sample in enumerate(samples["sample"]):
     #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
-    plt.savefig(f"{output_dir}/tt_image_{j}.png")
-    plt.close()
-
-                        
+    plt.savefig(f"{two_dir}/tt_image_{j}.png")
+    plt.close()                  

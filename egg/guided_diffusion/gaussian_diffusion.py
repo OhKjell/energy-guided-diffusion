@@ -646,19 +646,22 @@ class GaussianDiffusion:
             # energy = energy_fn(tensor)
             
             #HEEEEEEEEEEEEEEEEEEE
-            # print(img.shape)
-            # img = img.double().requires_grad_()
-            # energy = energy_fn(img)
-            # norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
-            # if normalize_grad:
-            #     norm_grad = norm_grad / th.norm(norm_grad)
+            print(img.shape)
+            img = img.double().requires_grad_()
+            energy = energy_fn(img)
+            norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
+            if normalize_grad:
+                norm_grad = norm_grad / th.norm(norm_grad)
 
-            # update = norm_grad * energy_scale
-            # if use_alpha_bar:
-            #     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
-            #     update = update * (1 - alpha_bar).sqrt()
+
+            update = norm_grad * energy_scale
+            
+            
+            if use_alpha_bar:
+                alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
+                update = update * (1 - alpha_bar).sqrt()
            
-            # 
+            
 
             
             #HEEEEEEEEEEEEEEEEEEE
@@ -670,8 +673,8 @@ class GaussianDiffusion:
             print("#####")
             print(x_fused.shape)
 
-            #output["sample"] = (x_fused - update)
-            output["sample"] = x_fused
+            output["sample"] = x_fused - update
+            #output["sample"] = x_fused
             print(f"HERE:::::: {output['sample']}")
             yield output
             img = output["sample"].float()
