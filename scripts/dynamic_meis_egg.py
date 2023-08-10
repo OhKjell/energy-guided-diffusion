@@ -82,6 +82,7 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 tensor_shape = (1, 1, 40, 80, 90)
 tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
 tensor = tensor.contiguous()
+print(tensor.dtype)
 output = dynamic_model(tensor)
 output= output.mean()
 norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)
@@ -103,7 +104,7 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
-    output = dynamic_model(x.float())
+    output = dynamic_model(x)
     #output = x
     print(output.shape)
     #output = x
@@ -137,23 +138,5 @@ def dynamic_function(x):
 
 
 
-
-# def tmp(x):
-#     return x[0][0][0][0]
-# outputs = model.sample_video(
-#         energy_fn=dynamic_function,
-#         energy_scale=5,
-#         num_samples=39
-#     )
-# for i, samples in enumerate(outputs):
-#     pass
-# for j, sample in enumerate(samples["sample"]):
-#     print(sample.shape)
-#     #samples_dir = f"{output_dir}/output_{j}"
-#     #os.makedirs(samples_dir, exist_ok=True)
-#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-#     plt.axis("off")
-#     plt.savefig(f"{output_dir}/image_{j}.png")
-#     plt.close()
 
                         
