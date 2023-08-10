@@ -144,14 +144,14 @@ if os.path.exists("output"):
 # if os.path.exists(two_dir):
 #     shutil.rmtree(two_dir)
 #     os.makedirs(two_dir)
-one_dir = f"ouput/one_dir"
+one_dir = f"output/one_dir"
 os.makedirs(one_dir, exist_ok=True)
-two_dir = f"ouput/two_dir"
+two_dir = f"output/two_dir"
 os.makedirs(two_dir, exist_ok=True)
 #output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
 
-
+test = []
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_scale=0,
@@ -160,6 +160,8 @@ outputs = model.sample_video(
 print("hee")
 for i, samples in enumerate(outputs):
     pass
+
+test.append(samples)
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
     #samples_dir = f"{output_dir}/output_{j}"
@@ -169,6 +171,7 @@ for j, sample in enumerate(samples["sample"]):
     plt.savefig(f"{one_dir}/tt_image_{j}.png")
     plt.close()
 
+
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_scale=5,
@@ -177,6 +180,8 @@ outputs = model.sample_video(
 print("hee")
 for i, samples in enumerate(outputs):
     pass
+
+test.append(samples)
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
     #samples_dir = f"{output_dir}/output_{j}"
@@ -184,4 +189,7 @@ for j, sample in enumerate(samples["sample"]):
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
     plt.savefig(f"{two_dir}/tt_image_{j}.png")
-    plt.close()                  
+    plt.close()
+
+print(dynamic_function(test[0]))
+print(dynamic_function(test[1]))
