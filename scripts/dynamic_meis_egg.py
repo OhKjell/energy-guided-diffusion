@@ -151,7 +151,7 @@ for j, sample in enumerate(samples["sample"]):
     #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
-    plt.savefig(f"{output_dir}/new_image_{j}.png")
+    plt.savefig(f"{output_dir}/test_image_{j}.png")
     plt.close()
 
                         
