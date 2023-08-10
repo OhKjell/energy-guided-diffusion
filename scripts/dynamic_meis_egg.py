@@ -101,8 +101,8 @@ def dynamic_function(x):
         print("Tensor 'out' is part of the computation graph.")
     else:
         print("Tensor 'pit' is not part of the computation graph.")
-    loss = output[0][0]
-    return loss
+    energy = -output[0][0]
+    return energy
 
 
 
