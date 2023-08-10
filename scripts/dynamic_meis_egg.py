@@ -186,7 +186,7 @@ for i, samples in enumerate(outputs):
 
 for j, sample in enumerate(samples["sample"]):
     print(sample.shape)
-    test2.append(samples)
+    test2.append(sample)
     #samples_dir = f"{output_dir}/output_{j}"
     #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
