@@ -76,17 +76,8 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
             data_type=data_type,
         )
 
-tensor_shape = (1, 1, 40, 80, 90)
-# tensor_shape = (1, 64, 2, 36, 46)
-# tensor_shape = (1, 8, 40, 80, 90)
-tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
-tensor = tensor.contiguous()
 
-# output = dynamic_model(tensor)
-# output= output.mean()
-# norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)
-# print(norm_grad)
-# print(norm_grad[0].shape)
+
 
 
 
@@ -118,22 +109,46 @@ def dynamic_function(x):
     loss = output.mean()
     return loss
 
-def tmp(x):
-    return x[0][0][0][0]
-outputs = model.sample_video(
-        energy_fn=dynamic_function,
-        energy_scale=5,
-        num_samples=39
-    )
-for i, samples in enumerate(outputs):
-    pass
-for j, sample in enumerate(samples["sample"]):
-    print(sample.shape)
-    #samples_dir = f"{output_dir}/output_{j}"
-    #os.makedirs(samples_dir, exist_ok=True)
-    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.axis("off")
-    plt.savefig(f"{output_dir}/image_{j}.png")
-    plt.close()
+
+
+
+
+#tensor_shape = (1, 1, 40, 80, 90)
+tensor_shape = (39, 3, 256, 256)
+
+# tensor_shape = (1, 64, 2, 36, 46)
+# tensor_shape = (1, 8, 40, 80, 90)
+tensor = torch.zeros(tensor_shape).to(device).double().requires_grad_()
+tensor = tensor.contiguous()
+
+output = dynamic_function(tensor)
+#output= output.mean()
+norm_grad = torch.autograd.grad(outputs=output, inputs=tensor)
+print(norm_grad)
+print(norm_grad[0].shape)
+
+
+
+
+
+
+
+# def tmp(x):
+#     return x[0][0][0][0]
+# outputs = model.sample_video(
+#         energy_fn=dynamic_function,
+#         energy_scale=5,
+#         num_samples=39
+#     )
+# for i, samples in enumerate(outputs):
+#     pass
+# for j, sample in enumerate(samples["sample"]):
+#     print(sample.shape)
+#     #samples_dir = f"{output_dir}/output_{j}"
+#     #os.makedirs(samples_dir, exist_ok=True)
+#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+#     plt.axis("off")
+#     plt.savefig(f"{output_dir}/image_{j}.png")
+#     plt.close()
 
                         
