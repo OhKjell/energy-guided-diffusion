@@ -139,7 +139,7 @@ def tmp(x):
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_scale=0,
+        energy_scale=5,
         num_samples=39
     )
 print("hee")
@@ -151,7 +151,7 @@ for j, sample in enumerate(samples["sample"]):
     #os.makedirs(samples_dir, exist_ok=True)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
-    plt.savefig(f"{output_dir}/test_image_{j}.png")
+    plt.savefig(f"{output_dir}/tt_image_{j}.png")
     plt.close()
 
                         
