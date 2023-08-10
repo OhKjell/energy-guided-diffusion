@@ -524,6 +524,7 @@ class Factorized3dCore(nn.Module):
 
     def forward(self, x):
         for l, features in enumerate(self.features):
+            print(x.dtype)
             x = features(x)
         return x
 
