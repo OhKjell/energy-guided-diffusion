@@ -128,8 +128,43 @@ def dynamic_function(x):
 
 
 
-def tmp(x):
+def MSE_sum(x):
+    print("MMSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    print(x.shape)
+    mse = 0
+    next_image = torch.mean(x[0], dim=0, keepdim=True)
+    print(next_image.shape)
+    for i in range(x.shape[0] - 1):
+        print(i)
+        image = next_image
+        next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
+        mse += torch.mean((image - next_image) ** 2)
+    print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
+    return mse
+
+
+
+
+
     return x[0][0][0][0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if os.path.exists("output"):
@@ -157,9 +192,9 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=tmp,
-        energy_scale=10,
-        energy_scale2=0,
+        energy_fn2=MSE_sum,
+        energy_scale=0,
+        energy_scale2=5,
         num_samples=39
     )
 
