@@ -667,8 +667,8 @@ class GaussianDiffusion:
                 print("hss")
                 image = x_fused[0]
                 for i in range(x_fused.shape[0] - 1):
-                        previous = image
-                        image = x_fused[i + 1]
+                        previous = image.detach()
+                        image = x_fused[i + 1].requires_grad_()
                         energy = energy_fn2(image, previous)
                         norm_grad2 = th.autograd.grad(outputs=energy, inputs=image)[0]
                         if normalize_grad:
