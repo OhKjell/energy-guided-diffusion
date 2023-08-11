@@ -673,7 +673,7 @@ class GaussianDiffusion:
                         norm_grad2 = th.autograd.grad(outputs=energy, inputs=image)[0]
                         if normalize_grad:
                             norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                        image = image - norm_grad2 * energy_scale2.detach()
+                        image = (image - norm_grad2 * energy_scale2).detach()
                         x_fused[i + 1] = image
                 update = norm_grad * energy_scale
 
