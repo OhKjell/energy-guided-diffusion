@@ -138,9 +138,9 @@ def MSE_sum(x):
         print(i)
         image = next_image
         next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
-        mse += torch.mean((image - next_image) ** 2) * (i * 0.1)
+        mse += torch.mean((image - next_image) ** 2).item()
     print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
-    return mse
+    return mse / (x.shape[0] - 1)
 
 
 
