@@ -150,9 +150,9 @@ class EGG(nn.Module):
     def sample_video(
             self,
             energy_fn,
-            #energy_fn2,
+            energy_fn2,
             energy_scale=1,
-            #energy_scale2=1,
+            energy_scale2=1,
             num_samples=1,
             *,
             use_alpha_bar=False,
@@ -191,9 +191,9 @@ class EGG(nn.Module):
                 model_kwargs={},
                 progress=True,
                 energy_fn=energy_fn,
-                #energy_fn2=energy_fn2,
+                energy_fn2=energy_fn2,
                 energy_scale=energy_scale,
-                #energy_scale2=energy_scale2,
+                energy_scale2=energy_scale2,
                 use_alpha_bar=use_alpha_bar,
                 normalize_grad=normalize_grad,
             )

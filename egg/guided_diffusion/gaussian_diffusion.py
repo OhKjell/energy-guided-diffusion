@@ -582,7 +582,9 @@ class GaussianDiffusion:
         device=None,
         progress=True,
         energy_fn=None,
+        energy_fn2=None,
         energy_scale=1.0,
+        energy_scale2=1.0,
         use_alpha_bar=False,
         normalize_grad=True,
     ):
@@ -648,13 +650,18 @@ class GaussianDiffusion:
             #HEEEEEEEEEEEEEEEEEEE
             print(img.shape)
             img = img.double().requires_grad_()
+
             energy = energy_fn(img)
             norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
+            
+            energy2 = energy_fn2(img)
+            norm_grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
+            if normalize_grad:
+                norm_grad2 = norm_grad2 / th.norm(norm_grad2)
 
-
-            update = norm_grad * energy_scale
+            update = norm_grad * energy_scale + norm_grad2 * energy_scale2
             
             
             if use_alpha_bar:

@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 100
+num_timesteps = 10
 
 
 def get_gpu_memory(device=0):
@@ -151,13 +151,25 @@ os.makedirs(two_dir, exist_ok=True)
 #output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
 
-test1 = []
+
+
+
+
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_scale=0,
+        energy_fn2=tmp,
+        energy_scale=10,
+        energy_scale2=0,
         num_samples=39
     )
+
+
+
+
 print("hee")
+
+test1 = []
+
 for i, samples in enumerate(outputs):
     pass
 
@@ -169,31 +181,36 @@ for j, sample in enumerate(samples["sample"]):
     test1.append(sample)
     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
     plt.axis("off")
-    plt.savefig(f"{one_dir}/tt_image_{j}.png")
+    plt.savefig(f"{one_dir}/image_{j}.png")
     plt.close()
 
 
-outputs = model.sample_video(
-        energy_fn=dynamic_function,
-        energy_scale=10,
-        num_samples=39
-    )
-print("hee")
-test2 = []
-for i, samples in enumerate(outputs):
-    pass
-
-
-for j, sample in enumerate(samples["sample"]):
-    print(sample.shape)
-    test2.append(sample)
-    #samples_dir = f"{output_dir}/output_{j}"
-    #os.makedirs(samples_dir, exist_ok=True)
-    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.axis("off")
-    plt.savefig(f"{two_dir}/tt_image_{j}.png")
-    plt.close()
 test1 = torch.stack(test1, dim=0)
-test2 = torch.stack(test2, dim=0)
 print(dynamic_function(test1))
-print(dynamic_function(test2))
+
+
+
+# outputs = model.sample_video(
+#         energy_fn=dynamic_function,
+#         energy_scale=10,
+#         num_samples=39
+#     )
+# print("hee")
+# test2 = []
+# for i, samples in enumerate(outputs):
+#     pass
+
+
+# for j, sample in enumerate(samples["sample"]):
+#     print(sample.shape)
+#     test2.append(sample)
+#     #samples_dir = f"{output_dir}/output_{j}"
+#     #os.makedirs(samples_dir, exist_ok=True)
+#     plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+#     plt.axis("off")
+#     plt.savefig(f"{two_dir}/tt_image_{j}.png")
+#     plt.close()
+# test1 = torch.stack(test1, dim=0)
+# test2 = torch.stack(test2, dim=0)
+# print(dynamic_function(test1))
+# print(dynamic_function(test2))
