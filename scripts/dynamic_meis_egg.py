@@ -144,9 +144,12 @@ def MSE_sum(x):
 
 
 
-
-
-    return x[0][0][0][0]
+def mse_iterative(x):
+    
+    
+    
+    
+    return None
 
 
 
@@ -194,7 +197,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
         energy_scale=0,
-        energy_scale2=20,
+        energy_scale2=50,
         num_samples=39
     )
 
