@@ -682,7 +682,7 @@ class GaussianDiffusion:
 
             output["sample"] = x_fused - update
             #output["sample"] = x_fused
-            print(f"HERE:::::: {output['sample']}")
+            #print(f"HERE:::::: {output['sample']}")
             yield output
             img = output["sample"].float()
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
