@@ -587,7 +587,8 @@ class GaussianDiffusion:
         energy_scale2=1.0,
         use_alpha_bar=False,
         normalize_grad=True,
-        iterative=False
+        iterative=False,
+        iterations=0
     ):
         #th.backends.cudnn.enabled = False
         if energy_fn is None:
@@ -664,17 +665,18 @@ class GaussianDiffusion:
             update = 0
 
             if iterative:
-                print("hss")
-                image = x_fused[0]
-                for i in range(x_fused.shape[0] - 1):
-                        previous = image
-                        image = x_fused[i + 1].requires_grad_()
-                        energy = energy_fn2(image, previous)
-                        norm_grad2 = th.autograd.grad(outputs=energy, inputs=image)[0]
-                        if normalize_grad:
-                            norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                        image = (image - norm_grad2 * energy_scale2).detach()
-                        x_fused[i + 1] = image
+                for j in range(iterations):
+                    print("hss")
+                    image = x_fused[0]
+                    for i in range(x_fused.shape[0] - 1):
+                            previous = image
+                            image = x_fused[i + 1].requires_grad_()
+                            energy = energy_fn2(image, previous)
+                            norm_grad2 = th.autograd.grad(outputs=energy, inputs=image)[0]
+                            if normalize_grad:
+                                norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+                            image = (image - norm_grad2 * energy_scale2).detach()
+                            x_fused[i + 1] = image
                 update = norm_grad * energy_scale
 
             else:

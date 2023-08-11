@@ -199,7 +199,8 @@ outputs = model.sample_video(
         energy_scale=0,
         energy_scale2=5,
         num_samples=39,
-        iterative = True
+        iterative = True,
+        iterations=10
     )
 
 

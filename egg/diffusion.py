@@ -157,7 +157,8 @@ class EGG(nn.Module):
             *,
             use_alpha_bar=False,
             normalize_grad=True,
-            iterative =False
+            iterative =False,
+            iterations=0
         ):
             """
             This function samples from a diffusion model using a given energy function and other optional parameters.
@@ -197,5 +198,6 @@ class EGG(nn.Module):
                 energy_scale2=energy_scale2,
                 use_alpha_bar=use_alpha_bar,
                 normalize_grad=normalize_grad,
-                iterative = iterative
+                iterative = iterative,
+                iterations=iterations
             )
