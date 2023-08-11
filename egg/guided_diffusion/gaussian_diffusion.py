@@ -587,6 +587,7 @@ class GaussianDiffusion:
         energy_scale2=1.0,
         use_alpha_bar=False,
         normalize_grad=True,
+        iterative=False
     ):
         #th.backends.cudnn.enabled = False
         if energy_fn is None:
@@ -637,8 +638,8 @@ class GaussianDiffusion:
                     print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
                     print(i)
             #img_clone = img.clone().requires_grad_()
-            # pred_x_tensors = [d["sample"][0] for d in out]
-            # fused_tensor = th.stack(pred_x_tensors, dim=0)
+            # sample_tensors = [d["sample"][0] for d in out]
+            # fused_tensor = th.stack(sample_tensors, dim=0)
             # fused_tensor.requires_grad_(True)
             # print(f"FUSED: {fused_tensor.shape}")
             # energy = energy_fn(fused_tensor)
@@ -656,12 +657,31 @@ class GaussianDiffusion:
             if normalize_grad:
                 norm_grad = norm_grad / th.norm(norm_grad)
             
-            energy2 = energy_fn2(img)
-            norm_grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
-            if normalize_grad:
-                norm_grad2 = norm_grad2 / th.norm(norm_grad2)
 
-            update = norm_grad * energy_scale + norm_grad2 * energy_scale2
+            x_fused = [d["sample"][0] for d in out]
+            x_fused = th.stack(x_fused, dim=0)
+
+            update = 0
+            
+            if iterative:
+                image = x_fused[0]
+                for i in range(x_fused.shape[0] - 1):
+                        previous = image
+                        image = x_fused[i + 1]
+                        energy = energy_fn2(image, previous)
+                        norm_grad2 = th.autograd.grad(outputs=energy, inputs=image)[0]
+                        if normalize_grad:
+                            norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+                        image = image - norm_grad2 * energy_scale2
+                update = norm_grad * energy_scale
+
+            else:
+                energy2 = energy_fn2(img)
+                norm_grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
+                if normalize_grad:
+                    norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+
+                update = norm_grad * energy_scale + norm_grad2 * energy_scale2
             
             
             if use_alpha_bar:
@@ -673,8 +693,7 @@ class GaussianDiffusion:
             
             #HEEEEEEEEEEEEEEEEEEE
 
-            x_fused = [d["sample"][0] for d in out]
-            x_fused = th.stack(x_fused, dim=0)
+            
             output = {"sample": None}
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
             print("#####")

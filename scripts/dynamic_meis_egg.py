@@ -144,12 +144,12 @@ def MSE_sum(x):
 
 
 
-def mse_iterative(x):
+def mse(x, y):
+    x = torch.mean(x[0], dim=0, keepdim=True)
+    y = torch.mean(y[0], dim=0, keepdim=True)
+    mse = torch.mean((x - y) ** 2)
     
-    
-    
-    
-    return None
+    return mse
 
 
 
@@ -195,10 +195,11 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=MSE_sum,
+        energy_fn2=mse,
         energy_scale=0,
-        energy_scale2=50,
-        num_samples=39
+        energy_scale2=5,
+        num_samples=39,
+        iterative = True
     )
 
 
