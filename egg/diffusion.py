@@ -197,5 +197,5 @@ class EGG(nn.Module):
                 energy_scale2=energy_scale2,
                 use_alpha_bar=use_alpha_bar,
                 normalize_grad=normalize_grad,
-                iterative =False
+                iterative = iterative
             )

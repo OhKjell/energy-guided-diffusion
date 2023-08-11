@@ -662,8 +662,9 @@ class GaussianDiffusion:
             x_fused = th.stack(x_fused, dim=0)
 
             update = 0
-            
+
             if iterative:
+                print("hss")
                 image = x_fused[0]
                 for i in range(x_fused.shape[0] - 1):
                         previous = image
