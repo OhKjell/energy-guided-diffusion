@@ -663,7 +663,7 @@ class GaussianDiffusion:
             x_fused = th.stack(x_fused, dim=0)
 
             update = 0
-
+            print(f"HHERBEFOREEE: {x_fused}")
             if iterative:
                 for j in range(iterations):
                     print("hss")
@@ -678,7 +678,7 @@ class GaussianDiffusion:
                             image = (image - norm_grad2 * energy_scale2).detach()
                             x_fused[i + 1] = image
                 update = norm_grad * energy_scale
-
+            
             else:
                 energy2 = energy_fn2(img)
                 norm_grad2 = th.autograd.grad(outputs=energy2, inputs=img)[0]
@@ -686,7 +686,7 @@ class GaussianDiffusion:
                     norm_grad2 = norm_grad2 / th.norm(norm_grad2)
 
                 update = norm_grad * energy_scale + norm_grad2 * energy_scale2
-            
+            print(f"AFTER: {x_fused}")
             
             if use_alpha_bar:
                 alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
