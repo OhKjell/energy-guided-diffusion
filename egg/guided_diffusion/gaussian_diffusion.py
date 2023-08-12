@@ -734,7 +734,7 @@ class GaussianDiffusion:
             #print("#####")
             #print(x_fused.shape)
 
-            output["sample"] = x_fused
+            output["sample"] = img
             #output["sample"] = x_fused
             #print(f"HERE:::::: {output['sample']}")
             yield output
