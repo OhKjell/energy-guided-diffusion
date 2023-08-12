@@ -620,7 +620,7 @@ class GaussianDiffusion:
                 split_images = th.split(img, split_size_or_sections=1, dim=0)
                 out = []
                 for i, frame in enumerate(split_images):
-                    print(i)
+                    #print(i)
                     #print(frame.shape, t.shape)
                     if i == 0:
                         print(frame.shape, t.shape)
@@ -633,11 +633,11 @@ class GaussianDiffusion:
                         cond_fn=cond_fn,
                         model_kwargs=model_kwargs,
                     )
-                    print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
+                    #print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
                     out.append(output_frame)
                     #output_frame["sample"] = output_frame["pred_xstart"].detach()
-                    print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
-                    print(i)
+                    #print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
+                    #print(i)
             #img_clone = img.clone().requires_grad_()
             # sample_tensors = [d["sample"][0] for d in out]
             # fused_tensor = th.stack(sample_tensors, dim=0)
