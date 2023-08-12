@@ -220,7 +220,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=batch_similarity_energy,
         energy_scale=0,
-        energy_scale2=10,
+        energy_scale2=50,
         num_samples=39,
         iterative = False,
         iterations=10
@@ -248,8 +248,8 @@ for j, sample in enumerate(samples["sample"]):
     plt.close()
 
 
-test1 = torch.stack(test1, dim=0)
-print(dynamic_function(test1))
+# test1 = torch.stack(test1, dim=0)
+# print(dynamic_function(test1))
 
 
 
