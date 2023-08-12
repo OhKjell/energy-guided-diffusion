@@ -703,7 +703,7 @@ class GaussianDiffusion:
                 
             
             else:
-                energy2 = energy_fn2(x_fused, out[0]["pred_xstart"][0])
+                energy2 = energy_fn2(x_fused)
                 print(energy2)
                 norm_grad2 = th.autograd.grad(outputs=energy2, inputs=x_fused)[0]
                 if normalize_grad:

@@ -155,6 +155,27 @@ def mse(x, y):
 
 
 
+def batch_similarity_energy(images):
+    """
+    Calculate energy based on Mean Squared Error (MSE) between images in a batch.
+
+    :param images: A batch of images of shape (batch_size, channels, height, width).
+    :return: A scalar energy value indicating the similarity between the images.
+    """
+    grayscale_image = torch.mean(images, dim=1, keepdim=True)
+    num_images = images.size(0)
+    mse_sum = 0.0
+
+    for i in range(num_images):
+        for j in range(i + 1, num_images):
+            mse_sum += F.mse_loss(images[i], images[j])
+
+    # Calculate the average MSE over all pairs of images
+    avg_mse = mse_sum / (num_images * (num_images - 1) / 2)
+
+    # Return the negative MSE as the energy value
+    #energy = -avg_mse
+    return avg_mse
 
 
 
@@ -197,7 +218,7 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=MSE_sum,
+        energy_fn2=batch_similarity_energy,
         energy_scale=0,
         energy_scale2=10,
         num_samples=39,
