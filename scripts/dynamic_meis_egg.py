@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 100
+num_timesteps = 10
 
 
 def get_gpu_memory(device=0):
@@ -135,7 +135,6 @@ def MSE_sum(x):
     next_image = torch.mean(x[0], dim=0, keepdim=True)
     print(next_image.shape)
     for i in range(x.shape[0] - 1):
-        print(i)
         image = next_image
         next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
         mse += (torch.mean((image - next_image) ** 2)) ** 2
