@@ -612,7 +612,7 @@ class GaussianDiffusion:
 
         for i in indices:
             with th.no_grad():
-                t = th.tensor([i] * 1, device=device)
+                t = th.tensor([i] * shape[0], device=device)
 
                 #re - instantiate requires_grad for backpropagation
                 #img = img.requires_grad_()
