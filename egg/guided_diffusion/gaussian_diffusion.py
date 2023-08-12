@@ -665,7 +665,7 @@ class GaussianDiffusion:
             #img_clone = img.clone().requires_grad_()
             # sample_tensors = [d["sample"][0] for d in out]
             # fused_tensor = th.stack(sample_tensors, dim=0)
-            # fused_tensor.requires_grad_(True)
+            # fused_tensor.requires_grad_(True)https://global.bookwalker.jp/bookshelf/
             # print(f"FUSED: {fused_tensor.shape}")
             # energy = energy_fn(fused_tensor)
 
@@ -674,8 +674,8 @@ class GaussianDiffusion:
             # energy = energy_fn(tensor)
             
             #HEEEEEEEEEEEEEEEEEEE
-            print(img.shape)
-            img = img.double().requires_grad_()
+            #print(img.shape)
+            #img = img.double().requires_grad_()
 
             #energy = energy_fn(img)
             # norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
