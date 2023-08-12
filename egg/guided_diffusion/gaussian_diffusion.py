@@ -702,23 +702,23 @@ class GaussianDiffusion:
 
                 
             
-            else:
-                energy2 = energy_fn2(x_fused)
-                print(energy2)
-                norm_grad2 = th.autograd.grad(outputs=energy2, inputs=x_fused)[0]
-                if normalize_grad:
-                    norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                #print(f"grad:{norm_grad2}")
+            # else:
+            #     energy2 = energy_fn2(x_fused)
+            #     print(energy2)
+            #     norm_grad2 = th.autograd.grad(outputs=energy2, inputs=x_fused)[0]
+            #     if normalize_grad:
+            #         norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+            #     #print(f"grad:{norm_grad2}")
 
-                #update = norm_grad * energy_scale + norm_grad2 * energy_scale2
-                update = norm_grad2 * energy_scale2
+            #     #update = norm_grad * energy_scale + norm_grad2 * energy_scale2
+            #     update = norm_grad2 * energy_scale2
 
-                if use_alpha_bar:
-                    print("''''''''''''''''''''''''''''''''''''''''''''#")
-                    alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
-                    update = update * (1 - alpha_bar).sqrt()
+            #     if use_alpha_bar:
+            #         print("''''''''''''''''''''''''''''''''''''''''''''#")
+            #         alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
+            #         update = update * (1 - alpha_bar).sqrt()
 
-                x_fused = x_fused - update
+            #     x_fused = x_fused - update
 
 
             
