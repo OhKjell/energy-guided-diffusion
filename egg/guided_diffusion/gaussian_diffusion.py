@@ -716,6 +716,7 @@ class GaussianDiffusion:
             print(f"AFTER: {x_fused[:5]}")
             
             if use_alpha_bar:
+                print("''''''''''''''''''''''''''''''''''''''''''''#")
                 alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                 update = update * (1 - alpha_bar).sqrt()
             
