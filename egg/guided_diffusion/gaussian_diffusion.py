@@ -603,7 +603,7 @@ class GaussianDiffusion:
             img = th.randn(*shape, device=device)#.requires_grad_()
         indices = list(range(self.num_timesteps))[::-1]
         lala = img
-
+        img = img.expand(39, -1, -1, -1)
         if progress:
             # Lazy import so that we don't depend on tqdm.
             from tqdm.auto import tqdm
@@ -735,7 +735,7 @@ class GaussianDiffusion:
             #print("#####")
             #print(x_fused.shape)
 
-            output["sample"] = lala
+            output["sample"] = x_fused
             #output["sample"] = x_fused
             #print(f"HERE:::::: {output['sample']}")
             yield output
