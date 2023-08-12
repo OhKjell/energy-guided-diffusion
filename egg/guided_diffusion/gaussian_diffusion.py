@@ -653,14 +653,14 @@ class GaussianDiffusion:
             print(img.shape)
             img = img.double().requires_grad_()
 
-            energy = energy_fn(img)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
-            if normalize_grad:
-                norm_grad = norm_grad / th.norm(norm_grad)
-            
+            #energy = energy_fn(img)
+            # norm_grad = th.autograd.grad(outputs=energy, inputs=img)[0]
+            # if normalize_grad:
+            #     norm_grad = norm_grad / th.norm(norm_grad)
 
             x_fused = [d["sample"][0] for d in out]
             x_fused = th.stack(x_fused, dim=0).requires_grad_()
+            #x_fused_grey = 
 
             update = 0
             # if iterative:
@@ -710,7 +710,8 @@ class GaussianDiffusion:
                     norm_grad2 = norm_grad2 / th.norm(norm_grad2)
                 #print(f"grad:{norm_grad2}")
 
-                update = norm_grad * energy_scale + norm_grad2 * energy_scale2
+                #update = norm_grad * energy_scale + norm_grad2 * energy_scale2
+                update = norm_grad2 * energy_scale2
 
                 if use_alpha_bar:
                     print("''''''''''''''''''''''''''''''''''''''''''''#")
