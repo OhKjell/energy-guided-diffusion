@@ -731,7 +731,8 @@ class GaussianDiffusion:
                         image = image.requires_grad_()
                         for j in np.arange(1,4):
                             if (i - j) >= 0: 
-                                print("ww")
+                                print(image)
+                                print(x_fused_new[i-j])
                                 mse += energy_fn2(image, x_fused_new[i-j]) * (4 - j)
                             # if (i + j) < x_fused.shape[0]:
                             #     print("www")
