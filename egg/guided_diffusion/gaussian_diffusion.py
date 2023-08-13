@@ -723,21 +723,25 @@ class GaussianDiffusion:
                 #x_grey = th.mean(x_fused, dim=1, keepdim=True)
                 x_fused_new = x_fused.clone().detach()
                 for i, image in enumerate(x_fused):
-                    mse = th.tensor(0)
-                    image = image.requires_grad_()
-                    for j in np.arange(1,4):
-                        if (i - j) >= 0: 
-                            print("ww")
-                            mse += energy_fn2(image, x_fused[i-j]) * (4 - j)
-                        # if (i + j) < x_fused.shape[0]:
-                        #     print("www")
-                        #     mse += energy_fn2(image, x_fused[i+j]) * (4 - j)
-                    print(mse)
-                    print(image)
-                    norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
-                    if normalize_grad:
-                        norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                    x_fused_new[i] = (image - norm_grad2 * energy_scale2).detach()
+                    if i == 0:
+                        pass
+                    else:
+
+                        mse = th.tensor(0)
+                        image = image.requires_grad_()
+                        for j in np.arange(1,4):
+                            if (i - j) >= 0: 
+                                print("ww")
+                                mse += energy_fn2(image, x_fused[i-j]) * (4 - j)
+                            # if (i + j) < x_fused.shape[0]:
+                            #     print("www")
+                            #     mse += energy_fn2(image, x_fused[i+j]) * (4 - j)
+                        print(mse)
+                        print(image)
+                        norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
+                        if normalize_grad:
+                            norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+                        x_fused_new[i] = (image - norm_grad2 * energy_scale2).detach()
                 x_fused = x_fused_new
 
             # if iterative:
