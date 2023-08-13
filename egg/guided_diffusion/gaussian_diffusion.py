@@ -721,6 +721,7 @@ class GaussianDiffusion:
 
             if iterative:
                 #x_grey = th.mean(x_fused, dim=1, keepdim=True)
+                x_fused_new = x_fused.clone().detach()
                 for i, image in enumerate(x_fused):
                     mse = 0
                     image = image.requires_grad_()
@@ -736,8 +737,8 @@ class GaussianDiffusion:
                     norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
                     if normalize_grad:
                         norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                    x_fused[i] = (image - norm_grad2 * energy_scale2)#.detach()
-
+                    x_fused_new[i] = (image - norm_grad2 * energy_scale2).detach()
+                x_fused = x_fused_new
 
             # if iterative:
             #     update = norm_grad * energy_scale
