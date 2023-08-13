@@ -723,7 +723,7 @@ class GaussianDiffusion:
                 #x_grey = th.mean(x_fused, dim=1, keepdim=True)
                 x_fused_new = x_fused.clone().detach()
                 for i, image in enumerate(x_fused):
-                    mse = 0
+                    mse = th.zeros([1])
                     image = image.requires_grad_()
                     for j in np.arange(1,4):
                         if (i - j) >= 0: 
