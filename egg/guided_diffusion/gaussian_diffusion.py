@@ -636,7 +636,7 @@ class GaussianDiffusion:
                 for i, frame in enumerate(split_images):
                     #print(i)
                     #print(frame.shape, t.shape)
-                    th.manual_seed(5)
+                    #th.manual_seed(5)
                     if i == 0:
                         print(frame.shape, t.shape)
                     output_frame = self.p_sample(
@@ -718,22 +718,38 @@ class GaussianDiffusion:
 
 
 
+
             if iterative:
-                update = norm_grad * energy_scale
-                x_fused = x_fused - update
+                #x_grey = th.mean(x_fused, dim=1, keepdim=True)
+                for i, image in enumerate(x_fused):
+                    mse = 0
+                    image = image.requires_grad_()
+                    for j in np.arange(1,4):
+                        if (i - j) >= 0 and (i + j) < x_fused.shape[0]:
+                            mse += energy_fn2(image, x_fused[i-j]) * (4 - j)
+                            mse += energy_fn2(image, x_fused[i+j]) * (4 - j)
+                    norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
+                    if normalize_grad:
+                        norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+                    x_fused[i] = (image - norm_grad2 * energy_scale2).detach()
+
+
+            # if iterative:
+            #     update = norm_grad * energy_scale
+            #     x_fused = x_fused - update
                 
 
-                for i in range(x_fused.shape[0]):
-                        image = x_fused[i].requires_grad_()
-                        mse = 0
-                        for j in range(i - 1, i - 6, -1):
-                            mse += energy_fn2(image, x_fused[j]) * (j - (i - 6))
+            #     for i in range(x_fused.shape[0]):
+            #             image = x_fused[i].requires_grad_()
+            #             mse = 0
+            #             for j in range(i - 1, i - 6, -1):
+            #                 mse += energy_fn2(image, x_fused[j]) * (j - (i - 6))
 
-                        norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
-                        print(f"GRADIENT=={norm_grad2}")
-                        if normalize_grad:
-                            norm_grad2 = norm_grad2 / th.norm(norm_grad2)
-                        x_fused[i] = (image - norm_grad2 * energy_scale2).detach()
+            #             norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
+            #             print(f"GRADIENT=={norm_grad2}")
+            #             if normalize_grad:
+            #                 norm_grad2 = norm_grad2 / th.norm(norm_grad2)
+            #             x_fused[i] = (image - norm_grad2 * energy_scale2).detach()
 
 
 

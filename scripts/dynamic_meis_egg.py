@@ -156,12 +156,7 @@ def mse(x, y):
 
 
 def batch_similarity_energy(images):
-    """
-    Calculate energy based on Mean Squared Error (MSE) between images in a batch.
-
-    :param images: A batch of images of shape (batch_size, channels, height, width).
-    :return: A scalar energy value indicating the similarity between the images.
-    """
+  
     grayscale_image = torch.mean(images, dim=1, keepdim=True)
     num_images = images.size(0)
     mse_sum = 0.0
