@@ -729,9 +729,9 @@ class GaussianDiffusion:
                         if (i - j) >= 0: 
                             print("ww")
                             mse += energy_fn2(image, x_fused[i-j]) * (4 - j)
-                        if (i + j) < x_fused.shape[0]:
-                            print("www")
-                            mse += energy_fn2(image, x_fused[i+j]) * (4 - j)
+                        # if (i + j) < x_fused.shape[0]:
+                        #     print("www")
+                        #     mse += energy_fn2(image, x_fused[i+j]) * (4 - j)
                     print(mse)
                     print(image)
                     norm_grad2 = th.autograd.grad(outputs=mse, inputs=image)[0]
