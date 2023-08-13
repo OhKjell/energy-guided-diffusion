@@ -727,7 +727,7 @@ class GaussianDiffusion:
                         pass
                     else:
 
-                        mse = th.tensor(0)
+                        mse = th.tensor(0).to("cuda")
                         image = image.requires_grad_()
                         for j in np.arange(1,4):
                             if (i - j) >= 0: 
