@@ -636,6 +636,7 @@ class GaussianDiffusion:
                 for i, frame in enumerate(split_images):
                     #print(i)
                     #print(frame.shape, t.shape)
+                    th.manual_seed(5)
                     if i == 0:
                         print(frame.shape, t.shape)
                     output_frame = self.p_sample(
@@ -648,7 +649,6 @@ class GaussianDiffusion:
                         model_kwargs=model_kwargs,
                     )
                     out.append(output_frame)
-
 
 
 
