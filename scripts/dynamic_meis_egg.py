@@ -223,10 +223,10 @@ if os.path.exists("output"):
 # if os.path.exists(two_dir):
 #     shutil.rmtree(two_dir)
 #     os.makedirs(two_dir)
-one_dir = f"output/one_dir"
-os.makedirs(one_dir, exist_ok=True)
-two_dir = f"output/two_dir"
-os.makedirs(two_dir, exist_ok=True)
+image_dir = f"output/images"
+os.makedirs(image_dir, exist_ok=True)
+plot_dir = f"output/plots"
+os.makedirs(plot_dir, exist_ok=True)
 #output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
 
@@ -238,7 +238,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
         energy_scale=5,
-        energy_scale2=5,
+        energy_scale2=10,
         num_samples=39,
         iterative = False,
         iterations=10
@@ -273,14 +273,14 @@ for i, samples in enumerate(outputs):
             sample = torch.mean(sample, dim=0, keepdim=True)
             plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray')
             plt.axis("off")
-            plt.savefig(f"{one_dir}/{i}_image_{j}.png")
+            plt.savefig(f"{image_dir}/image_{j}.png")
             plt.close()
 #for i, mse in enumerate(grads):
 x_values = list(range(len(mse)))
 y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
 plt.plot(x_values, y_values, color='red', marker='.')
-plt.savefig(f"{one_dir}/mse_plot.png")
+plt.savefig(f"{plot_dir}/mse_plot.png")
 plt.close()
 
 
@@ -289,7 +289,7 @@ x_values = list(range(len(activation)))
 y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
 plt.plot(x_values, y_values, color='blue', marker='.')
-plt.savefig(f"{one_dir}/activation_plot.png")
+plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
