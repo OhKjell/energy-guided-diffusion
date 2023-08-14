@@ -149,11 +149,14 @@ def MSE_sum(x):
     print(x.shape)
     mse = 0
     next_image = torch.mean(x[0], dim=0, keepdim=True)
+    next_image = (next_image - next_image.mean()) / next_image.std()
     #normalize
     print(next_image.shape)
     for i in range(x.shape[0] - 1):
         image = next_image
         next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
+        
+        next_image = (next_image - next_image.mean()) / next_image.std()
         mse += (torch.mean((image - next_image) ** 2))# ** 2
     print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
     return mse / (x.shape[0] - 1)
@@ -233,9 +236,9 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=batch_similarity_energy,
+        energy_fn2=MSE_sum,
         energy_scale=0,
-        energy_scale2=0,
+        energy_scale2=5,
         num_samples=10,
         iterative = False,
         iterations=10
@@ -262,7 +265,8 @@ for i, samples in enumerate(outputs):
             print(torch.max(sample))
             print(torch.min(sample))
             test1.append(sample)
-            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+            sample = torch.mean(sample, dim=0, keepdim=True)
+            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray')
             plt.axis("off")
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
