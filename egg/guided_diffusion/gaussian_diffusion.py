@@ -717,7 +717,10 @@ class GaussianDiffusion:
             #                 x_fused[i + 1] = image
 
 
-
+            energy = energy_fn(x_fused)
+            norm_grad = th.autograd.grad(outputs=energy, inputs=x_fused)[0]
+            if normalize_grad:
+                    norm_grad = norm_grad / th.norm(norm_grad)
 
             if iterative:
                 #x_grey = th.mean(x_fused, dim=1, keepdim=True)
@@ -765,10 +768,7 @@ class GaussianDiffusion:
 
 
 
-            energy = energy_fn(x_fused)
-            norm_grad = th.autograd.grad(outputs=energy, inputs=x_fused)[0]
-            if normalize_grad:
-                    norm_grad = norm_grad / th.norm(norm_grad)
+          
             
             else:
                 energy2 = energy_fn2(x_fused)
