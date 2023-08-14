@@ -802,8 +802,8 @@ class GaussianDiffusion:
             output["sample"] = x_fused
             #output["sample"] = x_fused
             #print(f"HERE:::::: {output['sample']}")
-            tmp = {"sample": lala}
-            yield tmp
+            #tmp = {"sample": lala}
+            yield output
             img = output["sample"].float()
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
             img.detach_()
