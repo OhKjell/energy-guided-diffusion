@@ -234,8 +234,8 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=batch_similarity_energy,
         energy_scale=0,
-        energy_scale2=5,
-        num_samples=3,
+        energy_scale2=2,
+        num_samples=39,
         iterative = False,
         iterations=10
     )
@@ -249,7 +249,8 @@ test1 = []
 
 for i, samples in enumerate(outputs):
     #pass
-    if i % 5 == 0 or i == num_timesteps - 1:
+    #if i % 5 == 0 or i == num_timesteps - 1:
+    if i == num_timesteps - 1:
         for j, sample in enumerate(samples["sample"]):
             # if (i == num_timesteps - 1 and j == 2):
             #     torch.save(sample, "reference.pt")
