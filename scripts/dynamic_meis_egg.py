@@ -272,8 +272,10 @@ for i, samples in enumerate(outputs):
             plt.axis("off")
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
-for i, mse in enumerate(grads):
-    plt.plot(i, mse.cpu().detach(), color='red', marker='o')
+#for i, mse in enumerate(grads):
+x_values = list(range(len(grads)))
+y_values = [tensor.cpu().detach().item() for tensor in grads]
+plt.plot(x_values, y_values, color='red', marker='o')
 plt.savefig(f"{one_dir}/plot.png")
 plt.close()
 # test1 = torch.stack(test1, dim=0)
