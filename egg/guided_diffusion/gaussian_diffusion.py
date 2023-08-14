@@ -688,7 +688,7 @@ class GaussianDiffusion:
 
             # x_fused = [d["sample"][0] for d in out]
             # x_fused = th.stack(x_fused, dim=0).requires_grad_()
-            x_fused = out["sample"]
+            x_fused = out["sample"].requires_grad_()
 
 
 
