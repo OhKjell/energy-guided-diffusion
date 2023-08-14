@@ -783,7 +783,7 @@ class GaussianDiffusion:
                     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                     update = update * (1 - alpha_bar).sqrt()
 
-                x_fused = x_fused - update
+                #x_fused = x_fused - update
 
 
             
