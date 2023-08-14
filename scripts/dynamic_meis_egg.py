@@ -244,6 +244,8 @@ for i, samples in enumerate(outputs):
     #pass
     if i % 5 == 0 or i == num_timesteps - 1:
         for j, sample in enumerate(samples["sample"]):
+            if (i == num_timesteps and j == 2):
+                torch.save(sample, "reference")
             print(sample.shape)
             #samples_dir = f"{output_dir}/output_{j}"
             #os.makedirs(samples_dir, exist_ok=True)
