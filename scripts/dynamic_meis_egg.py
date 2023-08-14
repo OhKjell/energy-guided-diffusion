@@ -273,7 +273,7 @@ for i, samples in enumerate(outputs):
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
 
-plt.plot(grads)
+plt.plot(grads.cpu().detach())
 plt.savefig(f"{one_dir}/plot.png")
 plt.close()
 # test1 = torch.stack(test1, dim=0)
