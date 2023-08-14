@@ -191,7 +191,7 @@ def mse_reference(x):
     mse_sum = 0.0
     for image in grayscale_image:
         mse_sum += F.mse_loss(image, reference)
-    avg_mse = mse_sum / x.shape(0)
+    avg_mse = mse_sum / x.shape[0]
     return avg_mse
 
 
