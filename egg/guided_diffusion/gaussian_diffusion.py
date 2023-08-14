@@ -785,7 +785,7 @@ class GaussianDiffusion:
 
                 x_fused = x_fused - update
             
-            
+            print(th.mean(x_fused))
             brightness_factor = 1.2
             x_fused *= brightness_factor
 
