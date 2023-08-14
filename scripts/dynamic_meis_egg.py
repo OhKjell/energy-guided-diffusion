@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 5
+num_timesteps = 10
 
 
 def get_gpu_memory(device=0):
@@ -65,16 +65,16 @@ seed = 8
 
 #build dynamic model
 
-dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
-            directory,
-            filename,
-            model_fn=model_fn,
-            device=device,
-            data_dir=None, # if data_dir is None, root of the project is considered
-            test=False,
-            seed=seed,
-            data_type=data_type,
-        )
+# dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
+#             directory,
+#             filename,
+#             model_fn=model_fn,
+#             device=device,
+#             data_dir=None, # if data_dir is None, root of the project is considered
+#             test=False,
+#             seed=seed,
+#             data_type=data_type,
+#         )
 
 
 
@@ -241,18 +241,18 @@ print("hee")
 test1 = []
 
 for i, samples in enumerate(outputs):
-    pass
+    #pass
 
-for j, sample in enumerate(samples["sample"]):
-    print(sample.shape)
-    #samples_dir = f"{output_dir}/output_{j}"
-    #os.makedirs(samples_dir, exist_ok=True)
+    for j, sample in enumerate(samples["sample"]):
+        print(sample.shape)
+        #samples_dir = f"{output_dir}/output_{j}"
+        #os.makedirs(samples_dir, exist_ok=True)
 
-    test1.append(sample)
-    plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-    plt.axis("off")
-    plt.savefig(f"{one_dir}/image_{j}.png")
-    plt.close()
+        test1.append(sample)
+        plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+        plt.axis("off")
+        plt.savefig(f"{one_dir}/{i}_image_{j}.png")
+        plt.close()
 
 
 # test1 = torch.stack(test1, dim=0)
