@@ -612,43 +612,43 @@ class GaussianDiffusion:
 
         for i in indices:
             with th.no_grad():
-                t = th.tensor([i] * 1, device=device)
+                t = th.tensor([i] * shape[0], device=device)
 
                 #re - instantiate requires_grad for backpropagation
                 #img = img.requires_grad_()
 
-                # out = self.p_sample(
-                #     model,
-                #     img,
-                #     t,
-                #     clip_denoised=clip_denoised,
-                #     denoised_fn=denoised_fn,
-                #     cond_fn=cond_fn,
-                #     model_kwargs=model_kwargs,
-                # )
+                out = self.p_sample(
+                    model,
+                    img,
+                    t,
+                    clip_denoised=clip_denoised,
+                    denoised_fn=denoised_fn,
+                    cond_fn=cond_fn,
+                    model_kwargs=model_kwargs,
+                )
 
 
 
-                print(f"SHAPE IMAGE: {img.shape}")
+                # print(f"SHAPE IMAGE: {img.shape}")
 
-                split_images = th.split(img, split_size_or_sections=1, dim=0)
-                out = []
-                for i, frame in enumerate(split_images):
-                    #print(i)
-                    #print(frame.shape, t.shape)
-                    #th.manual_seed(5)
-                    if i == 0:
-                        print(frame.shape, t.shape)
-                    output_frame = self.p_sample(
-                        model,
-                        frame,
-                        t,
-                        clip_denoised=clip_denoised,
-                        denoised_fn=denoised_fn,
-                        cond_fn=cond_fn,
-                        model_kwargs=model_kwargs,
-                    )
-                    out.append(output_frame)
+                # split_images = th.split(img, split_size_or_sections=1, dim=0)
+                # out = []
+                # for i, frame in enumerate(split_images):
+                #     #print(i)
+                #     #print(frame.shape, t.shape)
+                #     #th.manual_seed(5)
+                #     if i == 0:
+                #         print(frame.shape, t.shape)
+                #     output_frame = self.p_sample(
+                #         model,
+                #         frame,
+                #         t,
+                #         clip_denoised=clip_denoised,
+                #         denoised_fn=denoised_fn,
+                #         cond_fn=cond_fn,
+                #         model_kwargs=model_kwargs,
+                #     )
+                #     out.append(output_frame)
 
 
 
