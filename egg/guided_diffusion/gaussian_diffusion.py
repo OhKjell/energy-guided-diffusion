@@ -805,6 +805,7 @@ class GaussianDiffusion:
 
             
             output = {"sample": None}
+            output["grads"] = norm_grad2
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
             #print("#####")
             #print(x_fused.shape)

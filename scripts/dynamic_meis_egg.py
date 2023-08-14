@@ -250,11 +250,13 @@ outputs = model.sample_video(
 print("hee")
 
 test1 = []
+grads = []
 
 for i, samples in enumerate(outputs):
     #pass
     #if i % 5 == 0 or i == num_timesteps - 1:
     if i == num_timesteps - 1:
+        grads.append(samples["grads"])
         for j, sample in enumerate(samples["sample"]):
             # if (i == num_timesteps - 1 and j == 2):
             #     torch.save(sample, "reference.pt")
@@ -271,7 +273,9 @@ for i, samples in enumerate(outputs):
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
 
-
+plt.plot(grads)
+plt.savefig(f"{one_dir}/plot.png")
+plt.close()
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
 
