@@ -184,8 +184,15 @@ def batch_similarity_energy(images):
 
     return avg_mse
 
-
-
+def mse_reference(x):
+    grayscale_image = torch.mean(x, dim=1, keepdim=True)
+    reference = torch.load("reference.pt")
+    reference = torch.mean(reference, dim=0, keepdim=True)
+    mse_sum = 0.0
+    for image in grayscale_image:
+        mse_sum += F.mse_loss(image, reference)
+    avg_mse = mse_sum / x.shape(0)
+    return avg_mse
 
 
 
@@ -225,9 +232,9 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=batch_similarity_energy,
+        energy_fn2=mse_reference,
         energy_scale=0,
-        energy_scale2=0,
+        energy_scale2=5,
         num_samples=3,
         iterative = False,
         iterations=10
@@ -244,9 +251,9 @@ for i, samples in enumerate(outputs):
     #pass
     if i % 5 == 0 or i == num_timesteps - 1:
         for j, sample in enumerate(samples["sample"]):
-            if (i == num_timesteps - 1 and j == 2):
-                torch.save(sample, "reference.pt")
-                print("saved")
+            # if (i == num_timesteps - 1 and j == 2):
+            #     torch.save(sample, "reference.pt")
+            #     print("saved")
             print(sample.shape)
             #samples_dir = f"{output_dir}/output_{j}"
             #os.makedirs(samples_dir, exist_ok=True)
