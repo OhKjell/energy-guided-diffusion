@@ -247,7 +247,8 @@ for i, samples in enumerate(outputs):
             print(sample.shape)
             #samples_dir = f"{output_dir}/output_{j}"
             #os.makedirs(samples_dir, exist_ok=True)
-
+            print(torch.max(sample))
+            print(torch.min(sample))
             test1.append(sample)
             plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
             plt.axis("off")
