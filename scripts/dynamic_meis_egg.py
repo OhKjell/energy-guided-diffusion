@@ -174,14 +174,14 @@ def batch_similarity_energy(images):
     mse_sum = 0.0
 
     for i in range(num_images):
-        for j in range(i + 1, num_images):
-            mse_sum += F.mse_loss(images[i], images[j])
+        mse = 0
+        for j in range(num_images):
+            if i != j:
+                mse_sum += F.mse_loss(images[i], images[j])
+        mse /= (num_images -1)
+        mse_sum += mse
+    avg_mse = mse_sum / num_images
 
-    # Calculate the average MSE over all pairs of images
-    avg_mse = mse_sum / (num_images * (num_images - 1) / 2)
-
-    # Return the negative MSE as the energy value
-    #energy = -avg_mse
     return avg_mse
 
 
