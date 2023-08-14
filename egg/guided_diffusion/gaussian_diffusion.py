@@ -808,8 +808,8 @@ class GaussianDiffusion:
 
             
             output = {"sample": None}
-            output["mse"] = energy2
-            output["activation"] = energy
+            output["mse"] = energy2.detach()
+            output["activation"] = energy.detach()
 #            output["sample"] = th.stack(pred_x_tensors, dim=0)
             #print("#####")
             #print(x_fused.shape)
@@ -823,7 +823,9 @@ class GaussianDiffusion:
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
             x_fused.detach_()
             img.detach_()
+            print(f"Used GPU memory: {th.cuda.memory_allocated(device)} GiB")
             th.cuda.empty_cache()
+            print(f"Used GPU memory after: {th.cuda.memory_allocated(device)} GiB")
 
 
 
