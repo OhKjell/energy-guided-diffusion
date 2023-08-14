@@ -149,11 +149,12 @@ def MSE_sum(x):
     print(x.shape)
     mse = 0
     next_image = torch.mean(x[0], dim=0, keepdim=True)
+    #normalize
     print(next_image.shape)
     for i in range(x.shape[0] - 1):
         image = next_image
         next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
-        mse += (torch.mean((image - next_image) ** 2)) ** 2
+        mse += (torch.mean((image - next_image) ** 2))# ** 2
     print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
     return mse / (x.shape[0] - 1)
 
@@ -234,7 +235,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=batch_similarity_energy,
         energy_scale=0,
-        energy_scale2=2,
+        energy_scale2=0,
         num_samples=39,
         iterative = False,
         iterations=10
