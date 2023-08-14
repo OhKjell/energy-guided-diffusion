@@ -793,7 +793,8 @@ class GaussianDiffusion:
             # x_fused *= brightness_factor
             # x_fused = th.clamp(x_fused, 0, 1)
             brightness_add = 0.001
-            x_fused = x_fused + brightness_add
+            if (i%10 == 0):
+                x_fused = x_fused + brightness_add
 
             
             
