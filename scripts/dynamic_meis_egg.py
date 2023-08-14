@@ -274,7 +274,9 @@ for i, samples in enumerate(outputs):
             plt.close()
 #for i, mse in enumerate(grads):
 x_values = list(range(len(grads)))
+
 y_values = [tensor.cpu().detach().item() for tensor in grads]
+print(y_values)
 plt.plot(x_values, y_values, color='red', marker='o')
 plt.savefig(f"{one_dir}/plots.png")
 plt.close()
