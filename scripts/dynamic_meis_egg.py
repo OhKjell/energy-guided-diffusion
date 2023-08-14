@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 500
+num_timesteps = 1000
 
 
 def get_gpu_memory(device=0):
@@ -237,7 +237,7 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=0,
+        energy_scale=3,
         energy_scale2=5,
         num_samples=39,
         iterative = False,
