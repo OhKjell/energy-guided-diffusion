@@ -128,7 +128,7 @@ def dynamic_function(x):
 
 
 
-def MSE_sum(x, pred):
+def MSE_sum_pred(x, pred):
     print("MMSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     print(x.shape)
     print(pred)
@@ -144,6 +144,18 @@ def MSE_sum(x, pred):
     print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
     return mse / (x.shape[0] - 1)
 
+def MSE_sum(x):
+    print("MMSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    print(x.shape)
+    mse = 0
+    next_image = torch.mean(x[0], dim=0, keepdim=True)
+    print(next_image.shape)
+    for i in range(x.shape[0] - 1):
+        image = next_image
+        next_image = torch.mean(x[i + 1], dim=0, keepdim=True)
+        mse += (torch.mean((image - next_image) ** 2))# ** 2
+    print(f"MSEEEEEEEEEEEEEEEEEEEEEEEEEEEe: {mse}")
+    return mse / (x.shape[0] - 1)
 
 
 def mse(x, y):
