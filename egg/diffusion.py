@@ -185,6 +185,7 @@ class EGG(nn.Module):
                 self.model,
                 (
                     num_samples,
+                    #1,
                     3,
                     self.model_config["image_size"],
                     self.model_config["image_size"],
