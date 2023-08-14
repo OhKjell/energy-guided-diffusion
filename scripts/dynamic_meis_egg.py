@@ -244,7 +244,7 @@ for i, samples in enumerate(outputs):
     #pass
     if i % 5 == 0 or i == num_timesteps - 1:
         for j, sample in enumerate(samples["sample"]):
-            if (i == num_timesteps and j == 2):
+            if (i == num_timesteps - 1 and j == 2):
                 torch.save(sample, "reference.pt")
                 print("saved")
             print(sample.shape)
