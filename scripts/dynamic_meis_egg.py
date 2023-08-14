@@ -242,7 +242,7 @@ test1 = []
 
 for i, samples in enumerate(outputs):
     #pass
-    if i % 5 == 0:
+    if i % 5 == 0 or i == num_timesteps - 1:
         for j, sample in enumerate(samples["sample"]):
             print(sample.shape)
             #samples_dir = f"{output_dir}/output_{j}"
