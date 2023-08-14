@@ -236,7 +236,7 @@ outputs = model.sample_video(
         energy_fn2=batch_similarity_energy,
         energy_scale=0,
         energy_scale2=0,
-        num_samples=39,
+        num_samples=10,
         iterative = False,
         iterations=10
     )
