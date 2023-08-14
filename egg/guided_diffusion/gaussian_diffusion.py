@@ -806,6 +806,7 @@ class GaussianDiffusion:
             yield output
             img = output["sample"].float()
             # Clears out small amount of gpu memory. If not used, memory usage will accumulate and OOM will occur.
+            x_fused.detach_()
             img.detach_()
             th.cuda.empty_cache()
 
