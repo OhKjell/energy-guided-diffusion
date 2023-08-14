@@ -65,16 +65,16 @@ seed = 8
 
 #build dynamic model
 
-# dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
-#             directory,
-#             filename,
-#             model_fn=model_fn,
-#             device=device,
-#             data_dir=None, # if data_dir is None, root of the project is considered
-#             test=False,
-#             seed=seed,
-#             data_type=data_type,
-#         )
+dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
+            directory,
+            filename,
+            model_fn=model_fn,
+            device=device,
+            data_dir=None, # if data_dir is None, root of the project is considered
+            test=False,
+            seed=seed,
+            data_type=data_type,
+        )
 
 
 
@@ -101,7 +101,7 @@ def dynamic_function(x):
         print("Tensor 'out' is part of the computation graph.")
     else:
         print("Tensor 'pit' is not part of the computation graph.")
-    energy = -output[0][0]
+    energy = output[0][0]
     return energy
 
 
@@ -237,7 +237,7 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=0,
+        energy_scale=5,
         energy_scale2=5,
         num_samples=10,
         iterative = False,
@@ -250,12 +250,14 @@ outputs = model.sample_video(
 print("hee")
 
 test1 = []
-grads = []
+mse = []
+activation = []
 
 for i, samples in enumerate(outputs):
     #pass
     #if i % 5 == 0 or i == num_timesteps - 1:
-    grads.append(samples["grads"])
+    mse.append(samples["mse"])
+    activation.append(samples["activation"])
     if i == num_timesteps - 1:
         
         for j, sample in enumerate(samples["sample"]):
@@ -274,12 +276,20 @@ for i, samples in enumerate(outputs):
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
 #for i, mse in enumerate(grads):
-x_values = list(range(len(grads)))
-
-y_values = [tensor.cpu().detach().item() for tensor in grads]
+x_values = list(range(len(mse)))
+y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
-plt.plot(x_values, y_values, color='red', marker='o')
-plt.savefig(f"{one_dir}/plots.png")
+plt.plot(x_values, y_values, color='red', marker='.')
+plt.savefig(f"{one_dir}/mse_plot.png")
+plt.close()
+
+
+
+x_values = list(range(len(activation)))
+y_values = [tensor.cpu().detach().item() for tensor in activation]
+print(y_values)
+plt.plot(x_values, y_values, color='blue', marker='.')
+plt.savefig(f"{one_dir}/activation_plot.png")
 plt.close()
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
