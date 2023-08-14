@@ -232,7 +232,7 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=mse_reference,
+        energy_fn2=batch_similarity_energy,
         energy_scale=0,
         energy_scale2=5,
         num_samples=3,
