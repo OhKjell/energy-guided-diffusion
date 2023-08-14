@@ -784,11 +784,14 @@ class GaussianDiffusion:
                     update = update * (1 - alpha_bar).sqrt()
 
                 x_fused = x_fused - update
-            
+            print("####################")
             print(th.mean(x_fused))
-            brightness_factor = 1.2
-            x_fused *= brightness_factor
-            x_fused = th.clamp(x_fused, 0, 1)
+            print(th.min(x_fused))
+            print(th.max(x_fused))
+            print("####################")
+            # brightness_factor = 1.2
+            # x_fused *= brightness_factor
+            # x_fused = th.clamp(x_fused, 0, 1)
 
             
             
