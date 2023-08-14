@@ -242,17 +242,17 @@ test1 = []
 
 for i, samples in enumerate(outputs):
     #pass
+    if i % 5 == 0:
+        for j, sample in enumerate(samples["sample"]):
+            print(sample.shape)
+            #samples_dir = f"{output_dir}/output_{j}"
+            #os.makedirs(samples_dir, exist_ok=True)
 
-    for j, sample in enumerate(samples["sample"]):
-        print(sample.shape)
-        #samples_dir = f"{output_dir}/output_{j}"
-        #os.makedirs(samples_dir, exist_ok=True)
-
-        test1.append(sample)
-        plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
-        plt.axis("off")
-        plt.savefig(f"{one_dir}/{i}_image_{j}.png")
-        plt.close()
+            test1.append(sample)
+            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)))
+            plt.axis("off")
+            plt.savefig(f"{one_dir}/{i}_image_{j}.png")
+            plt.close()
 
 
 # test1 = torch.stack(test1, dim=0)

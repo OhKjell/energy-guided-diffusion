@@ -784,7 +784,10 @@ class GaussianDiffusion:
                     update = update * (1 - alpha_bar).sqrt()
 
                 x_fused = x_fused - update
-
+            
+            
+            brightness_factor = 1.2
+            x_fused *= brightness_factor
 
             
             
