@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 100
+num_timesteps = 10
 
 
 def get_gpu_memory(device=0):
@@ -272,8 +272,8 @@ for i, samples in enumerate(outputs):
             plt.axis("off")
             plt.savefig(f"{one_dir}/{i}_image_{j}.png")
             plt.close()
-
-plt.plot(grads.cpu().detach())
+for mse in grads:
+    plt.plot(mse.cpu().detach())
 plt.savefig(f"{one_dir}/plot.png")
 plt.close()
 # test1 = torch.stack(test1, dim=0)
