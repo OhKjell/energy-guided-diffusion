@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 5
+num_timesteps = 100
 
 
 def get_gpu_memory(device=0):
@@ -238,7 +238,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
         energy_scale=5,
-        energy_scale2=0,
+        energy_scale2=3,
         num_samples=39,
         iterative = False,
         iterations=10
@@ -290,6 +290,8 @@ plt.close()
 x_values = list(range(len(activation)))
 y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
+activation_array = np.array(y_values)
+np.save(f"{plot_dir}/activation_array.npy", mse_array)
 plt.plot(x_values, y_values, color='blue', marker='.')
 plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()
