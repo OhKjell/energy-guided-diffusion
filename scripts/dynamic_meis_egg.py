@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 1000
+num_timesteps = 5
 
 
 def get_gpu_memory(device=0):
