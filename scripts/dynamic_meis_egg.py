@@ -279,6 +279,8 @@ for i, samples in enumerate(outputs):
 x_values = list(range(len(mse)))
 y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
+mse_array = np.array(y_values)
+np.save(f"{plot_dir}/mse_array.npy", mse_array)
 plt.plot(x_values, y_values, color='red', marker='.')
 plt.savefig(f"{plot_dir}/mse_plot.png")
 plt.close()
