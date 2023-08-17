@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 1000
+num_timesteps = 10
 norm_constraint = 5
 
 
@@ -94,7 +94,7 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
-    x = x / torch.norm(x) * norm_constraint
+    #x = x / torch.norm(x) * norm_constraint
     output = dynamic_model(x)
     #output = x
     print(output.shape)
@@ -243,7 +243,8 @@ outputs = model.sample_video(
         energy_scale2=3,
         num_samples=39,
         iterative = False,
-        iterations=10
+        iterations=10,
+        norm_constraint=norm_constraint
     )
 
 
@@ -281,8 +282,8 @@ for i, samples in enumerate(outputs):
 x_values = list(range(len(mse)))
 y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
-mse_array = np.array(y_values)
-np.save(f"{plot_dir}/mse_array.npy", mse_array)
+mse_array = torch.tensor(y_values)
+torch.save(mse_array, f"{plot_dir}/mse_array.pth")
 plt.plot(x_values, y_values, color='red', marker='.')
 plt.savefig(f"{plot_dir}/mse_plot.png")
 plt.close()
@@ -292,8 +293,8 @@ plt.close()
 x_values = list(range(len(activation)))
 y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
-activation_array = np.array(y_values)
-np.save(f"{plot_dir}/activation_array.npy", mse_array)
+activation_array = torch.tensor(y_values)
+torch.save(mse_array, f"{plot_dir}/activation_array.pth")
 plt.plot(x_values, y_values, color='blue', marker='.')
 plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()

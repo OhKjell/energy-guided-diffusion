@@ -588,7 +588,8 @@ class GaussianDiffusion:
         use_alpha_bar=False,
         normalize_grad=True,
         iterative=False,
-        iterations=0
+        iterations=0,
+        norm_constraint = 1
     ):
         #th.backends.cudnn.enabled = False
         if energy_fn is None:
@@ -689,7 +690,7 @@ class GaussianDiffusion:
             # x_fused = [d["sample"][0] for d in out]
             # x_fused = th.stack(x_fused, dim=0).requires_grad_()
             x_fused = out["sample"].double().requires_grad_()
-
+            x_fused = x_fused / th.norm(x_fused) * norm_constraint
 
 
 
