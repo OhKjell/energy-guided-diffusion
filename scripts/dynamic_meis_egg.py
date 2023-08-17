@@ -39,7 +39,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 
 num_timesteps = 10
-norm_constraint = 5
+norm_constraint = 1
 
 
 def get_gpu_memory(device=0):
@@ -262,7 +262,8 @@ for i, samples in enumerate(outputs):
     mse.append(samples["mse"])
     activation.append(samples["activation"])
     if i == num_timesteps - 1:
-        
+        max_value = torch.max(samples["sample"])
+        min_value = torch.min(samples["sample"])
         for j, sample in enumerate(samples["sample"]):
             # if (i == num_timesteps - 1 and j == 2):
             #     torch.save(sample, "reference.pt")
@@ -284,7 +285,9 @@ y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
 mse_array = torch.tensor(y_values)
 torch.save(mse_array, f"{plot_dir}/mse_array.pth")
-plt.plot(x_values, y_values, color='red', marker='.')
+plt.plot(x_values, y_values, linestyle='-', marker='', color='red')
+plt.xlabel('time step')
+plt.ylabel('MSE average')
 plt.savefig(f"{plot_dir}/mse_plot.png")
 plt.close()
 
@@ -295,9 +298,12 @@ y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
 activation_array = torch.tensor(y_values)
 torch.save(mse_array, f"{plot_dir}/activation_array.pth")
-plt.plot(x_values, y_values, color='blue', marker='.')
+plt.plot(x_values, y_values, linestyle='-', marker='', color='blue')
+plt.xlabel('time step')
+plt.ylabel('MSE average')
 plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()
+print(f"############MAX:{max_value}###########MIN:{min_value}")
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
 
