@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 10
+num_timesteps = 1000
 norm_constraint = 1
 
 
@@ -284,7 +284,7 @@ x_values = list(range(len(mse)))
 y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
 mse_array = torch.tensor(y_values)
-torch.save(mse_array, f"{plot_dir}/mse_array.pth")
+torch.save(mse_array, f"{plot_dir}/mse_array.pt")
 plt.plot(x_values, y_values, linestyle='-', marker='', color='red')
 plt.xlabel('time step')
 plt.ylabel('MSE average')
@@ -297,13 +297,15 @@ x_values = list(range(len(activation)))
 y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
 activation_array = torch.tensor(y_values)
-torch.save(mse_array, f"{plot_dir}/activation_array.pth")
+torch.save(mse_array, f"{plot_dir}/activation_array.pt")
 plt.plot(x_values, y_values, linestyle='-', marker='', color='blue')
 plt.xlabel('time step')
 plt.ylabel('MSE average')
 plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()
 print(f"############MAX:{max_value}###########MIN:{min_value}")
+with open(f"{plot_dir}/max_min.txt", "w") as file:
+    file.write(f"MAX: {max_value}\nMIN: {min_value}")
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
 
