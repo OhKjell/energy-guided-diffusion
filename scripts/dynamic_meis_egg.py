@@ -39,6 +39,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 
 num_timesteps = 1000
+norm_constraint = 5
 
 
 def get_gpu_memory(device=0):
@@ -93,6 +94,7 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
+    x = x / torch.norm(x) * norm_constraint
     output = dynamic_model(x)
     #output = x
     print(output.shape)
