@@ -38,8 +38,8 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 1000
-norm_constraint = 3
+num_timesteps = 500
+norm_constraint = 5
 
 
 def get_gpu_memory(device=0):
@@ -239,8 +239,8 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=3,
-        energy_scale2=3,
+        energy_scale=5,
+        energy_scale2=10,
         num_samples=39,
         iterative = False,
         iterations=10,
@@ -285,7 +285,7 @@ y_values = [tensor.cpu().detach().item() for tensor in mse]
 print(y_values)
 mse_array = torch.tensor(y_values)
 torch.save(mse_array, f"{plot_dir}/mse_array.pt")
-plt.plot(x_values, y_values,marker='.', color='red')
+plt.plot(x_values, y_values,marker='.', color='red', linestyle='')
 plt.xlabel('time step')
 plt.ylabel('MSE average')
 plt.savefig(f"{plot_dir}/mse_plot.png")
@@ -298,9 +298,9 @@ y_values = [tensor.cpu().detach().item() for tensor in activation]
 print(y_values)
 activation_array = torch.tensor(y_values)
 torch.save(mse_array, f"{plot_dir}/activation_array.pt")
-plt.plot(x_values, y_values, marker='.', color='blue')
+plt.plot(x_values, y_values, marker='.', color='blue', linestyle='')
 plt.xlabel('time step')
-plt.ylabel('MSE average')
+plt.ylabel('neuronal response')
 plt.savefig(f"{plot_dir}/activation_plot.png")
 plt.close()
 print(f"############MAX:{max_value}###########MIN:{min_value}")
