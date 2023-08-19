@@ -589,7 +589,7 @@ class GaussianDiffusion:
         normalize_grad=True,
         iterative=False,
         iterations=0,
-        norm_constraint = 1
+        norm_constraint = 100
     ):
         #th.backends.cudnn.enabled = False
         if energy_fn is None:

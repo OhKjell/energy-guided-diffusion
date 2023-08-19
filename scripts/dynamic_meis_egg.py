@@ -40,7 +40,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 num_timesteps = 100
 norm_constraint_respones = 5
-norm_constraint = 60
+norm_constraint = 500
 
 
 def get_gpu_memory(device=0):
