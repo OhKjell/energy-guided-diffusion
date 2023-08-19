@@ -691,6 +691,7 @@ class GaussianDiffusion:
             # x_fused = [d["sample"][0] for d in out]
             # x_fused = th.stack(x_fused, dim=0).requires_grad_()
             x_fused = out["sample"].double().requires_grad_()
+            x_fused = x_fused - th.mean(x_fused) / th.std(x_fused)
             #x_fused = x_fused / th.norm(x_fused) * norm_constraint
 
 
@@ -828,6 +829,7 @@ class GaussianDiffusion:
             print(f"Used GPU memory: {th.cuda.memory_allocated(device) / (1024**3):.2f}  GiB")
             th.cuda.empty_cache()
             print(f"Used GPU memory after: {th.cuda.memory_allocated(device) / (1024**3):.2f}  GiB")
+            
 
 
 
