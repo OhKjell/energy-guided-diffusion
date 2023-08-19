@@ -38,8 +38,8 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 500
-norm_constraint = 5
+num_timesteps = 100
+norm_constraint = 1
 
 
 def get_gpu_memory(device=0):
@@ -94,7 +94,7 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
-    #x = x / torch.norm(x) * norm_constraint
+    x = x / torch.norm(x) * norm_constraint
     output = dynamic_model(x)
     #output = x
     print(output.shape)
