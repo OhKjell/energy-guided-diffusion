@@ -604,7 +604,7 @@ class GaussianDiffusion:
             img = th.randn(*shape, device=device)#.requires_grad_()
         indices = list(range(self.num_timesteps))[::-1]
         lala = img
-        img = img / th.norm(img) * norm_constraint
+        
         #img = img.expand(39, -1, -1, -1)
         if progress:
             # Lazy import so that we don't depend on tqdm.
@@ -618,7 +618,7 @@ class GaussianDiffusion:
 
                 #re - instantiate requires_grad for backpropagation
                 #img = img.requires_grad_()
-
+                img = img / th.norm(img) * norm_constraint
                 out = self.p_sample(
                     model,
                     img,
@@ -691,7 +691,7 @@ class GaussianDiffusion:
             # x_fused = [d["sample"][0] for d in out]
             # x_fused = th.stack(x_fused, dim=0).requires_grad_()
             x_fused = out["sample"].double().requires_grad_()
-            x_fused = x_fused / th.norm(x_fused) * norm_constraint
+            #x_fused = x_fused / th.norm(x_fused) * norm_constraint
 
 
 
@@ -706,7 +706,7 @@ class GaussianDiffusion:
             #     update = norm_grad * energy_scale
             #     for j in range(iterations):
             #         print("hss")
-            #         image = x_fused[0]
+            #         image = x_fused[0]dynamic_function
             #         for i in range(x_fused.shape[0] - 1):
             #                 previous = image
             #                 image = x_fused[i + 1].requires_grad_()
