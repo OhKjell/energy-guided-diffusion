@@ -39,7 +39,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 
 num_timesteps = 100
-norm_constraint_respones = 1
+norm_constraint_respones = 0.05
 norm_constraint = 500
 
 
@@ -107,6 +107,7 @@ def dynamic_function(x):
         print("Tensor 'out' is part of the computation graph.")
     else:
         print("Tensor 'pit' is not part of the computation graph.")
+        print(output.shape)
     energy = output[0][0]
     return energy
 
