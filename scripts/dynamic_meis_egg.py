@@ -39,7 +39,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 
 num_timesteps = 100
-norm_constraint_respones = 0.05
+norm_constraint_respones = 5
 norm_constraint = 500
 
 
@@ -244,7 +244,7 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=20,
+        energy_scale=50,
         energy_scale2=0,
         num_samples=39,
         iterative = False,
