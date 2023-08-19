@@ -95,8 +95,10 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
-    x = x / torch.norm(x) * norm_constraint
-    output = dynamic_model(x)
+    y = x / torch.norm(x) * norm_constraint
+    print(torch.mean(x))
+    print(torch.mean(y))
+    output = dynamic_model(y)
     #output = x
     print(output.shape)
     #output = x
