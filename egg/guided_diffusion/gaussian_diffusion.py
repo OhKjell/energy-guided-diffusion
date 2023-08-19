@@ -618,7 +618,7 @@ class GaussianDiffusion:
 
                 #re - instantiate requires_grad for backpropagation
                 #img = img.requires_grad_()
-                img = img / th.norm(img) * norm_constraint
+                #img = img / th.norm(img) * norm_constraint
                 out = self.p_sample(
                     model,
                     img,
