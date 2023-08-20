@@ -169,6 +169,30 @@ def MSE_sum(x):
     return mse / (x.shape[0] - 1)
 
 
+def MSE_sum_k(x):
+    print("MMSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+    print(x.shape)
+    mse_sum = 0
+    x = x.mean(dim=1, keepdim=True)
+    for i in range(x.shape[0]):
+        mse = 0
+        image = (x[i] - x[i].mean()) / x[i].std()
+        for j in np.arange(1,4):
+            if (i - j) >= 0:
+                tmp = (x[i-j] - x[i-j].mean()) / x[i-j].std()
+                mse += (torch.mean() ** 2) * (4 - j)
+        mse_sum += mse
+    return mse / (x.shape[0] - 1)
+
+
+
+
+
+
+
+
+
+
 def mse(x, y):
     x = torch.mean(x[0], dim=0, keepdim=True)
     y = torch.mean(y[0], dim=0, keepdim=True)
@@ -243,7 +267,7 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=MSE_sum,
+        energy_fn2=MSE_sum_k,
         energy_scale=0,
         energy_scale2=3,
         num_samples=39,
