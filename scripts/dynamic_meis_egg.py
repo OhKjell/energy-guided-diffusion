@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 1100
+num_timesteps = 1000
 norm_constraint_respones = 5
 norm_constraint = 10000
 
@@ -245,7 +245,7 @@ outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
         energy_scale=3,
-        energy_scale2=5,
+        energy_scale2=10,
         num_samples=39,
         iterative = False,
         iterations=10,
