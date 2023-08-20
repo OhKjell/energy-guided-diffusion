@@ -244,8 +244,8 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=10,
-        energy_scale2=5,
+        energy_scale=3,
+        energy_scale2=2,
         num_samples=39,
         iterative = False,
         iterations=10,
