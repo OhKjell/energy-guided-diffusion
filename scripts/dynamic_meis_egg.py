@@ -180,9 +180,12 @@ def MSE_sum_k(x):
         for j in np.arange(1,4):
             if (i - j) >= 0:
                 tmp = (x[i-j] - x[i-j].mean()) / x[i-j].std()
-                mse += torch.mean((image - tmp) ** 2) * (4 - j)
+                mse += torch.mean((image - tmp) ** 2) * (1 / 2 ** j)
+            else:
+                tmp = (x[0] - x[0].mean()) / x[0].std()
+                mse += torch.mean((image - tmp) ** 2) * (1 / 2 ** j)
         mse_sum += mse
-    return mse / (x.shape[0] - 1)
+    return mse_sum / (x.shape[0] - 1)
 
 
 
