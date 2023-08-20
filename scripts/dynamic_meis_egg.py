@@ -173,7 +173,7 @@ def MSE_sum_k(x):
     print("MMSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     print(x.shape)
     mse_sum = 0
-    x = x.mean(dim=1, keepdim=True)
+    x = torch.mean(x, dim=1, keepdim=True)
     for i in range(x.shape[0]):
         mse = 0
         image = (x[i] - x[i].mean()) / x[i].std()
