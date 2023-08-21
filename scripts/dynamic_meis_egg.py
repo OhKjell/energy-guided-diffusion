@@ -40,7 +40,7 @@ from dynamic.meis.visualizer import get_model_activations
 
 num_timesteps = 1000
 norm_constraint_respones = 5
-norm_constraint = 10000
+norm_constraint = 10
 
 
 def get_gpu_memory(device=0):
@@ -97,6 +97,12 @@ def dynamic_function(x):
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
     x = x / torch.norm(x) * norm_constraint_respones
+    ###chECK nornm
+    print(torch.norm(x))
+    print(torch.max(x))
+    print(torch.min(x))
+    ##check range!
+
     #print(torch.mean(x))
     #print(torch.mean(y))
     output = dynamic_model(x)
@@ -270,9 +276,9 @@ model = EGG(num_steps=num_timesteps)
 
 outputs = model.sample_video(
         energy_fn=dynamic_function,
-        energy_fn2=MSE_sum_k,
-        energy_scale=0,
-        energy_scale2=3,
+        energy_fn2=MSE_sum,
+        energy_scale=5,
+        energy_scale2=10,
         num_samples=39,
         iterative = False,
         iterations=10,
@@ -306,8 +312,11 @@ for i, samples in enumerate(outputs):
             print(torch.max(sample))
             print(torch.min(sample))
             test1.append(sample)
+            #### implement
+            #plt.imshow(img, vmin=-1, vmax=1)
+            #############
             sample = torch.mean(sample, dim=0, keepdim=True)
-            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray')
+            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
             plt.axis("off")
             plt.savefig(f"{image_dir}/image_{j}.png")
             plt.close()
