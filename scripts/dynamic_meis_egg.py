@@ -90,16 +90,22 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 
 
 def dynamic_function(x):
-    x = x.permute(1, 0, 2, 3).unsqueeze(0)
-    #x = x / torch.norm(x) * norm_constraint
-    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     x = x.mean(dim=1, keepdim=True)
-    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
-    print(x.dtype)
-    
+    print("###########################################")
+    print(x.shape)
     x = F.interpolate(
             x.clone(), size=(100, 100), mode="bilinear", align_corners=False
         )
+    print("###########################################")
+    print(x.shape)
+    x = x.permute(1, 0, 2, 3).unsqueeze(0)
+    #x = x / torch.norm(x) * norm_constraint
+    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+    #x = x.mean(dim=1, keepdim=True)
+    print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
+    print(x.dtype)
+    
+    
     x = x / torch.norm(x) * norm_constraint_respones
     ###chECK nornm
     print(torch.norm(x))
