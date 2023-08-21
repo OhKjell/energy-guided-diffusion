@@ -96,6 +96,10 @@ def dynamic_function(x):
     x = x.mean(dim=1, keepdim=True)
     print(f"SHAPE OF DYNAMIC INPUT: {x.shape}")
     print(x.dtype)
+    
+    x = F.interpolate(
+            x.clone(), size=(100, 100), mode="bilinear", align_corners=False
+        )
     x = x / torch.norm(x) * norm_constraint_respones
     ###chECK nornm
     print(torch.norm(x))
@@ -277,7 +281,7 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=30,
+        energy_scale=5,
         energy_scale2=10,
         num_samples=39,
         iterative = False,
