@@ -91,7 +91,7 @@ if os.path.exists("output"):
      shutil.rmtree("output")
      os.makedirs("output")
 for i, image in enumerate(grad):
-    plt.imshow(image)
+    plt.imshow(image, cmap='gray')
     plt.axis("off")
     plt.savefig(f"output/{i}.png")
     plt.close()
