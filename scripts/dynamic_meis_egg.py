@@ -87,10 +87,13 @@ print(grad.shape)
 grad = np.transpose(grad.cpu().detach(), (1,2,3,0))
 print(grad.shape)
 
+if os.path.exists("output"):
+     shutil.rmtree("output")
+     os.makedirs("output")
 for i, image in enumerate(grad):
     plt.imshow(image.cpu(), cmap='gray', vmin=-1, vmax=1)
     plt.axis("off")
-    plt.savefig(f"ouput/image{i}.png")
+    plt.savefig(f"output/{i}.png")
     plt.close()
 
 
