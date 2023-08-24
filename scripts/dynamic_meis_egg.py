@@ -86,7 +86,7 @@ grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0].squeeze
 print(grad.shape)
 grad = np.transpose(grad.cpu().detach(), (1,2,3,0))
 print(grad.shape)
-
+print(grad)
 if os.path.exists("output"):
      shutil.rmtree("output")
      os.makedirs("output")
