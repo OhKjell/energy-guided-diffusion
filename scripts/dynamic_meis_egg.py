@@ -83,11 +83,12 @@ random_tensor = torch.randn(*shape).double().requires_grad_().to("cuda")
 output = dynamic_model(random_tensor)
 print("hallo")
 grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0]
-
-plt.imshow(np.transpose(grad.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
-plt.axis("off")
-plt.savefig(f"ouput/image.png")
-plt.close()
+np.transpose(grad.cpu().detach().unsqueeze(), (1,2,3,0))
+for i in grad:
+    plt.imshow(i, cmap='gray', vmin=-1, vmax=1)
+    plt.axis("off")
+    plt.savefig(f"ouput/image{i}.png")
+    plt.close()
 
 
 
