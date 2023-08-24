@@ -79,7 +79,7 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
         )
 
 shape = (1, 1, 39, 100, 100)
-random_tensor = torch.randn(*shape)
+random_tensor = torch.randn(*shape).double().requires_grad_()
 output = dynamic_model(random_tensor)
 grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0]
 
