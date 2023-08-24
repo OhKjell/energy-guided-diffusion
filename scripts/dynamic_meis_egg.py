@@ -84,9 +84,11 @@ output = dynamic_model(random_tensor)
 print("hallo")
 grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0].squeeze(0)
 print(grad.shape)
-np.transpose(grad.cpu().detach(), (1,2,3,0))
-for i in grad:
-    plt.imshow(i.cpu(), cmap='gray', vmin=-1, vmax=1)
+grad = np.transpose(grad.cpu().detach(), (1,2,3,0))
+print(grad.shape)
+
+for i, image in enumerate(grad):
+    plt.imshow(image.cpu(), cmap='gray', vmin=-1, vmax=1)
     plt.axis("off")
     plt.savefig(f"ouput/image{i}.png")
     plt.close()
