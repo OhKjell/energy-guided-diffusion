@@ -82,7 +82,7 @@ shape = (1, 1, 39, 100, 100)
 random_tensor = torch.randn(*shape).double().requires_grad_().to("cuda")
 output = dynamic_model(random_tensor)
 print("hallo")
-grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0].unsqueeze(0)
+grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0].squeeze(0)
 print(grad.shape)
 np.transpose(grad.cpu().detach(), (1,2,3,0))
 for i in grad:
