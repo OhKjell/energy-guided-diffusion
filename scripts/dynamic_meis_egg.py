@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 38
+num_timesteps = 40
 norm_constraint_respones = 5
 norm_constraint = 10
 
@@ -287,8 +287,8 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_scale=50,
-        energy_scale2=50,
+        energy_scale=100,
+        energy_scale2=100,
         num_samples=39,
         iterative = False,
         iterations=10,
