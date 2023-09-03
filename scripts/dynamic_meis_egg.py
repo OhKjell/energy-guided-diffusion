@@ -264,7 +264,7 @@ def mse_reference(x):
     return avg_mse
 
 def norm_constraintfn(x):
-    print(torch.norm(x))
+    print(f"NOOOOOOORMMMMMMMMMMMMMMMMM: {torch.norm(x)}")
     return torch.norm(x) - norm_constraint_respones
 
 
