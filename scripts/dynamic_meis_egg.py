@@ -263,7 +263,7 @@ def mse_reference(x):
     avg_mse = mse_sum / x.shape[0]
     return avg_mse
 
-def norm_constrainfn(x):
+def norm_constraintfn(x):
     print(torch.norm(x))
     return torch.norm(x) - norm_constraint_respones
 
@@ -304,7 +304,7 @@ model = EGG(num_steps=num_timesteps)
 outputs = model.sample_video(
         energy_fn=dynamic_function,
         energy_fn2=MSE_sum,
-        energy_fn3 =norm_constrainfn,
+        energy_fn3 =norm_constraintfn,
         energy_scale=100,
         energy_scale2=100,
         energy_scale3=100,
