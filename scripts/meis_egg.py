@@ -29,7 +29,7 @@ import cv2
 num_timesteps = 100
 energy_scale = 0  # 20
 energy_scale2 = 0
-seeds = [0, 0, 0, 0, 0, 0]#np.arange(1)
+seeds = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]#np.arange(1)
 unit_seed=27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
@@ -245,7 +245,7 @@ if __name__ == "__main__":
                         image_gray = np.mean(image.cpu().detach().squeeze().numpy(), axis=0)   # Convert tensor to numpy array
                         plt.imshow(image_gray, cmap='gray')  # Use 'gray' colormap for grayscale
                         plt.axis('off')
-                        plt.savefig(f"{frame_dir}/{frame_idx:05}.png")
+                        plt.savefig(f"{frame_dir}/{frame_idx:05}_{energy_scale}.png")
                         plt.close()
                         frame_idx += 1
 
