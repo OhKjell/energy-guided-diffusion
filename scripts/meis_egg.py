@@ -60,7 +60,7 @@ def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=
         cur_t -= 1
         if (j % 10 == 0) or cur_t == -1:
 
-            energy = energy_fn(sample["pred_xstart"])
+            energy = sample["energy"]
 
             for k, image in enumerate(sample["pred_xstart"]):
                 filename = f"output/{str(run)}{desc}_{j:05}.png"
@@ -233,7 +233,7 @@ if __name__ == "__main__":
                         end = time.time()
                         lambdas.append(energy_scale)
                         print(type(image))
-                        energies.append(energy_fn(image)["train"])
+                        energies.append(score)
 
                         #SAVE IMAGES
 
