@@ -28,14 +28,14 @@ import cv2
 # experiment settings
 num_timesteps = 100
 energy_scale = 5  # 20
-#energy_scale2 = 1
+energy_scale2 = 0
 seeds = [0]#np.arange(1)
 unit_seed=27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
-number_units = 3
-number_frames = np.arange(4)
+number_units = 1
+number_frames = np.arange(1)
 create_vgg = True
 fps = 20
 unit_ids = None #None [id]
@@ -170,8 +170,10 @@ if __name__ == "__main__":
 
     image = None
 
+    lambdas = []
+    energies = []
 
-    for model_idx in range(2):
+    for model_idx in range(1):
 
         if model_idx == 0:
             model_dir = f"output/MSE"
@@ -229,6 +231,8 @@ if __name__ == "__main__":
                             run=frame,
                         )
                         end = time.time()
+                        lambdas.append(energy_scale)
+                        energies.append(energy_fn(image))
 
                         #SAVE IMAGES
 
@@ -318,5 +322,7 @@ if __name__ == "__main__":
         vgg_model = vgg.create_model(create_vgg)
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
 
-
+    plt.plot(lambdas, energies)
+    plt.savefig(f"{model_dir}/plot.png")
+    plt.close()
 

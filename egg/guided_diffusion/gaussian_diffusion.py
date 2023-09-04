@@ -921,6 +921,7 @@ class GaussianDiffusion:
                 if use_alpha_bar:
                     alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, img.shape)
                     update = update * (1 - alpha_bar).sqrt()
+                out["energy"] = energy
             else:
 
                 energy1 = energy_fn(out["pred_xstart"])
@@ -936,9 +937,7 @@ class GaussianDiffusion:
 
 
                 update = grad2 * energy_scale2 + grad1 * energy_scale   
-
-
-
+                out["energy"] = energy1
 
             out["sample"] = out["sample"] - update
 
