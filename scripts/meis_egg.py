@@ -30,7 +30,7 @@ num_timesteps = 100
 energy_scale = 0  # 20
 energy_scale2 = 0
 seeds = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]#np.arange(1)
-unit_seed=27#42
+unit_seed=20#27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
@@ -233,7 +233,7 @@ if __name__ == "__main__":
                         end = time.time()
                         lambdas.append(energy_scale)
                         print(type(image))
-                        energies.append(score["train"].cpu().detach())
+                        energies.append(score["train"].cpu().detach() * -1)
 
                         #SAVE IMAGES
 
@@ -324,6 +324,9 @@ if __name__ == "__main__":
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
 
     plt.plot(lambdas, energies)
+    plt.xlabel('energy scale λ')
+    plt.ylabel('energy (neuronal response)')
+    plt.title('neuronal response for different λ')
     plt.savefig(f"{model_dir}/plot.png")
     plt.close()
 
