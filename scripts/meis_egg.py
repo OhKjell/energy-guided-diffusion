@@ -233,7 +233,7 @@ if __name__ == "__main__":
                         end = time.time()
                         lambdas.append(energy_scale)
                         print(type(image))
-                        energies.append(score["train"].cpu())
+                        energies.append(score["train"].cpu().detach())
 
                         #SAVE IMAGES
 
