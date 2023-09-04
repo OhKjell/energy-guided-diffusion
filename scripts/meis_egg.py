@@ -327,6 +327,6 @@ if __name__ == "__main__":
     plt.xlabel('energy scale λ')
     plt.ylabel('energy (neuronal response)')
     plt.title('neuronal response for different λ')
-    plt.savefig(f"{model_dir}/plot.png")
+    plt.savefig(f"{model_dir}/plot.png", dpi=500)
     plt.close()
 
