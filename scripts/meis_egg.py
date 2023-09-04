@@ -232,6 +232,7 @@ if __name__ == "__main__":
                         )
                         end = time.time()
                         lambdas.append(energy_scale)
+                        print(type(image))
                         energies.append(energy_fn(image)["train"])
 
                         #SAVE IMAGES
