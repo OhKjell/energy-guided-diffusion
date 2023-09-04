@@ -323,7 +323,7 @@ if __name__ == "__main__":
         vgg_model = vgg.create_model(create_vgg)
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
 
-    plt.plot(lambdas, energies)
+    plt.plot(lambdas, energies.cpu())
     plt.savefig(f"{model_dir}/plot.png")
     plt.close()
 
