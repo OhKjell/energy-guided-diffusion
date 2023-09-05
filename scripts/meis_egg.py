@@ -29,7 +29,7 @@ import cv2
 num_timesteps = 100
 energy_scale = 0  # 20
 energy_scale2 = 0
-scales = [0,5,20,50,100,200, 500]
+scales = [0,1,2,5,10,20,50,100,200,300]
 seeds = [0]#np.zeros(10)#np.arange(1)
 unit_seed=20#27#42
 norm_constraint = 25  # 25
@@ -324,10 +324,12 @@ if __name__ == "__main__":
         vgg_model = vgg.create_model(create_vgg)
         energy_fn2 = partial(vgg.compare_images, model = vgg_model)
 
+    index_1 = "\u2081"  
+    index_2 = "\u2082"
     plt.plot(lambdas, energies)
-    plt.xlabel('energy scale λ')
-    plt.ylabel('energy (neuronal response)')
-    plt.title('neuronal response for different λ')
+    plt.xlabel(f"λ{index_1}")
+    plt.ylabel('/Energy / Response')
+#    plt.title(f)
     plt.savefig(f"{model_dir}/plot.png", dpi=500)
     plt.close()
 
