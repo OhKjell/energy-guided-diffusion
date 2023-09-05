@@ -29,7 +29,7 @@ import cv2
 num_timesteps = 100
 energy_scale = 0  # 20
 energy_scale2 = 0
-seeds = np.zeros(40)#np.arange(1)
+seeds = np.zeros(10)#np.arange(1)
 unit_seed=20#27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
@@ -313,7 +313,7 @@ if __name__ == "__main__":
                     video_writer.release()
 
                     print("Video created successfully.")
-            energy_scale += 0.25
+            energy_scale += 5
 
         #SET ENERGy FUNCTION TO VGG
 
