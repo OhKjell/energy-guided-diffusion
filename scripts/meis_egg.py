@@ -31,12 +31,12 @@ energy_scale = 5  # 20
 energy_scale2 = 3
 scales = [energy_scale]#[0,5,50,100,200,250]
 seeds = [0]#np.zeros(10)#np.arange(1)
-unit_seed=10#20#27#42
+unit_seed=27#20#27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "MSE" #"MSE" "VGG" "None"
 number_units = 1
-number_frames = np.arange(39)
+number_frames = np.arange(4)
 create_vgg = True
 fps = 20
 unit_ids = None #None [id]
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         for seed in seeds:
             
             for scale in scales:
-                energy_scale = scale
+                #energy_scale = scale
                 for unit_idx in units:
 
                     unit_dir = f"{model_dir}/diffMEI_{unit_idx}_seed_{seed}_gray"
