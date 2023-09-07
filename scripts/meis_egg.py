@@ -42,7 +42,7 @@ fps = 20
 unit_ids = None #None [id]
 #for vgg
 vgg_gray=True
-escale2 = [2]
+escale2 = [3]
 
 def do_run(model, energy_fn, energy_fn2, desc="progress", grayscale=False, seed=None, run=1):
     #move out
