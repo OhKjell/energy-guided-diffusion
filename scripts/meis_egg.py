@@ -27,8 +27,8 @@ import cv2
 
 # experiment settings
 num_timesteps = 100
-energy_scale = 0  # 20
-energy_scale2 = 0
+energy_scale = 5  # 20
+energy_scale2 = 3
 scales = [energy_scale]#[0,5,50,100,200,250]
 seeds = [0]#np.zeros(10)#np.arange(1)
 unit_seed=10#20#27#42
