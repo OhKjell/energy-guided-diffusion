@@ -785,16 +785,16 @@ class GaussianDiffusion:
                 #print(f"grad:{norm_grad2}")
 
 
-                energy3 = energy_fn3(x_fused)
-                print("§§§§§§§§§§§§§§§§§§§§§§§ is useddddddddd")
-                norm_grad3 = th.autograd.grad(outputs=energy3, inputs=x_fused)[0]
-                if normalize_grad:
-                    norm_grad3 = norm_grad3 / th.norm(norm_grad3)
+                # energy3 = energy_fn3(x_fused)
+                # print("§§§§§§§§§§§§§§§§§§§§§§§ is useddddddddd")
+                # norm_grad3 = th.autograd.grad(outputs=energy3, inputs=x_fused)[0]
+                # if normalize_grad:
+                #     norm_grad3 = norm_grad3 / th.norm(norm_grad3)
 
 
 
 
-                update = -norm_grad * energy_scale + norm_grad2 * energy_scale2 + norm_grad3 * energy_scale3
+                update = -norm_grad * energy_scale + norm_grad2 * energy_scale2 #+ norm_grad3 * energy_scale3
                 #update = norm_grad2 * energy_scale2
 
                 if use_alpha_bar:
