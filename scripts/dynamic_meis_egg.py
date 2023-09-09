@@ -335,6 +335,8 @@ for scale in scales:
         if i == num_timesteps - 1:
             max_value = torch.max(samples["sample"])
             min_value = torch.min(samples["sample"])
+            all_activations.append(dynamic_function(sample["sample"]).cpu().detach())
+            all_scales.append(scale)
             for j, sample in enumerate(samples["sample"]):
                 # if (i == num_timesteps - 1 and j == 2):
                 #     torch.save(sample, "reference.pt")
@@ -348,8 +350,7 @@ for scale in scales:
                 #### implement
                 #plt.imshow(img, vmin=-1, vmax=1)
                 #############
-                all_activations.append(dynamic_function(sample).cpu().detach())
-                all_scales.append(scale)
+               
 
                 sample = torch.mean(sample, dim=0, keepdim=True)
                 plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
