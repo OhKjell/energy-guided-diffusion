@@ -356,11 +356,11 @@ for scale in scales:
 
                 sample = torch.mean(sample, dim=0, keepdim=True)
                 image = np.transpose(sample.cpu().detach(), (1,2,0))
-                height, width = image.shape[:2]
-                fig = plt.figure(figsize=(width/500, height/500))
+                #height, width = image.shape[:2]
+                #fig = plt.figure(figsize=(width/500, height/500))
                 plt.imshow(image, cmap='gray', vmin=-1, vmax=1)
                 plt.axis("off")
-                plt.savefig(f"{image_dir}/image_{j}.png", dpi=500)
+                plt.savefig(f"{image_dir}/image_{j}.png", bbox_inches='tight', pad_inches=0, dpi=500)
                 plt.close()
     #for i, mse in enumerate(grads):
     x_values = list(range(len(mse)))
