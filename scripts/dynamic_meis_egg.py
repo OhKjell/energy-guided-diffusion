@@ -41,7 +41,7 @@ from dynamic.meis.visualizer import get_model_activations
 num_timesteps = 50
 norm_constraint_respones = 5
 norm_constraint = 10
-scales = [0, 25, 50, 75, 100]
+scales = [0]
 
 def get_gpu_memory(device=0):
     properties = torch.cuda.get_device_properties(device)
@@ -355,9 +355,12 @@ for scale in scales:
                
 
                 sample = torch.mean(sample, dim=0, keepdim=True)
-                plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
+                image = np.transpose(sample.cpu().detach(), (1,2,0))
+                height, width = image.shape[:2]
+                fig = plt.figure(figsize=(width/500, height/500))
+                plt.imshow(image, cmap='gray', vmin=-1, vmax=1)
                 plt.axis("off")
-                plt.savefig(f"{image_dir}/image_{j}.png")
+                plt.savefig(f"{image_dir}/image_{j}.png", dpi=500)
                 plt.close()
     #for i, mse in enumerate(grads):
     x_values = list(range(len(mse)))
