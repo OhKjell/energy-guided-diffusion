@@ -38,7 +38,7 @@ from dynamic.meis.visualizer import get_model_activations
 # import pickle
 
 
-num_timesteps = 40
+num_timesteps = 50
 norm_constraint_respones = 5
 norm_constraint = 10
 scales = [0, 25, 50, 75, 100]
@@ -309,8 +309,8 @@ for scale in scales:
             energy_fn=dynamic_function,
             energy_fn2=MSE_sum,
             energy_fn3 =norm_constraintfn,
-            energy_scale=scale,
-            energy_scale2=100,
+            energy_scale=0,
+            energy_scale2=scale,
             energy_scale3=100,
             num_samples=39,
             iterative = False,
@@ -387,14 +387,14 @@ for scale in scales:
 
 
 
-    index_1 = "\u2081"  
-    index_2 = "\u2082"
+index_1 = "\u2081"  
+index_2 = "\u2082"
 
-    plt.plot(all_scales, all_activations)
-    plt.xlabel(f"λ{index_1}")
-    plt.ylabel(f"neuronal response")
-    plt.savefig(f"{plot_dir}/responses.png", dpi=500)
-    plt.close()
+plt.plot(all_scales, all_activations)
+plt.xlabel(f"λ{index_1}")
+plt.ylabel(f"neuronal response")
+plt.savefig(f"output/responses.png", dpi=500)
+plt.close()
 
 
 
