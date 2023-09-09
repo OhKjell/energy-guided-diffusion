@@ -360,7 +360,7 @@ for scale in scales:
                 #fig = plt.figure(figsize=(width/500, height/500))
                 plt.imshow(image, cmap='gray', vmin=-1, vmax=1)
                 plt.axis("off")
-                plt.savefig(f"{image_dir}/image_{j}.png", bbox_inches='tight', pad_inches=0, dpi=500)
+                plt.savefig(f"{image_dir}/image_{j}.png", bbox_inches='tight', pad_inches=0)
                 plt.close()
     #for i, mse in enumerate(grads):
     x_values = list(range(len(mse)))
