@@ -296,6 +296,7 @@ if os.path.exists("output"):
 model = EGG(num_steps=num_timesteps)
 all_activations = []
 all_scales = []
+all_MSE = []
 
 
 
@@ -336,6 +337,7 @@ for scale in scales:
             max_value = torch.max(samples["sample"])
             min_value = torch.min(samples["sample"])
             all_activations.append(dynamic_function(samples["sample"]).cpu().detach())
+            all_MSE.append(MSE_sum(samples["sample"]).cpu().detach())
             all_scales.append(scale)
             for j, sample in enumerate(samples["sample"]):
                 # if (i == num_timesteps - 1 and j == 2):
@@ -396,6 +398,11 @@ plt.ylabel(f"neuronal response")
 plt.savefig(f"output/responses.png", dpi=500)
 plt.close()
 
+plt.plot(all_scales, all_MSE)
+plt.xlabel(f"λ{index_2}")
+plt.ylabel(f"average MSE")
+plt.savefig(f"output/MSE.png", dpi=500)
+plt.close()
 
 
     
