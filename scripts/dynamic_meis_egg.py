@@ -335,7 +335,7 @@ for scale in scales:
         if i == num_timesteps - 1:
             max_value = torch.max(samples["sample"])
             min_value = torch.min(samples["sample"])
-            all_activations.append(dynamic_function(sample["sample"]).cpu().detach())
+            all_activations.append(dynamic_function(samples["sample"]).cpu().detach())
             all_scales.append(scale)
             for j, sample in enumerate(samples["sample"]):
                 # if (i == num_timesteps - 1 and j == 2):
