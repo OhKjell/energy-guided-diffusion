@@ -290,92 +290,114 @@ if os.path.exists("output"):
 # if os.path.exists(two_dir):
 #     shutil.rmtree(two_dir)
 #     os.makedirs(two_dir)
-image_dir = f"output/images"
-os.makedirs(image_dir, exist_ok=True)
-plot_dir = f"output/plots"
-os.makedirs(plot_dir, exist_ok=True)
+
+
 #output_dir = f"output"
 model = EGG(num_steps=num_timesteps)
+all_activations = []
+all_scales = []
+
+
+
+for scale in scales:
+    image_dir = f"output/images{scale}"
+    os.makedirs(image_dir, exist_ok=True)
+    plot_dir = f"output/plots_{scale}"
+    os.makedirs(plot_dir, exist_ok=True)
+
+    outputs = model.sample_video(
+            energy_fn=dynamic_function,
+            energy_fn2=MSE_sum,
+            energy_fn3 =norm_constraintfn,
+            energy_scale=scale,
+            energy_scale2=100,
+            energy_scale3=100,
+            num_samples=39,
+            iterative = False,
+            iterations=10,
+            norm_constraint=norm_constraint
+        )
 
 
 
 
+    print("hee")
 
-outputs = model.sample_video(
-        energy_fn=dynamic_function,
-        energy_fn2=MSE_sum,
-        energy_fn3 =norm_constraintfn,
-        energy_scale=100,
-        energy_scale2=100,
-        energy_scale3=100,
-        num_samples=39,
-        iterative = False,
-        iterations=10,
-        norm_constraint=norm_constraint
-    )
+    test1 = []
+    mse = []
+    activation = []
 
+    for i, samples in enumerate(outputs):
+        #pass
+        #if i % 5 == 0 or i == num_timesteps - 1:
+        mse.append(samples["mse"])
+        activation.append(samples["activation"])
+        if i == num_timesteps - 1:
+            max_value = torch.max(samples["sample"])
+            min_value = torch.min(samples["sample"])
+            for j, sample in enumerate(samples["sample"]):
+                # if (i == num_timesteps - 1 and j == 2):
+                #     torch.save(sample, "reference.pt")
+                #     print("saved")
+                print(sample.shape)
+                #samples_dir = f"{output_dir}/output_{j}"
+                #os.makedirs(samples_dir, exist_ok=True)
+                print(torch.max(sample))
+                print(torch.min(sample))
+                test1.append(sample)
+                #### implement
+                #plt.imshow(img, vmin=-1, vmax=1)
+                #############
+                all_activations.append(dynamic_function(sample).cpu().detach())
+                all_scales.append(scale)
 
-
-
-print("hee")
-
-test1 = []
-mse = []
-activation = []
-
-for i, samples in enumerate(outputs):
-    #pass
-    #if i % 5 == 0 or i == num_timesteps - 1:
-    mse.append(samples["mse"])
-    activation.append(samples["activation"])
-    if i == num_timesteps - 1:
-        max_value = torch.max(samples["sample"])
-        min_value = torch.min(samples["sample"])
-        for j, sample in enumerate(samples["sample"]):
-            # if (i == num_timesteps - 1 and j == 2):
-            #     torch.save(sample, "reference.pt")
-            #     print("saved")
-            print(sample.shape)
-            #samples_dir = f"{output_dir}/output_{j}"
-            #os.makedirs(samples_dir, exist_ok=True)
-            print(torch.max(sample))
-            print(torch.min(sample))
-            test1.append(sample)
-            #### implement
-            #plt.imshow(img, vmin=-1, vmax=1)
-            #############
-            sample = torch.mean(sample, dim=0, keepdim=True)
-            plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
-            plt.axis("off")
-            plt.savefig(f"{image_dir}/image_{j}.png")
-            plt.close()
-#for i, mse in enumerate(grads):
-x_values = list(range(len(mse)))
-y_values = [tensor.cpu().detach().item() for tensor in mse]
-print(y_values)
-mse_array = torch.tensor(y_values)
-torch.save(mse_array, f"{plot_dir}/mse_array.pt")
-plt.plot(x_values, y_values,marker='.', color='red', linestyle='')
-plt.xlabel('time step')
-plt.ylabel('MSE average')
-plt.savefig(f"{plot_dir}/mse_plot.png")
-plt.close()
+                sample = torch.mean(sample, dim=0, keepdim=True)
+                plt.imshow(np.transpose(sample.cpu().detach(), (1,2,0)), cmap='gray', vmin=-1, vmax=1)
+                plt.axis("off")
+                plt.savefig(f"{image_dir}/image_{j}.png")
+                plt.close()
+    #for i, mse in enumerate(grads):
+    x_values = list(range(len(mse)))
+    y_values = [tensor.cpu().detach().item() for tensor in mse]
+    print(y_values)
+    mse_array = torch.tensor(y_values)
+    torch.save(mse_array, f"{plot_dir}/mse_array.pt")
+    plt.plot(x_values, y_values,marker='.', color='red', linestyle='')
+    plt.xlabel('time step')
+    plt.ylabel('MSE average')
+    plt.savefig(f"{plot_dir}/mse_plot.png")
+    plt.close()
 
 
 
-x_values = list(range(len(activation)))
-y_values = [tensor.cpu().detach().item() for tensor in activation]
-print(y_values)
-activation_array = torch.tensor(y_values)
-torch.save(mse_array, f"{plot_dir}/activation_array.pt")
-plt.plot(x_values, y_values, marker='.', color='blue', linestyle='')
-plt.xlabel('time step')
-plt.ylabel('neuronal response')
-plt.savefig(f"{plot_dir}/activation_plot.png")
-plt.close()
-print(f"############MAX:{max_value}###########MIN:{min_value}")
-with open(f"{plot_dir}/max_min.txt", "w") as file:
-    file.write(f"MAX: {max_value}\nMIN: {min_value}")
+    x_values = list(range(len(activation)))
+    y_values = [tensor.cpu().detach().item() for tensor in activation]
+    print(y_values)
+    activation_array = torch.tensor(y_values)
+    torch.save(mse_array, f"{plot_dir}/activation_array.pt")
+    plt.plot(x_values, y_values, marker='.', color='blue', linestyle='')
+    plt.xlabel('time step')
+    plt.ylabel('neuronal response')
+    plt.savefig(f"{plot_dir}/activation_plot.png")
+    plt.close()
+    print(f"############MAX:{max_value}###########MIN:{min_value}")
+    with open(f"{plot_dir}/max_min.txt", "w") as file:
+        file.write(f"MAX: {max_value}\nMIN: {min_value}")
+
+
+
+    index_1 = "\u2081"  
+    index_2 = "\u2082"
+
+    plt.plot(all_scales, all_activations)
+    plt.xlabel(f"λ{index_1}")
+    plt.ylabel(f"neuronal response")
+    plt.savefig(f"{plot_dir}/responses.png", dpi=500)
+    plt.close()
+
+
+
+    
 # test1 = torch.stack(test1, dim=0)
 # print(dynamic_function(test1))
 
