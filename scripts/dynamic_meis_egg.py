@@ -311,7 +311,7 @@ for scale in scales:
             energy_fn2=MSE_sum,
             energy_fn3 =norm_constraintfn,
             energy_scale=scale,
-            energy_scale2=0,
+            energy_scale2=100,
             energy_scale3=100,
             num_samples=39,
             iterative = False,
