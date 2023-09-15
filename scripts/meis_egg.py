@@ -29,7 +29,7 @@ import cv2
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 3
-scales = [0,5,10, 20, 50,100,200,250]#[energy_scale]#[0,5,50,100,200,250]
+scales = np.linspace(0,50,10)#[energy_scale]#[0,5,50,100,200,250]
 seeds = [0]#np.zeros(10)#np.arange(1)
 unit_seed=27#20#27#42
 norm_constraint = 25  # 25
