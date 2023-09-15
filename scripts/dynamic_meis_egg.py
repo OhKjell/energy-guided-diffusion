@@ -41,7 +41,7 @@ from dynamic.meis.visualizer import get_model_activations
 num_timesteps = 50
 norm_constraint_respones = 5
 norm_constraint = 10
-scales = [75, 100]
+scales = [80, 90, 120]
 
 def get_gpu_memory(device=0):
     properties = torch.cuda.get_device_properties(device)
@@ -109,7 +109,7 @@ def dynamic_function(x):
     print("###########################################")
     print(x.shape)
     x = F.interpolate(
-            x.clone(), size=(100, 100), mode="bilinear", align_corners=False
+            x.clone(), size=(80, 90), mode="bilinear", align_corners=False
         )
     print("###########################################")
     print(x.shape)
@@ -311,7 +311,7 @@ for scale in scales:
             energy_fn2=MSE_sum,
             energy_fn3 =norm_constraintfn,
             energy_scale=scale,
-            energy_scale2=scale -25,
+            energy_scale2=80,
             energy_scale3=100,
             num_samples=39,
             iterative = False,
@@ -397,7 +397,7 @@ index_2 = "\u2082"
 
 plt.plot(all_scales, all_activations)
 plt.xlabel(f"λ{index_1}")
-plt.ylabel(f"neuronal response")
+plt.ylabel(f"neuronal activation")
 plt.savefig(f"output/responses.png", dpi=500)
 plt.close()
 
