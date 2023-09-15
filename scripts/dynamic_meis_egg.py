@@ -41,7 +41,7 @@ from dynamic.meis.visualizer import get_model_activations
 num_timesteps = 50
 norm_constraint_respones = 5
 norm_constraint = 10
-scales = [100]
+scales = [70]
 
 def get_gpu_memory(device=0):
     properties = torch.cuda.get_device_properties(device)
@@ -311,7 +311,7 @@ for scale in scales:
             energy_fn2=MSE_sum,
             energy_fn3 =norm_constraintfn,
             energy_scale=scale,
-            energy_scale2=120,
+            energy_scale2=80,
             energy_scale3=100,
             num_samples=39,
             iterative = False,
