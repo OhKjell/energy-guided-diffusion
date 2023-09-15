@@ -29,14 +29,14 @@ import cv2
 num_timesteps = 100
 energy_scale = 5  # 20
 energy_scale2 = 3
-scales = [energy_scale]#[0,5,50,100,200,250]
+scales = [0,5,50,100,200,250]#[energy_scale]#[0,5,50,100,200,250]
 seeds = [0]#np.zeros(10)#np.arange(1)
 unit_seed=27#20#27#42
 norm_constraint = 25  # 25
 model_type = "task_driven"  #'task_driven' #or 'v4_multihead_attention'
 energyfunction = "VGG"#"MSE" #"MSE"  "None"
 number_units = 1
-number_frames = np.arange(5)
+number_frames = np.arange(1)
 create_vgg = True
 fps = 20
 unit_ids = None #None [id]
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         for seed in seeds:
             
             for scale in scales:
-                #energy_scale = scale
+                energy_scale = scale
                 for unit_idx in units:
 
                     unit_dir = f"{model_dir}/diffMEI_{unit_idx}_seed_{seed}_gray"
@@ -235,7 +235,7 @@ if __name__ == "__main__":
                             end = time.time()
                             lambdas.append(energy_scale)
                             print(type(image))
-                            energies.append(score["train"].cpu().detach() * -1)
+                            energies.append(score["val"].cpu().detach() * -1)
 
                             #SAVE IMAGES
 
@@ -328,7 +328,7 @@ if __name__ == "__main__":
     index_2 = "\u2082"
     plt.plot(lambdas, energies)
     plt.xlabel(f"λ{index_1}")
-    plt.ylabel('/Energy / Response')
+    plt.ylabel('Neuronal excitement')
 #    plt.title(f)
     plt.savefig(f"{model_dir}/plot.png", dpi=500)
     plt.close()
