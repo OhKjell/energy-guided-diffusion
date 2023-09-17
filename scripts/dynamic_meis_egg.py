@@ -342,9 +342,9 @@ for scale in scales:
             pixel_values = imagine[:, max_variance_pixel[0], max_variance_pixel[1]]
 
             
-            plt.figure(figsize=(10, 5))
-            plt.plot(pixel_values, marker='o', linestyle='-')
-            plt.title(f'Pixel Values for Pixel with Highest Variance (Row {max_variance_pixel[0]}, Column {max_variance_pixel[1]})')
+            plt.figure(figsize=(5, 5))
+            plt.plot(pixel_values, marker='', linestyle='-')
+            plt.title(f'Pixel Values for Pixel with Highest Variance')
             plt.xlabel('Image Index')
             plt.ylabel('Pixel Value')
             plt.grid(True)
