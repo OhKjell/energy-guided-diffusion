@@ -41,7 +41,7 @@ from dynamic.meis.visualizer import get_model_activations
 num_timesteps = 50
 norm_constraint_respones = 5
 norm_constraint = 10
-scales = [75]
+scales = [100]
 
 def get_gpu_memory(device=0):
     properties = torch.cuda.get_device_properties(device)
@@ -342,7 +342,7 @@ for scale in scales:
             pixel_values = imagine[:, max_variance_pixel[0], max_variance_pixel[1]]
 
             
-            plt.figure(figsize=(5, 5))
+            plt.figure(figsize=(10, 5))
             plt.plot(pixel_values, marker='', linestyle='-')
             plt.title(f'Pixel Values for Pixel with Highest Variance')
             plt.xlabel('Image Index')
