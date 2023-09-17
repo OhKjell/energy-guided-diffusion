@@ -336,7 +336,7 @@ for scale in scales:
         if i == num_timesteps - 1:
             print(f"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh{samples['sample'].shape}")
             imagine =  torch.mean(samples['sample'], dim=1, keepdim=True).cpu().detach()
-            imagine = imagine.reshape(39, 256, 256)
+            imagine = imagine.squeeze(1).numpy()
             variance_across_images = np.var(imagine, axis=0)
             max_variance_pixel = np.unravel_index(np.argmax(variance_across_images), variance_across_images.shape)
             pixel_values = imagine[:, max_variance_pixel[0], max_variance_pixel[1]]
