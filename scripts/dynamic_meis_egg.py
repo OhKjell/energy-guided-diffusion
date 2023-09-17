@@ -334,7 +334,28 @@ for scale in scales:
         mse.append(samples["mse"])
         activation.append(samples["activation"])
         if i == num_timesteps - 1:
-            print(f"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh{samples['sample']}")
+            print(f"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh{samples['sample'].shape}")
+            imagine =  torch.mean(samples['sample'], dim=1, keepdim=True).cpu().detach()
+            imagine = imagine.reshape(39, 256, 256)
+            variance_across_images = np.var(imagine, axis=0)
+            max_variance_pixel = np.unravel_index(np.argmax(variance_across_images), variance_across_images.shape)
+            pixel_values = imagine[:, max_variance_pixel[0], max_variance_pixel[1]]
+
+            
+            plt.figure(figsize=(10, 5))
+            plt.plot(pixel_values, marker='o', linestyle='-')
+            plt.title(f'Pixel Values for Pixel with Highest Variance (Row {max_variance_pixel[0]}, Column {max_variance_pixel[1]})')
+            plt.xlabel('Image Index')
+            plt.ylabel('Pixel Value')
+            plt.grid(True)
+            plt.savefig(f"{plot_dir}/pixel_value.png")
+            plt.close()
+
+
+
+
+
+
             max_value = torch.max(samples["sample"])
             min_value = torch.min(samples["sample"])
             all_activations.append(dynamic_function(samples["sample"]).cpu().detach())
