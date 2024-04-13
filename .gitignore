@@ -10,3 +10,5 @@ lib/
 results/
 
 *.npy
+.idea
+./models/
