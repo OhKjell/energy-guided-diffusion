@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-# import wandb
+import wandb
 from PIL import Image
 from torch import nn
 from torchvision import transforms
@@ -37,7 +37,8 @@ from dynamic.models.helper_functions import (
 from dynamic.models.helper_functions import get_model_and_dataloader
 
 # get_model_temp_reach, get_model_and_dataloader_for_nm
-# from dynamic.evaluations.single_cell_performance import get_performance_for_single_cell
+# from dynamic.evaluations.single_cell_performance import
+# get_performance_for_single_cell
 from dynamic.meis.visualizer import get_model_activations
 
 # from Python.display import Video
@@ -57,7 +58,8 @@ def get_gpu_memory(device=0):
     available_memory = total_memory - torch.cuda.memory_allocated(device)
     print(f"Total GPU memory: {total_memory / (1024**3):.2f} GiB")
     print(
-        f"Used GPU memory: {torch.cuda.memory_allocated(device) / (1024**3):.2f} GiB"
+        f"Used GPU memory: "
+        f"{torch.cuda.memory_allocated(device) / (1024**3):.2f} GiB"
     )
     print(f"Available GPU memory: {available_memory / (1024**3):.2f} GiB")
 
@@ -92,7 +94,10 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
 # random_tensor = torch.randn(*shape).double().requires_grad_().to("cuda")
 # output = dynamic_model(random_tensor)
 # print("hallo")
-# grad= torch.autograd.grad(outputs=output[0][0], inputs=random_tensor)[0].squeeze(0)
+# grad= torch.autograd.grad(
+#   outputs=output[0][0],
+#   inputs=random_tensor
+# )[0].squeeze(0)
 # print(grad.shape)
 # grad = np.transpose(grad.cpu().detach(), (1,2,3,0))
 # print(grad.shape)
