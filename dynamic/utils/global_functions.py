@@ -12,8 +12,9 @@ model_seed = 8
 mei_seed = 28
 
 home = Path(__file__).absolute().parent.parent
-print(home)
-with open(f"{home}/dynamic_data/data/marmoset_data/responses/config.yaml", "rb") as config_file:
+with open(
+    f"{home}/data/salamander_data/responses/config.yaml", "rb"
+) as config_file:
     global_config = yaml.unsafe_load(config_file)
 # big_crops = {#'01': (50, 50, 75, 65)
 #              '01': (40, 40, 65, 55),
@@ -131,7 +132,9 @@ def get_exclude_cells_based_on_correlation_threshold(
 ):
     if (threshold is None) or (threshold <= 0):
         threshold = -10
-    reliabilities = config["cell_oracle_correlations"][f"0{str(retina_index + 1)}"]
+    reliabilities = config["cell_oracle_correlations"][
+        f"0{str(retina_index + 1)}"
+    ]
     # already_excluded_cells = config['exclude_cells'][f'0{str(retina_index + 1)}']
     newly_excluded_cells = [
         x for x in range(len(reliabilities)) if reliabilities[x] < threshold
@@ -164,8 +167,10 @@ def get_cell_numbers_after_crop(
     excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
         retina_index, config, correlation_threshold
     )
-    excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
-        retina_index, config, explained_variance_threshold
+    excluded_from_ev = (
+        get_exclude_cells_based_on_explainable_variance_threshold(
+            retina_index, config, explained_variance_threshold
+        )
     )
     excluded_cells = list(
         set(excluded_from_ev + excluded_from_corr + already_excluded_cells)
@@ -179,15 +184,19 @@ def get_cell_names(
     correlation_threshold=None,
     explained_variance_threshold=None,
 ):
-    if 'exclude_cells' in config.keys():
-        already_excluded_cells = config["exclude_cells"][f"0{retina_index + 1}"]
+    if "exclude_cells" in config.keys():
+        already_excluded_cells = config["exclude_cells"][
+            f"0{retina_index + 1}"
+        ]
     else:
         already_exclude_cells = []
     excluded_from_corr = get_exclude_cells_based_on_correlation_threshold(
         retina_index, config, correlation_threshold
     )
-    excluded_from_ev = get_exclude_cells_based_on_explainable_variance_threshold(
-        retina_index, config, explained_variance_threshold
+    excluded_from_ev = (
+        get_exclude_cells_based_on_explainable_variance_threshold(
+            retina_index, config, explained_variance_threshold
+        )
     )
     cell_names = [
         x
