@@ -617,6 +617,131 @@ def get_model_and_dataloader_for_nm(
     return dataloaders, model, config
 
 
+def get_nm_model_and_dataloader_for_wn(
+    config_dict,
+    data_dir,
+    seed,
+    directory,
+    filename,
+    device="cuda",
+    test=False,
+    data_type="salamander",
+    model_fn="models.BasicEncoder.build_trained",
+    freeze=True,
+    fancy_nonlin=False,
+):
+    """
+    Get the model and the dataloader for the given configuration
+    Args:
+    config_dict: dict
+        Configuration dictionary for the model
+    data_dir: str
+        Directory where the data is stored
+    seed: int
+        Seed for the model
+    directory: str
+        Directory where the model is stored
+    filename: str
+        Name of the model
+    device: str
+        Device on which to run the model
+    test: bool
+        Whether to run the model in test mode
+    data_type: str
+        Type of the data
+    model_fn: str
+        Function to build the model
+    freeze: bool
+        Whether to freeze the model
+    fancy_nonlin: bool
+        Whether to use the fancy nonlinearity
+    Returns:
+    dataloaders: dict
+        Dataloader for the model
+    model: nn.Module
+        Model for the given configuration
+    config: dict
+        Configuration dictionary for the model
+    """
+    model_config, config, home_dir, config_dict = config_init(
+        config_dict=config_dict,
+        data_dir=data_dir,
+        filename=filename,
+        directory=directory,
+    )
+    config["base_path"] = home_dir
+
+    dataloader_config_from_model = config["dataloader_config"]
+    new_dataloader_config = {
+        "train_image_path": f"{data_dir}/data/{data_type}_data/non_repeating_stimuli_flipped/",
+        "test_image_path": f"{data_dir}/data/{data_type}_data/repeating_stimuli_flipped/",
+        "neuronal_data_dir": f"{data_dir}/data/{data_type}_data/responses/",
+        "conv3d": True,
+        "movie_like": False,
+        "flip": True,
+        "time_chunk_size": 70,
+        "batch_size": 16,
+        "num_of_trials_to_use": 21,
+    }
+    # if test:
+
+    print(f"data_dir: {home_dir}")
+    new_dataloader_config["config"] = config_dict
+    new_dataloader_config["crop"] = model_config["config"]["big_crops"]["01"]
+
+    new_dataloader_config["config"]["big_crops"]["01"] = model_config[
+        "config"
+    ]["big_crops"]["01"]
+    new_dataloader_config["crop"] = model_config["config"]["big_crops"]["01"]
+    # dataloader_config_from_model['batch_size'] = 1
+    # dataloader_config_from_model['time_chunk_size'] = 1
+    if "readout" in model_config.keys():
+        del model_config["readout"]
+    for key, value in dataloader_config_from_model.items():
+        if key not in [
+            "all_image_path",
+            "frame_file",
+            "img_dir_name",
+            "full_img_w",
+            "full_img_h",
+            "padding",
+            "stimulus_seed",
+            "basepath",
+            "hard_coded",
+            "conv3d",
+            "movie_like",
+            "config",
+            "neuronal_data_dir",
+            "time_chunk_size",
+            "batch_size",
+            "num_of_trials_to_use",
+        ]:
+            new_dataloader_config[key] = value
+            print(f"copied {key} with value {value} to new dataloader")
+
+    dataloaders, model, _ = get_model_and_dataloader_for_nm(
+        directory,
+        filename,
+        model_fn=model_fn,
+        device=device,
+        data_dir=data_dir,
+        seed=seed,
+        test=test,
+        config_dict=config_dict,
+        data_type=data_type,
+        dataloader_config=dataloader_config_from_model,
+        stimulus_seed=None,
+        num_of_trials_to_use=21,
+        freeze=freeze,
+        fancy_nonlin=fancy_nonlin,
+    )
+    dataset_fn = "datasets.white_noise_loader"
+
+    dataloaders = builder.get_data(dataset_fn, new_dataloader_config)
+
+    return dataloaders, model, config
+
+
 def get_param_for_all_models(
     directory, files, model_seed, param, model_file_subset="l_3"
 ):
@@ -777,3 +902,128 @@ def get_possible_seeds(model_name, model_dir):
                 seeds.append(int(file.split("_")[1]))
 
     return seeds
+
+
+def get_model_and_dataloader_based_on_setting(
+    setting,
+    directory,
+    filename,
+    model_fn,
+    device,
+    data_dir,
+    performance,
+    seed,
+    data_type,
+    config_dict,
+    dataloader_config=None,
+    stimulus_seed=None,
+    fixation_file=None,
+    freeze=True,
+    fancy_nonlin=False,
+):
+    """
+    Get the model and the dataloader for the given setting
+    Args:
+    setting: str
+        Setting for the model
+    directory: str
+        Directory where the model is stored
+    filename: str
+        Name of the model
+    model_fn: str
+        Function to build the model
+    device: str
+        Device on which to run the model
+    data_dir: str
+        Directory where the data is stored
+    performance: str
+        Performance for the model
+    seed: int
+        Seed for the model
+    data_type: str
+        Type of the data
+    config_dict: dict
+        Configuration dictionary for the model
+    dataloader_config: dict
+        Configuration dictionary for the dataloader
+    stimulus_seed: int
+        Seed for the stimulus
+    fixation_file: str
+        File with the fixation
+    freeze: bool
+        Whether to freeze the model
+    fancy_nonlin: bool
+        Whether to use the fancy nonlinearity
+    Returns:
+    dataloaders: dict
+        Dataloader for the model
+    model: nn.Module
+        Model for the given configuration
+    config: dict
+        Configuration dictionary for the model
+    """
+    assert setting in ["nm", "wn", "nm_for_wn", "wn_for_nm"]
+    if setting == "nm":
+        dataloaders, model, config = get_model_and_dataloader_for_nm(
+            directory,
+            filename,
+            model_fn=model_fn,
+            device=device,
+            data_dir=data_dir,
+            test=performance == "test",
+            seed=seed,
+            data_type=data_type,
+            dataloader_config=dataloader_config,
+            config_dict=config_dict,
+            stimulus_seed=stimulus_seed,
+            fixation_file=fixation_file,
+            freeze=freeze,
+            fancy_nonlin=fancy_nonlin,
+        )
+    elif setting == "wn":
+        dataloaders, model, config = get_model_and_dataloader(
+            directory,
+            filename,
+            model_fn=model_fn,
+            device=device,
+            data_dir=data_dir,
+            config_dict=config_dict,
+            test=performance == "test",
+            seed=seed,
+            data_type=data_type,
+            freeze=freeze,
+            fancy_nonlin=fancy_nonlin,
+        )
+    elif setting == "wn_for_nm":
+        assert stimulus_seed is not None and fixation_file is not None
+        dataloaders, model, config = get_wn_model_and_dataloader_for_nm(
+            directory,
+            filename,
+            model_fn=model_fn,
+            device=device,
+            data_dir=data_dir,
+            test=performance == "test",
+            seed=seed,
+            config_dict=config_dict,
+            data_type=data_type,
+            fixation_file=fixation_file,
+            stimulus_seed=stimulus_seed,
+            fancy_nonlin=fancy_nonlin,
+            freeze=freeze,
+        )
+    else:
+        dataloaders, model, config = get_nm_model_and_dataloader_for_wn(
+            directory=directory,
+            filename=filename,
+            config_dict=config_dict,
+            model_fn=model_fn,
+            device=device,
+            data_dir=data_dir,
+            test=performance == "test",
+            seed=seed,
+            data_type=data_type,
+            freeze=freeze,
+            fancy_nonlin=fancy_nonlin,
+        )
+
+    return dataloaders, model, config
