@@ -161,15 +161,15 @@ def frame_movie_loader(
     normalize_responses=False,
     frame_file="_img_",
     img_dir_name="stimuli",
-    full_img_w=1400,
-    full_img_h=1200,
+    full_img_w=1400
+    full_img_h=1200
     final_training=False,
     padding=200,
     retina_specific_crops=True,
     stimulus_seed=2021,
 ):
     dataloaders = {"train": {}, "validation": {}, "test": {}}
-
+    print(config['fixation_file'][str((retina_index + 1)).zfill(2)])
     with open(
         f"{basepath}/{config['fixation_file'][str((retina_index + 1)).zfill(2)]}", "r"
     ) as file:

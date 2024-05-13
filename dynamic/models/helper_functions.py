@@ -187,6 +187,7 @@ def config_init(config_dict, data_dir, directory, filename):
 
     if model_config["spatial_input_kern"] is None:
         return None, None, None
+    print(home_dir, "home_dir")
     return model_config, model_related_config, home_dir, config_dict
 
 
@@ -234,6 +235,7 @@ def build_model_and_dataloder(
     model: nn.Module
         Model for the given configuration
     """
+    print(dataset_fn)
     dataloaders = builder.get_data(dataset_fn, dataloader_config)
     model = builder.get_model(
         model_fn,
@@ -315,7 +317,7 @@ def get_model_and_dataloader(
     )
     if fancy_nonlin:
         model_config["fancy_nonlin"] = True
-    dataset_fn = "datasets.white_noise_loader"
+    dataset_fn = "dynamic.datasets.white_noise_loader"
     config["base_path"] = home_dir
     dataloader_config = config["dataloader_config"]
     dataloader_config[
@@ -433,7 +435,7 @@ def get_wn_model_and_dataloader_for_nm(
     model_config = model_related_config["model_config"]
     model_config["readout_type"] = "isotropic"
 
-    dataset_fn = "datasets.frame_movie_loader"
+    dataset_fn = "dynamic.datasets.frame_movie_loader"
     model_related_config["base_path"] = home_dir
     dataloader_config_from_model = model_related_config["dataloader_config"]
     new_dataloader_config = {}
@@ -559,7 +561,6 @@ def get_model_and_dataloader_for_nm(
     config: dict
         Configuration dictionary for the model
     """
-    print(data_dir, "data dir")
     model_config, config, home_dir, config_dict = config_init(
         config_dict, data_dir, directory=directory, filename=filename
     )
@@ -569,11 +570,11 @@ def get_model_and_dataloader_for_nm(
         config_dict = model_config["config"]
     if fancy_nonlin:
         model_config["fancy_nonlin"] = True
-
-    dataset_fn = "datasets.frame_movie_loader"
+    dataset_fn = "dynamic.datasets.frame_movie_loader"
     config["base_path"] = home_dir
     if dataloader_config is None:
         dataloader_config = config["dataloader_config"]
+    
     dataloader_config["basepath"] = f"{home_dir}"
     dataloader_config[
         "img_dir_name"
@@ -592,14 +593,13 @@ def get_model_and_dataloader_for_nm(
         dataloader_config["stimulus_seed"] = stimulus_seed
 
     dataloader_config["batch_size"] = 16
-    print(f"data_dir: {home}")
     dataloader_config[
         "neuronal_data_dir"
     ] = f"{home_dir}/data/{data_type}_data/responses/"
     dataloader_config["config"] = config_dict
     if num_of_trials_to_use is not None:
         dataloader_config["num_of_trials_to_use"] = num_of_trials_to_use
-
+    
     model_fn = eval(model_fn)
     dataloaders, model = build_model_and_dataloder(
         dataset_fn=dataset_fn,

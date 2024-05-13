@@ -71,10 +71,11 @@ get_gpu_memory()
 torch.backends.cudnn.enabled = False
 retina_index = 1
 data_type = "marmoset"
-directory = "src/dynamic/dynamic_models"
+directory = "/srv/pcpool/home/epool10/project/energy-guided-diffusion/dynamic/dynamic_models"
 filename = "dynamic_model"
+data_dir = "/srv/pcpool/home/epool10/project/energy-guided-diffusion/dynamic/dynamic_data/"
 device = "cuda"
-model_fn = "dynamic.models.FactorizedEncoder.build_trained"
+model_fn = "dynamic.models.MultiRetinalFactorizedEncoder.build_trained"
 seed = 8
 
 # build dynamic model
@@ -84,7 +85,7 @@ dataloader, dynamic_model, config = get_model_and_dataloader_for_nm(
     filename,
     model_fn=model_fn,
     device=device,
-    data_dir=None,  # if data_dir is None, root of the project is considered
+    data_dir=data_dir,  # if None, root of the project is considered
     test=False,
     seed=seed,
     data_type=data_type,
