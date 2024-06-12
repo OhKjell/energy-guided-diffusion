@@ -8,12 +8,12 @@ import yaml
 
 cuda = torch.cuda.is_available()
 dataset_seed = 18
-model_seed = 8
+model_seed = 2
 mei_seed = 28
 
 home = Path(__file__).absolute().parent.parent
 with open(
-    f"{home}/data/salamander_data/responses/config.yaml", "rb"
+    f"{home}/dynamic_data/data/marmoset_data/responses/config.yaml", "rb"
 ) as config_file:
     global_config = yaml.unsafe_load(config_file)
 # big_crops = {#'01': (50, 50, 75, 65)

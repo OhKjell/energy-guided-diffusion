@@ -152,7 +152,7 @@ def config_init(config_dict, data_dir, directory, filename):
         Configuration dictionary for the model
     """
     if config_dict is None:
-        print("ATTENTION, loading global config, i.e. the one for salamander")
+        print("ATTENTION, loading global config, i.e. the one for marmoset")
         config_dict = global_config
     if data_dir is None:
         home_dir = home

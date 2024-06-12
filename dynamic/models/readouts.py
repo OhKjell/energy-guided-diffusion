@@ -61,6 +61,9 @@ class InitializedMultipleFullGaussian2d(ModuleDict):
             )
             self.add_module(data_key, readout)
 
+    def forward(self, x):
+        return {key: readout(x) for key, readout in self.items()}
+
 
 def initialize_full_gaussian_readout(
     retina_index,

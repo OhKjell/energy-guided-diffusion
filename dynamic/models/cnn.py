@@ -5,7 +5,8 @@ from pathlib import Path
 import torch
 import numpy as np
 import yaml
-from neuralpredictors.layers.readouts import FullGaussian2d, MultipleFullGaussian2d
+from neuralpredictors.layers.readouts import FullGaussian2d, \
+    MultipleFullGaussian2d
 from dynamic.datasets.stas import (
     get_rf_center_grid,
     recalculate_positions_after_convs,
@@ -20,6 +21,11 @@ from dynamic.datasets.whitenoise_salamander_loaders import get_dataloader_dims
 from dynamic.evaluations.factorized_cnn_visualization import (
     visualized_factorized_filters,
     visualize_temporal_kernels,
+)
+from dynamic.models.ln_model import (
+    ParametrizedELU,
+    parametrized_softplus,
+    multi_softplus,
 )
 from dynamic.models.model_visualizations import (
     visualize_all_gaussian_readout,
@@ -42,8 +48,10 @@ from dynamic.models.cores import Basic3dCore, Factorized3dCore
 
 
 class Encoder(nn.Module):
-    def __init__(self, core, readout, readout_nonlinearity, elu_xshift, elu_yshift, l1, n_neurons_dict):
+    def __init__(self, core, readout, readout_nonlinearity, elu_xshift,
+                 elu_yshift, l1, n_neurons_dict):
         super().__init__()
+        print("readout: ", readout)
         self.core = core
         self.readout = readout
         self.l1 = l1
@@ -52,11 +60,11 @@ class Encoder(nn.Module):
                 elu_xshift, elu_yshift
             )
         elif readout_nonlinearity == 'multi_softplus':
-            self.nonlinearity = core.nonlinearities[readout_nonlinearity](n_neurons_dict, data_keys = n_neurons_dict.keys())
+            self.nonlinearity = core.nonlinearities[readout_nonlinearity](
+                n_neurons_dict, data_keys=n_neurons_dict.keys())
         else:
             self.nonlinearity = core.nonlinearities[readout_nonlinearity]()
         self.visualization_dir = None
-
 
     def forward(self, x, data_key=None):
         out_core = self.core(x)
@@ -77,21 +85,25 @@ class Encoder(nn.Module):
         return out
 
     @staticmethod
-    def build_trained(dataloaders, model_dir, model_name, data_dir, device="cpu"):
+    def build_trained(dataloaders, model_dir, model_name, data_dir,
+                      device="cpu"):
         # get parameters from config file
         if '/' not in model_name:
-            with open(f"{model_dir}/{model_name}/config/config.yaml", "r") as config_file:
+            with open(f"{model_dir}/{model_name}/config/config.yaml",
+                      "r") as config_file:
                 config = yaml.unsafe_load(config_file)
         else:
             model_name_abbrev = model_name.split('/')[0]
-            with open(f"{model_dir}/{model_name_abbrev}/config/config.yaml", "r") as config_file:
+            with open(f"{model_dir}/{model_name_abbrev}/config/config.yaml",
+                      "r") as config_file:
                 config = yaml.unsafe_load(config_file)
 
         model_config = config["model_config"]
         nm = False
         if 'config' in config.keys():
             for key in dataloaders['train'].keys():
-                config['config']['big_crops'][key] = dataloaders['train'][key].dataset.crop
+                config['config']['big_crops'][key] = dataloaders['train'][
+                    key].dataset.crop
                 if dataloaders['train'][key].dataset.num_of_imgs > 20000:
                     nm = True
 
@@ -158,7 +170,8 @@ class Encoder(nn.Module):
             self.visualization_dir,
             readout_index=self.config_dict["retina_index"] + 1,
             retina_index=self.config_dict["retina_index"],
-            correlation_threshold=self.config_dict["oracle_correlation_threshold"],
+            correlation_threshold=self.config_dict[
+                "oracle_correlation_threshold"],
             explainable_variance_threshold=self.config_dict[
                 "explainable_variance_threshold"
             ],
@@ -177,7 +190,8 @@ class Encoder(nn.Module):
 
 class BasicEncoder(Encoder):
     def __init__(
-        self, config_dict: dict, dataloaders: dict, trained: bool, seed: None
+            self, config_dict: dict, dataloaders: dict, trained: bool,
+            seed: None
     ) -> None:
         config_dict["padding"] = 0
         core_dict = dict(
@@ -206,7 +220,8 @@ class BasicEncoder(Encoder):
         readout_dict = dict(
             retina_index=config_dict["retina_index"],
             data_dir=config_dict["base_path"],
-            oracle_correlation_threshold=config_dict["oracle_correlation_threshold"],
+            oracle_correlation_threshold=config_dict[
+                "oracle_correlation_threshold"],
             explainable_variance_threshold=config_dict[
                 "explainable_variance_threshold"
             ],
@@ -245,7 +260,8 @@ class BasicEncoder(Encoder):
 
     @staticmethod
     def build_trained(
-        dataloaders, model_dir, model_name, data_dir, device="cpu", seed=None
+            dataloaders, model_dir, model_name, data_dir, device="cpu",
+            seed=None
     ):
         # get parameters from config file
         config_dict = Encoder.build_trained(
@@ -256,7 +272,8 @@ class BasicEncoder(Encoder):
             data_dir=data_dir,
         )
         model = BasicEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, trained=True, seed=seed
+            config_dict=config_dict, dataloaders=dataloaders, trained=True,
+            seed=seed
         )
         state_dict = torch.load(
             f"{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
@@ -279,7 +296,8 @@ class BasicEncoder(Encoder):
         }
         set_random_seed(seed)
         model = BasicEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, trained=False, seed=seed
+            config_dict=config_dict, dataloaders=dataloaders, trained=False,
+            seed=seed
         )
         return model
 
@@ -303,13 +321,15 @@ class BasicEncoder(Encoder):
 
 class FactorizedEncoder(Encoder):
     def __init__(
-        self, config_dict: dict, dataloaders: dict, seed: None, trained: bool
+            self, config_dict: dict, dataloaders: dict, seed: None,
+            trained: bool
     ) -> None:
         config_dict["padding"] = 0
         core_dict = dict(
             input_channels=config_dict["input_channels"],
             hidden_channels=config_dict["hidden_channels"],
-            groups=config_dict['groups'] if 'groups' in config_dict.keys() else 1,
+            groups=config_dict[
+                'groups'] if 'groups' in config_dict.keys() else 1,
             spatial_input_kernel=config_dict["spatial_input_kern"],
             spatial_hidden_kernel=config_dict["spatial_hidden_kern"],
             temporal_input_kernel=config_dict["temporal_input_kern"],
@@ -337,7 +357,8 @@ class FactorizedEncoder(Encoder):
         readout_dict = dict(
             retina_index=config_dict["retina_index"],
             data_dir=config_dict["base_path"],
-            oracle_correlation_threshold=config_dict["oracle_correlation_threshold"],
+            oracle_correlation_threshold=config_dict[
+                "oracle_correlation_threshold"],
             explainable_variance_threshold=config_dict[
                 "explainable_variance_threshold"
             ],
@@ -354,7 +375,8 @@ class FactorizedEncoder(Encoder):
             img_h=config_dict["img_h"],
             img_w=config_dict["img_w"],
             subsample=config_dict["subsample"],
-            flip_sta=config_dict["flip_sta"] if 'flip_sta' in config_dict.keys() else False,
+            flip_sta=config_dict[
+                "flip_sta"] if 'flip_sta' in config_dict.keys() else False,
             cell_index=config_dict["cell_index"],
 
         )
@@ -379,7 +401,8 @@ class FactorizedEncoder(Encoder):
 
     @staticmethod
     def build_trained(
-        dataloaders, model_dir, model_name, data_dir, seed=None, device="cpu"
+            dataloaders, model_dir, model_name, data_dir, seed=None,
+            device="cpu"
     ):
         # get parameters from config file
         config_dict = Encoder.build_trained(
@@ -390,7 +413,8 @@ class FactorizedEncoder(Encoder):
             data_dir=data_dir,
         )
         model = FactorizedEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=True
+            config_dict=config_dict, dataloaders=dataloaders, seed=seed,
+            trained=True
         )
         print(seed)
         state_dict = torch.load(
@@ -422,7 +446,8 @@ class FactorizedEncoder(Encoder):
         }
         set_random_seed(seed)
         model = FactorizedEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=False
+            config_dict=config_dict, dataloaders=dataloaders, seed=seed,
+            trained=False
         )
         model.config_dict = config_dict
         model.to(device)
@@ -438,7 +463,8 @@ class FactorizedEncoder(Encoder):
             visualization_dir,
             readout_index=self.config_dict["retina_index"] + 1,
             retina_index=self.config_dict["retina_index"],
-            correlation_threshold=self.config_dict["oracle_correlation_threshold"],
+            correlation_threshold=self.config_dict[
+                "oracle_correlation_threshold"],
             explainable_variance_threshold=self.config_dict[
                 "explainable_variance_threshold"
             ],
@@ -457,7 +483,8 @@ class FactorizedEncoder(Encoder):
 
 class MultiRetinalFactorizedEncoder(Encoder):
     def __init__(
-        self, config_dict: dict, dataloaders: dict, seed: None, trained: bool
+            self, config_dict: dict, dataloaders: dict, seed: None,
+            trained: bool
     ) -> None:
         config_dict["padding"] = 0
         core_dict = dict(
@@ -495,7 +522,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
             data_keys=data_keys,
 
             data_dir=config_dict["base_path"],
-            oracle_correlation_threshold=config_dict["oracle_correlation_threshold"],
+            oracle_correlation_threshold=config_dict[
+                "oracle_correlation_threshold"],
             explainable_variance_threshold=config_dict[
                 "explainable_variance_threshold"
             ],
@@ -512,7 +540,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
             img_h=config_dict["img_h"],
             img_w=config_dict["img_w"],
             subsample=config_dict["subsample"],
-            flip_sta=config_dict['flip_sta'] if 'flip_sta' in config_dict.keys() else False
+            flip_sta=config_dict[
+                'flip_sta'] if 'flip_sta' in config_dict.keys() else False
         )
 
         core = Factorized3dCore(**core_dict)
@@ -523,7 +552,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
             self.seed = seed
         self.trained = trained
 
-        readout = initialize_multiple_full_gaussian_readouts(**readout_dict, core=core)
+        readout = initialize_multiple_full_gaussian_readouts(**readout_dict,
+                                                             core=core)
         super().__init__(
             core,
             readout,
@@ -536,7 +566,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
 
     @staticmethod
     def build_trained(
-        dataloaders, model_dir, model_name, data_dir, seed=None, device="cpu"
+            dataloaders, model_dir, model_name, data_dir, seed=None,
+            device="cpu"
     ):
         # get parameters from config file
         config_dict = Encoder.build_trained(
@@ -547,7 +578,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
             data_dir=data_dir,
         )
         model = MultiRetinalFactorizedEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=True
+            config_dict=config_dict, dataloaders=dataloaders, seed=seed,
+            trained=True
         )
         print(seed)
         print(model_dir)
@@ -593,7 +625,8 @@ class MultiRetinalFactorizedEncoder(Encoder):
         }
         set_random_seed(seed)
         model = MultiRetinalFactorizedEncoder(
-            config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=False
+            config_dict=config_dict, dataloaders=dataloaders, seed=seed,
+            trained=False
         )
         model.config_dict = config_dict
         model.to(device)
@@ -601,39 +634,39 @@ class MultiRetinalFactorizedEncoder(Encoder):
 
 
 def sta_model(
-    dataloaders,
-    hidden_channels,
-    input_kern,
-    hidden_kern,
-    seed=None,
-    l1=0.01,
-    gamma_input=0.0,
-    readout="fc",
-    core_nonlinearity="elu",
-    final_nonlinearity="relu",
-    elu_xshift=0.0,
-    elu_yshift=1,
-    bias=True,
-    batch_norm=False,
-    readout_bias=False,
-    momentum=0.9,
-    padding=True,
-    laplace_padding=None,
-    input_regularizer="LaplaceL2norm",
-    init_mu_range=0.3,
-    init_sigma=0.35,
-    retina_index=0,
-    data_dir=None,
-    use_grid_mean_predictor=False,
-    initialize_source_grid=True,
-    train_core=False,
-    subsample=1,
-    train_readout=True,
-    correlation_threshold=None,
-    explainable_variance_threshold=None,
-    cell_index=None,
-    nonlin=True,
-    config=None,
+        dataloaders,
+        hidden_channels,
+        input_kern,
+        hidden_kern,
+        seed=None,
+        l1=0.01,
+        gamma_input=0.0,
+        readout="fc",
+        core_nonlinearity="elu",
+        final_nonlinearity="relu",
+        elu_xshift=0.0,
+        elu_yshift=1,
+        bias=True,
+        batch_norm=False,
+        readout_bias=False,
+        momentum=0.9,
+        padding=True,
+        laplace_padding=None,
+        input_regularizer="LaplaceL2norm",
+        init_mu_range=0.3,
+        init_sigma=0.35,
+        retina_index=0,
+        data_dir=None,
+        use_grid_mean_predictor=False,
+        initialize_source_grid=True,
+        train_core=False,
+        subsample=1,
+        train_readout=True,
+        correlation_threshold=None,
+        explainable_variance_threshold=None,
+        cell_index=None,
+        nonlin=True,
+        config=None,
 ):
     """
     A model consisting of a 1 layer Basic3dCore in ./models and FullGaussianReadout neuralpredictors.layers.readouts.
@@ -662,7 +695,8 @@ def sta_model(
     # Obtain the named tuple fields from the first entry of the first dataloader in the dictionary
     in_name, out_name = next(iter(list(dataloaders.values())[0]))._fields
 
-    n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(dataloaders)
+    n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(
+        dataloaders)
     # n_neurons_dict = {k: v[out_name][1] for k, v in session_shape_dict.items()}
     # in_shapes_dict = {k: v[in_name] for k, v in session_shape_dict.items()}
     # input_channels = [v[in_name][1] for v in session_shape_dict.values()]
@@ -699,11 +733,11 @@ def sta_model(
             out = readout_out + torch.tensor(
                 [
                     mean[
-                        :,
-                        0,
-                        :,
-                        self.readout.mu_not_normalized[i, 1].astype(int),
-                        self.readout.mu_not_normalized[i, 0].astype(int),
+                    :,
+                    0,
+                    :,
+                    self.readout.mu_not_normalized[i, 1].astype(int),
+                    self.readout.mu_not_normalized[i, 0].astype(int),
                     ]
                     .numpy()
                     .flatten()
@@ -716,7 +750,8 @@ def sta_model(
             return out
 
         def regularizer(self, data_key=None):
-            return self.core.regularizer() + (l1 * readout.feature_l1(average=False),)
+            return self.core.regularizer() + (
+            l1 * readout.feature_l1(average=False),)
 
     true_rf_fields, loadings, components = calculate_pca_on_cropped_stas(
         input_kern[0],
@@ -764,7 +799,7 @@ def sta_model(
 
     for filter_index in range(core.features[0].conv.weight.shape[0]):
         core.features[0].conv.weight.data[
-            filter_index, :, :, :, :
+        filter_index, :, :, :, :
         ] = torch.nn.Parameter(
             torch.tensor(
                 components.components_[filter_index].reshape(
@@ -785,8 +820,8 @@ def sta_model(
 
     readout = FullGaussian2d(
         in_shape=(
-            (core.hidden_channels[-1],)
-            + core.get_output_shape(list(in_shapes_dict.values())[0])[2:]
+                (core.hidden_channels[-1],)
+                + core.get_output_shape(list(in_shapes_dict.values())[0])[2:]
         ),
         outdims=list(n_neurons_dict.values())[0],
         bias=readout_bias,
@@ -814,7 +849,8 @@ def sta_model(
         mu_not_normalized = source_grid.copy()
         readout.mu_not_normalized = source_grid.copy()
         source_grid = normalize_source_grid(
-            source_grid, core.get_output_shape(list(in_shapes_dict.values())[0])[2:]
+            source_grid,
+            core.get_output_shape(list(in_shapes_dict.values())[0])[2:]
         )
 
         for i in range(source_grid.shape[0]):
@@ -831,8 +867,8 @@ def sta_model(
                 source_grid[0, cell_index].unsqueeze(0)
             )
             readout.mu_not_normalized = readout.mu_not_normalized[
-                cell_index : cell_index + 1
-            ]
+                                        cell_index: cell_index + 1
+                                        ]
         else:
             readout._mu.data = torch.nn.Parameter(source_grid)
 

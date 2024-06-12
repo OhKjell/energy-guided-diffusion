@@ -76,7 +76,7 @@ filename = "dynamic_model"
 data_dir = "/srv/pcpool/home/epool10/project/energy-guided-diffusion/dynamic/dynamic_data/"
 device = "cuda"
 model_fn = "dynamic.models.MultiRetinalFactorizedEncoder.build_trained"
-seed = 8
+seed = 2
 
 # build dynamic model
 

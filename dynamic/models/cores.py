@@ -9,6 +9,7 @@ from torch import nn
 from neuralpredictors.layers.activations import AdaptiveELU
 import math
 from dynamic.models.batch_norm_scale import Bias3DLayer, Scale3DLayer
+from dynamic.models.ln_model import parametrized_softplus, multi_softplus
 
 
 class Core3d(Core):
@@ -97,7 +98,8 @@ class Basic3dCore(Core3d, nn.Module):
             if input_regularizer == "GaussianLaplaceL2"
             else dict(padding=laplace_padding)
         )
-        self._input_weight_regularizer = regularizers.__dict__[input_regularizer](
+        self._input_weight_regularizer = regularizers.__dict__[
+            input_regularizer](
             **regularizer_config
         )
         self.temporal_regulazirer = TimeLaplaceL23d()
@@ -119,6 +121,8 @@ class Basic3dCore(Core3d, nn.Module):
             "softplus": torch.nn.Softplus,
             "relu": torch.nn.ReLU,
             "adaptive_elu": AdaptiveELU,
+            "parametrized_softplus": parametrized_softplus,
+            "multi_softplus": multi_softplus
         }
 
         if isinstance(self.hidden_channels, int):
@@ -157,10 +161,12 @@ class Basic3dCore(Core3d, nn.Module):
 
         if batch_norm:
             if independent_bn_bias:
-                layer["norm"] = nn.BatchNorm3d(hidden_channels, momentum=momentum)
+                layer["norm"] = nn.BatchNorm3d(hidden_channels,
+                                               momentum=momentum)
             else:
                 layer["norm"] = nn.BatchNorm3d(
-                    hidden_channels, momentum=momentum, affine=bias and batch_norm_scale
+                    hidden_channels, momentum=momentum,
+                    affine=bias and batch_norm_scale
                 )
                 if bias:
                     if not batch_norm_scale:
@@ -197,7 +203,8 @@ class Basic3dCore(Core3d, nn.Module):
 
             if batch_norm:
                 if independent_bn_bias:
-                    layer["norm"] = nn.BatchNorm3d(hidden_channels, momentum=momentum)
+                    layer["norm"] = nn.BatchNorm3d(hidden_channels,
+                                                   momentum=momentum)
                 else:
                     layer["norm"] = nn.BatchNorm3d(
                         hidden_channels,
@@ -212,13 +219,16 @@ class Basic3dCore(Core3d, nn.Module):
 
             if self.final_nonlinearity or l < self.layers:
                 if hidden_nonlinearities == "adaptive_elu":
-                    layer["nonlin"] = self.nonlinearities[hidden_nonlinearities](
+                    layer["nonlin"] = self.nonlinearities[
+                        hidden_nonlinearities](
                         x_shift=x_shift, y_shift=y_shift
                     )
                 else:
-                    layer["nonlin"] = self.nonlinearities[hidden_nonlinearities]()
+                    layer["nonlin"] = self.nonlinearities[
+                        hidden_nonlinearities]()
 
-            self.features.add_module("layer{}".format(l + 1), nn.Sequential(layer))
+            self.features.add_module("layer{}".format(l + 1),
+                                     nn.Sequential(layer))
 
         self.initialize(cuda=cuda)
 
@@ -274,10 +284,12 @@ class Basic3dCore(Core3d, nn.Module):
 
             t = math.floor(t - (kernel_size[0] - 1) * temporal_dilation)
             h = math.floor(
-                (h - (kernel_size[1] - 1) * spatial_dilation - 1) / self.stride[i] + 1
+                (h - (kernel_size[1] - 1) * spatial_dilation - 1) /
+                self.stride[i] + 1
             )
             w = math.floor(
-                (w - (kernel_size[2] - 1) * spatial_dilation - 1) / self.stride[i] + 1
+                (w - (kernel_size[2] - 1) * spatial_dilation - 1) /
+                self.stride[i] + 1
             )
 
         output_shape = self.hidden_channels[layers - 1], t, h, w
@@ -285,6 +297,7 @@ class Basic3dCore(Core3d, nn.Module):
         return output_shape
 
     def get_kernels(self):
+
         return [self.input_kernel] + [kernel for kernel in self.hidden_kernel]
 
     def visualize_filters(self):
@@ -321,6 +334,7 @@ class Factorized3dCore(nn.Module):
             hidden_spatial_dilation=1,
             hidden_temporal_dilation=1,
             cuda=False,
+            groups=1,
     ):
         """
         Core, similar to BasicCore but the convolution is separated into first spatial and then temporal.
@@ -362,12 +376,14 @@ class Factorized3dCore(nn.Module):
             if input_regularizer == "GaussianLaplaceL2"
             else dict(padding=laplace_padding)
         )
-        self._input_weight_regularizer = regularizers.__dict__[input_regularizer](
+        self._input_weight_regularizer = regularizers.__dict__[
+            input_regularizer](
             **regularizer_config
         )
         self.temporal_regularizer = TimeLaplaceL23d()
         self.layers = layers
         self.input_channels = input_channels
+        self.groups = groups
         self.spatial_input_kernel = spatial_input_kernel
         self.temporal_input_kernel = temporal_input_kernel
         self.hidden_channels = hidden_channels
@@ -387,6 +403,8 @@ class Factorized3dCore(nn.Module):
             "softplus": torch.nn.Softplus,
             "relu": torch.nn.ReLU,
             "adaptive_elu": AdaptiveELU,
+            "parametrized_softplus": parametrized_softplus,
+            'multi_softplus': multi_softplus
         }
         if isinstance(self.hidden_channels, str):
             self.hidden_channels = int(self.hidden_channels)
@@ -412,16 +430,23 @@ class Factorized3dCore(nn.Module):
             self.stride = [self.stride] * self.layers
 
         if isinstance(self.hidden_spatial_dilation, int):
-            self.hidden_spatial_dilation = (self.hidden_spatial_dilation,) * (layers-1)
+            self.hidden_spatial_dilation = (self.hidden_spatial_dilation,) * (
+                        layers - 1)
 
         if isinstance(self.hidden_temporal_dilation, int):
-            self.hidden_temporal_dilation = (self.hidden_temporal_dilation,) * (layers - 1)
+            self.hidden_temporal_dilation = (
+                                            self.hidden_temporal_dilation,) * (
+                                                        layers - 1)
+
+        if isinstance(self.groups, int):
+            self.groups = (self.groups,) * layers
 
         self.features = nn.Sequential()
         layer = OrderedDict()
         layer["conv_spatial"] = nn.Conv3d(
             in_channels=input_channels,
             out_channels=self.hidden_channels[0],
+            groups=1,
             kernel_size=(1,) + self.spatial_input_kernel,
             stride=(1, self.stride[0], self.stride[0]),
             bias=self.bias,
@@ -437,13 +462,15 @@ class Factorized3dCore(nn.Module):
         layer["conv_temporal"] = nn.Conv3d(
             self.hidden_channels[0],
             self.hidden_channels[0],
+            groups=self.groups[0],
             kernel_size=(temporal_input_kernel, 1, 1),
             bias=self.bias,
             dilation=(self.temporal_dilation, 1, 1),
         )
-        if batch_norm:
+        if batch_norm and final_nonlin:
             if independent_bn_bias:
-                layer["norm"] = nn.BatchNorm3d(self.hidden_channels[0], momentum=momentum)
+                layer["norm"] = nn.BatchNorm3d(self.hidden_channels[0],
+                                               momentum=momentum)
             else:
                 layer["norm"] = nn.BatchNorm3d(
                     self.hidden_channels[0],
@@ -455,6 +482,8 @@ class Factorized3dCore(nn.Module):
                         layer["bias"] = Bias3DLayer(self.hidden_channels[0])
                 elif batch_norm_scale:
                     layer["scale"] = Scale3DLayer(self.hidden_channels[0])
+        else:
+            print('No batchnorm!')
 
         if layers > 1 or final_nonlin:
             if hidden_nonlinearities == "adaptive_elu":
@@ -471,6 +500,7 @@ class Factorized3dCore(nn.Module):
             layer[f"conv_spatial_{l + 1}"] = nn.Conv3d(
                 in_channels=self.hidden_channels[l],
                 out_channels=self.hidden_channels[l + 1],
+                groups=self.groups[l + 1],
                 kernel_size=(1,) + (self.spatial_hidden_kernel[l]),
                 stride=(1, self.stride[l], self.stride[l]),
                 bias=self.bias,
@@ -490,6 +520,7 @@ class Factorized3dCore(nn.Module):
             layer[f"conv_temporal_{l + 1}"] = nn.Conv3d(
                 self.hidden_channels[l + 1],
                 self.hidden_channels[l + 1],
+                groups=self.groups[l + 1],
                 kernel_size=(self.temporal_hidden_kernel[l], 1, 1),
                 bias=self.bias,
                 dilation=(self.hidden_temporal_dilation[l], 1, 1),
@@ -508,19 +539,24 @@ class Factorized3dCore(nn.Module):
                     )
                     if bias:
                         if not batch_norm_scale:
-                            layer["bias"] = Bias3DLayer(self.hidden_channels[l + 1])
+                            layer["bias"] = Bias3DLayer(
+                                self.hidden_channels[l + 1])
                     elif batch_norm_scale:
-                        layer["scale"] = Scale3DLayer(self.hidden_channels[l + 1])
+                        layer["scale"] = Scale3DLayer(
+                            self.hidden_channels[l + 1])
 
             if final_nonlin or l < self.layers:
                 if hidden_nonlinearities == "adaptive_elu":
-                    layer["nonlin"] = self.nonlinearities[hidden_nonlinearities](
+                    layer["nonlin"] = self.nonlinearities[
+                        hidden_nonlinearities](
                         x_shift=x_shift, y_shift=y_shift
                     )
                 else:
-                    layer["nonlin"] = self.nonlinearities[hidden_nonlinearities]()
+                    layer["nonlin"] = self.nonlinearities[
+                        hidden_nonlinearities]()
 
-            self.features.add_module("layer{}".format(l + 1), nn.Sequential(layer))
+            self.features.add_module("layer{}".format(l + 1),
+                                     nn.Sequential(layer))
 
     def forward(self, x):
         for l, features in enumerate(self.features):
@@ -547,6 +583,8 @@ class Factorized3dCore(nn.Module):
         )
 
     def get_output_shape(self, input_shape, layer=None):
+        if len(input_shape) == 5:
+            input_shape = input_shape[1:]
         ch, t, h, w = input_shape[:]
 
         if layer is None:
@@ -584,41 +622,72 @@ class Factorized3dCore(nn.Module):
 
     def get_kernels(self):
         return [(self.temporal_input_kernel,) + self.spatial_input_kernel] + [
-            (temporal_kernel,) + spatial_kernel
-            for temporal_kernel, spatial_kernel in zip(
+            (temporal_kernel,) + self.get_spatial_kernel_size(spatial_kernel,
+                                                              i)
+            for i, (temporal_kernel, spatial_kernel) in enumerate(zip(
                 self.temporal_hidden_kernel, self.spatial_hidden_kernel
-            )
+            ))
         ]
+
+    def get_spatial_kernel_size(self, kernel_size, layer):
+        if layer == 0:
+            return kernel_size
+        else:
+            x = (kernel_size[0] - 1) * (
+                        self.hidden_spatial_dilation[layer - 1] - 1) + \
+                kernel_size[0]
+            y = (kernel_size[1] - 1) * (
+                        self.hidden_spatial_dilation[layer - 1] - 1) + \
+                kernel_size[1]
+        return (x, y)
 
     def visualize_filters(self):
         raise NotImplementedError
 
 
 class BioInspiredFactorizedCore(Factorized3dCore):
-    def __init__(self, input_channels, hidden_channels, spatial_input_kernel, temporal_input_kernel,
-                 bc_spatial_kernel, bc_temporal_kernel, ac_spatial_kernel, ac_temporal_kernel,
-                 gc_spatial_kernel, gc_temporal_kernel, final_nonlin, layers=4, stride=1, x_shift=0.0,
-                 y_shift=0.0, gamma_input_spatial=0, gamma_input_temporal=0, hidden_nonlinearities="elu", bias=True,
-                 batch_norm=True, padding=False, batch_norm_scale=True, independent_bn_bias=True, momentum=0.01,
-                 laplace_padding=None, input_regularizer="Laplace2d", spatial_dilation=1, temporal_dilation=1,
-                 bc_spatial_dilation=1, bc_temporal_dilation=1, ac_spatial_dilation=1, ac_temporal_dilation=1,
-                 gc_spatial_dilation=1, gc_temporal_dilation=1, cuda=False, constraint_weights=False,
+    def __init__(self, input_channels, hidden_channels, spatial_input_kernel,
+                 temporal_input_kernel,
+                 bc_spatial_kernel, bc_temporal_kernel, ac_spatial_kernel,
+                 ac_temporal_kernel,
+                 gc_spatial_kernel, gc_temporal_kernel, final_nonlin, layers=4,
+                 stride=1, x_shift=0.0,
+                 y_shift=0.0, gamma_input_spatial=0, gamma_input_temporal=0,
+                 hidden_nonlinearities="elu", bias=True,
+                 batch_norm=True, padding=False, batch_norm_scale=True,
+                 independent_bn_bias=True, momentum=0.01,
+                 laplace_padding=None, input_regularizer="Laplace2d",
+                 spatial_dilation=1, temporal_dilation=1,
+                 bc_spatial_dilation=1, bc_temporal_dilation=1,
+                 ac_spatial_dilation=1, ac_temporal_dilation=1,
+                 gc_spatial_dilation=1, gc_temporal_dilation=1, cuda=False,
+                 constraint_weights=False,
                  outer_ac_layer=False, ac_layer_index=None):
 
-        spatial_hidden_kernel = [bc_spatial_kernel, ac_spatial_kernel, gc_spatial_kernel]
-        temporal_hidden_kernel = [bc_temporal_kernel, ac_temporal_kernel, gc_temporal_kernel]
-        hidden_spatial_dilation = [bc_spatial_dilation, ac_spatial_dilation, gc_spatial_dilation]
-        hidden_temporal_dilation = [bc_temporal_dilation, ac_temporal_dilation, gc_temporal_dilation]
+        spatial_hidden_kernel = [bc_spatial_kernel, ac_spatial_kernel,
+                                 gc_spatial_kernel]
+        temporal_hidden_kernel = [bc_temporal_kernel, ac_temporal_kernel,
+                                  gc_temporal_kernel]
+        hidden_spatial_dilation = [bc_spatial_dilation, ac_spatial_dilation,
+                                   gc_spatial_dilation]
+        hidden_temporal_dilation = [bc_temporal_dilation, ac_temporal_dilation,
+                                    gc_temporal_dilation]
 
-        super().__init__(input_channels, hidden_channels, spatial_input_kernel, temporal_input_kernel,
-                         spatial_hidden_kernel, temporal_hidden_kernel, final_nonlin, layers=layers,
+        super().__init__(input_channels, hidden_channels, spatial_input_kernel,
+                         temporal_input_kernel,
+                         spatial_hidden_kernel, temporal_hidden_kernel,
+                         final_nonlin, layers=layers,
                          stride=stride,
                          x_shift=x_shift,
-                         y_shift=y_shift, gamma_input_spatial=gamma_input_spatial,
+                         y_shift=y_shift,
+                         gamma_input_spatial=gamma_input_spatial,
                          gamma_input_temporal=gamma_input_temporal,
-                         hidden_nonlinearities=hidden_nonlinearities, bias=bias,
-                         batch_norm=batch_norm, padding=padding, batch_norm_scale=batch_norm_scale,
-                         independent_bn_bias=independent_bn_bias, momentum=momentum,
+                         hidden_nonlinearities=hidden_nonlinearities,
+                         bias=bias,
+                         batch_norm=batch_norm, padding=padding,
+                         batch_norm_scale=batch_norm_scale,
+                         independent_bn_bias=independent_bn_bias,
+                         momentum=momentum,
                          laplace_padding=laplace_padding,
                          input_regularizer=input_regularizer,
                          spatial_dilation=spatial_dilation,
