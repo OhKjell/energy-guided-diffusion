@@ -67,22 +67,40 @@ def get_dataloader(
     return dataloader
 
 
-def process_fixations(fixations):
-    fixations = [
-        {
-            "img_index": int(float(f.split(" ")[0])),
-            "center_x": int(float(f.split(" ")[3])),
-            "center_y": int(float(f.split(" ")[4])),
-            "flip": int(f.split(" ")[-1][0]),
-        }
-        for f in fixations
+def process_fixations(fixations, flip_imgs=False, select_flip=None):
+    if not flip_imgs:
+        fixations = [
+            {
+                "img_index": int(float(f.split(" ")[0])),
+                "center_x": int(float(f.split(" ")[3])),
+                "center_y": int(float(f.split(" ")[4])),
+                "flip": int(f.split(" ")[-1][0]),
+            }
+            for f in fixations
+        ]
+    else:
+        print('FLIPPING THE OTHER WAY AROUND!')
+        fixations = [
+            {
+                "img_index": int(float(f.split(" ")[0])),
+                "center_x": int(float(f.split(" ")[3])),
+                "center_y": int(float(f.split(" ")[4])),
+                "flip": int(f.split(" ")[-1][0] == '0'),
+            }
+            for f in fixations
     ]
+    if select_flip is not None:
+        fixations = [x for x in fixations if x['flip'] == select_flip]
     return fixations
 
 
 def get_trial_wise_validation_split(
-    train_responses, train_frac, seed=None, final_training=False
+    train_responses, train_frac, seed=None, final_training=False, hard_coded=None
 ):
+    if hard_coded is not None:
+        print(f'hard coded train trials:{hard_coded[0]}')
+        print(f'hard coded validation trials: {hard_coded[1]}')
+        return hard_coded[0], hard_coded[1]
     num_of_trials = train_responses.shape[-1]
     if seed is not None:
         set_random_seed(seed)
@@ -146,6 +164,7 @@ def frame_movie_loader(
     subsample=1,
     crop=0,
     num_of_trials_to_use=None,
+    start_using_trial=0,
     num_of_frames=None,
     num_of_hidden_frames=None,
     temporal_dilation=1,
@@ -161,20 +180,30 @@ def frame_movie_loader(
     normalize_responses=False,
     frame_file="_img_",
     img_dir_name="stimuli",
-    full_img_w=1400
-    full_img_h=1200
+    full_img_w=1400,
+    full_img_h=1200,
     final_training=False,
     padding=200,
     retina_specific_crops=True,
     stimulus_seed=2021,
+    hard_coded=None,
+    flip_imgs=False,
+    select_flip=None
+
 ):
     dataloaders = {"train": {}, "validation": {}, "test": {}}
-    print(config['fixation_file'][str((retina_index + 1)).zfill(2)])
-    with open(
-        f"{basepath}/{config['fixation_file'][str((retina_index + 1)).zfill(2)]}", "r"
-    ) as file:
-        fixation_file = file.readlines()
-        fixations = process_fixations(fixation_file)
+    if retina_index is None:
+        with open(
+                f"{basepath}/{config['fixation_file']['01']}", "r"
+        ) as file:
+            fixation_file = file.readlines()
+            fixations = process_fixations(fixation_file, flip_imgs=flip_imgs)
+    else:
+        with open(
+            f"{basepath}/{config['fixation_file'][str((retina_index + 1)).zfill(2)]}", "r"
+        ) as file:
+            fixation_file = file.readlines()
+            fixations = process_fixations(fixation_file, flip_imgs=flip_imgs)
 
     files = config["files"]
     img_h = full_img_h - 3 * padding
@@ -182,12 +211,13 @@ def frame_movie_loader(
     # TODO: Allow for a subset of retinas to be trained on, not just one or all
     if retina_index is not None:
         files = [files[retina_index]]
-
+    frames = None
     for i, file in enumerate(files):
         with open(os.path.join(neuronal_data_dir, file), "rb") as pkl:
             neural_data = pickle.load(pkl)
 
         session_id = str(file.split("_")[2])
+        session_id_int = int(session_id) -1
         if cell_indices_out_of_range:
             cell_indices_out_of_range_list = config["exclude_cells"][session_id]
         else:
@@ -198,7 +228,7 @@ def frame_movie_loader(
             ev_cell_indices_out_of_range_list = (
                 get_exclude_cells_based_on_explainable_variance_threshold(
                     config=config,
-                    retina_index=retina_index,
+                    retina_index=session_id_int if retina_index is None else retina_index,
                     threshold=explainable_variance_threshold,
                 )
             )
@@ -209,7 +239,7 @@ def frame_movie_loader(
         ):
             oc_cell_indices_out_of_range_list = (
                 get_exclude_cells_based_on_correlation_threshold(
-                    retina_index=retina_index,
+                    retina_index=session_id_int if retina_index is None else retina_index,
                     config=config,
                     threshold=explainable_variance_threshold,
                 )
@@ -217,6 +247,7 @@ def frame_movie_loader(
         else:
             oc_cell_indices_out_of_range_list = []
         test_responses = neural_data["test_responses"]
+
         cell_indices_out_of_range_list = list(
             set(
                 cell_indices_out_of_range_list
@@ -242,12 +273,16 @@ def frame_movie_loader(
             test_responses = np.delete(
                 test_responses, cell_indices_out_of_range_list, axis=0
             )
+        num_trials = train_responses.shape[2]
         if 'seeds' in neural_data.keys():
             seed_info = neural_data["seeds"]
-            if stimulus_seed in seed_info:
+            if (stimulus_seed in seed_info):
                 trials_assigned_to_seed = neural_data["trial_separation"][stimulus_seed]
                 train_responses = train_responses[:, :, trials_assigned_to_seed]
+
                 test_responses = test_responses[:, :, trials_assigned_to_seed]
+            elif (retina_index == 0) or (session_id[1] == '1'):
+                test_responses = test_responses[:, :, :10]
 
         test_responses = average_repeated_stimuli_responses(test_responses)
 
@@ -256,7 +291,9 @@ def frame_movie_loader(
             train_frac=train_frac,
             seed=seed,
             final_training=final_training,
+            hard_coded=hard_coded
         )
+
         if normalize_responses:
             std = np.std(train_responses, axis=(1, 2))
             std = np.where(std > 0.1, std, 0.1)
@@ -271,26 +308,33 @@ def frame_movie_loader(
             train_responses = np.divide(train_responses, std_train)
             test_responses = np.divide(test_responses, std_test)
         print("train responses shape: ", train_responses.shape)
-        train_ids = np.isin(
+        if hard_coded is None:
+
+            train_ids = np.isin(
             all_train_ids,
-            np.arange(min(train_responses.shape[2], num_of_trials_to_use)),
+            np.arange(start_using_trial, min(train_responses.shape[2], num_of_trials_to_use+start_using_trial)),
         )
-        train_ids = np.asarray(all_train_ids)[train_ids]
+            train_ids = np.asarray(all_train_ids)[train_ids]
+        else:
+            train_ids = [x for x in all_train_ids if x < min(num_trials, num_of_trials_to_use+start_using_trial)]
         assert len(train_ids) > 0
         print("training trials: ", len(train_ids), train_ids)
-        valid_ids = np.isin(
+        if hard_coded is None:
+            valid_ids = np.isin(
             all_validation_ids,
-            np.arange(min(train_responses.shape[2], num_of_trials_to_use)),
+            np.arange(start_using_trial, min(train_responses.shape[2], num_of_trials_to_use+start_using_trial)),
         )
-        valid_ids = all_validation_ids[valid_ids]
-        if not final_training:
-            assert len(valid_ids) > 0
+            valid_ids = all_validation_ids[valid_ids]
+        else:
+            valid_ids = [x for x in all_validation_ids if x < min(num_trials, num_of_trials_to_use+start_using_trial)]
+        #     assert len(valid_ids) > 0
         print("validation trials: ", len(valid_ids), valid_ids)
         print("getting loaders")
         # print('FOR STA PURPOSES ALL TRIALS ARE TRAIN TRIALS')
         # train_ids = np.array(list(valid_ids) + list(train_ids))
 
-        frames = load_frames(
+        if frames is None:
+            frames = load_frames(
             basepath=basepath,
             img_dir_name=img_dir_name,
             frame_file=frame_file,
@@ -310,6 +354,7 @@ def frame_movie_loader(
             num_of_frames=num_of_frames,
             device=device,
             crop=crop,
+            shuffle=False,
             subsample=subsample,
             time_chunk_size=time_chunk_size,
             num_of_layers=num_of_layers,
@@ -334,6 +379,7 @@ def frame_movie_loader(
             num_of_frames=num_of_frames,
             device=device,
             crop=crop,
+            shuffle=False,
             subsample=subsample,
             time_chunk_size=time_chunk_size,
             num_of_layers=num_of_layers,
@@ -358,6 +404,7 @@ def frame_movie_loader(
             num_of_frames=num_of_frames,
             device=device,
             crop=crop,
+            shuffle=False,
             subsample=subsample,
             time_chunk_size=time_chunk_size,
             num_of_layers=num_of_layers,

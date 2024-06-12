@@ -69,7 +69,7 @@ get_gpu_memory()
 
 
 torch.backends.cudnn.enabled = False
-retina_index = 1
+retina_index = "all"
 data_type = "marmoset"
 directory = "/srv/pcpool/home/epool10/project/energy-guided-diffusion/dynamic/dynamic_models"
 filename = "dynamic_model"
