@@ -20,6 +20,13 @@ from dynamic.utils.global_functions import (
 )
 from sklearn.decomposition import PCA
 
+def get_filter_sign(f):
+    max_value = np.max(f)
+    min_value = np.min(f)
+    if np.abs(min_value) > np.abs(max_value):
+        return -1
+    else:
+        return 1
 
 def get_receptive_field_center(
     retina_index,
@@ -30,12 +37,14 @@ def get_receptive_field_center(
     file_suffix="_NC_stas",
     config=None,
     subsample=1,
+    flip_sta=False,
 ):
     if config is None:
         config = global_config
     if all_rf_fields is None:
-        if "sta_file" not in config.keys():
-            cell_file = f"cell_data_{str(retina_index + 1).zfill(2)}_NC_stas_cell_{cell_index}.npy"
+        if ("sta_file" not in config.keys()) or ('NC' in config['sta_file']):
+            # print('SALAMANDER')
+            cell_file = f"cell_data_{str(retina_index + 1).zfill(2)}_WN_stas_cell_{cell_index}.npy"
         else:
             cell_file = create_cell_file_from_config_version(
                 config["sta_file"], cell_index=cell_index, retina_index=retina_index
@@ -45,6 +54,8 @@ def get_receptive_field_center(
         )
         # all_rf_fields = np.load(f'{data_dir}/data/{config["data_type"]}_data/stas/cell_data_{str(retina_index + 1).zfill(2)}{file_suffix}_cell_{cell_index}.npy')
     cell_rf = all_rf_fields
+    if flip_sta:
+        cell_rf = np.flip(cell_rf, axis=1)
     # cell_rf = all_rf_fields[cell_index]
     if sum(crop) > 0:
         num_of_imgs, h, w = cell_rf.shape
@@ -72,6 +83,7 @@ def get_rf_center_grid(
     suffix="_NM_stas",
     subsample=1,
     exclude_cells=True,
+    flip_sta=False
 ):
     if explainable_varinace_threshold is None:
         explainable_varinace_threshold = 0
@@ -103,10 +115,12 @@ def get_rf_center_grid(
             2,
         )
     )
+    print('flipping sta') if flip_sta else print('not flipping sta')
 
     for cell_index in range(config["cell_numbers"][str(retina_index + 1).zfill(2)]):
+        # print('flipping sta') if flip_sta else print('not flipping sta')
         if cell_index not in excluded_cells:
-            print(cell_index)
+            # print(cell_index)
             rf_center = get_receptive_field_center(
                 retina_index,
                 cell_index,
@@ -116,6 +130,8 @@ def get_rf_center_grid(
                 file_suffix=suffix,
                 config=config,
                 subsample=subsample,
+                flip_sta=flip_sta
+
             )
             all_centers[cell] = rf_center
             cell += 1
@@ -131,6 +147,7 @@ def get_receptive_field(
     img_w=200,
     retina_str_index="01",
     file_suffix="_NC_stas",
+        flip_sta=False
 ):
     receptive_fields = np.load(
         # f'{home}/data/{data_type}_data/stas/cell_data_{retina_str_index}{file_suffix}_cell_{cell_id}.npy')
@@ -138,7 +155,8 @@ def get_receptive_field(
     )
     # cell_rf = receptive_fields[cell_id, receptive_fields.shape[1] - number_of_frames:]
     cell_rf = receptive_fields[receptive_fields.shape[0] - number_of_frames :]
-
+    if flip_sta:
+        cell_rf = np.flip(cell_rf, axis=1)
     if crop_size is not None:
         temporal_variances = np.var(cell_rf, axis=0)
         rf_center = np.unravel_index(
@@ -323,29 +341,19 @@ def do_pca(rf_fields, num_of_comps, return_transformed=True):
     return new_rfs, pca, loadings if return_transformed else new_rfs
 
 
-def get_cell_sta(cell_file, data_dir, rf_size, h=150, w=200):
+def get_cell_sta(cell_file, data_dir, rf_size, h=150, w=200, flip_sta=False):
     cell_rf = np.load(f"{data_dir}/{cell_file}")
+    if flip_sta:
+        cell_rf = np.flip(cell_rf, axis=1).copy()
     temporal_variances = np.var(cell_rf, axis=0)
-    max_coordinate = np.unravel_index(np.argmax(temporal_variances), (150, 200))
-    cell_rf = cell_rf[cell_rf.shape[0] - rf_size[0] :, :, :]
+    max_coordinate = np.unravel_index(np.argmax(temporal_variances), shape=temporal_variances.shape)
+    cell_rf = cell_rf[cell_rf.shape[0] - rf_size[0]:, :, :]
     images = crop_cell_rf(cell_rf, rf_size[1:], max_coordinate, img_w=w, img_h=h)
-    if (images.shape[0] < rf_size[1]) or (images.shape[1] < rf_size[2]):
+    if (images.shape[1] < rf_size[1]) or (images.shape[2] < rf_size[2]):
         raise ValueError(f'For cell with STA in file {cell_file} the STA center was either not found or is too close '
                          f'to the edge of the image for filter size {rf_size}')
     return images, max_coordinate
 
-
-def get_sta(in_shape, cell_name, crop):
-    whole_sta = np.zeros(in_shape)
-    sta, _ = get_cell_sta(f'cell_data_02_WN_stas_40_cell_{cell_name}.npy',
-                          f'/usr/users/vystrcilova/retinal_circuit_modeling/data/marmoset_data/stas/',
-                          rf_size =(40, 150, 200))
-    print(sta.shape)
-    max_value = np.max(np.abs(sta))
-    sta = sta/max_value
-    sta = sta[:, crop[0]:-crop[1], crop[2]:-crop[3]]
-    whole_sta[0, 0] = sta[1:]
-    return whole_sta
 
 def separate_time_space_sta(sta):
     t, h, w = sta.shape
@@ -812,6 +820,13 @@ def calculate_initial_stas(responses, images, cell_index, time_bins, height, wid
     # sta /= np.linalg.norm(sta)
     return sta
 
+def split_stas(sta_file, save_file, save_dir):
+    all_stas = np.load(sta_file)
+    print(all_stas.shape)
+    for cell in tqdm(range(all_stas.shape[0]), total=all_stas.shape[0]):
+        single_sta = all_stas[cell]
+        np.save(f'{save_dir}/{save_file}_cell_{cell}.npy', single_sta)
+
 
 def save_sta(
     response_file,
@@ -911,6 +926,8 @@ def show_sta(sta, cell, vmin=-1, vmax=1):
 #     pass
 
 if __name__ == "__main__":
+    split_stas(f'{home}/data/marmoset_data/stas/20220412_SS_252MEA6010_re_i1_stas.npy', 'cell_data_02_WN_stas', f'{home}/data/marmoset_data/stas/')
+    exit()
     """with open(
         f"{home}/data/marmoset_data/responses/config_s4_nm_sta_zero_mean.yaml", "rb"
     ) as config_file:
@@ -942,6 +959,7 @@ if __name__ == "__main__":
         height=150,
         width=200,
     )
+
 
 # calculate_pca_on_stas(num_of_images=15, retina_index=0, crop=big_crops[f'01'])
 # get_stas_from_pcs(retina_index=0, input_kern=[15], data_dir=f'{home}/')

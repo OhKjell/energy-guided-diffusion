@@ -8,14 +8,22 @@ from nnfabrik import builder
 import os
 import seaborn as sns
 import dynamic.models
-from dynamic.datasets.stas import get_stas_from_pcs, get_cropped_stas, plot_all_stas
+from dynamic.datasets.stas import (
+    get_stas_from_pcs,
+    get_cropped_stas,
+    plot_all_stas,
+)
 from dynamic.evaluations.ln_model_performance import (
     get_ln_model_cell_performance_dict,
     get_model_and_dataloader_for_ln,
     get_parameters_from_ln_model_file_name,
     get_ln_model_performance_on_test,
 )
-from dynamic.models.helper_functions import get_seed_model_versions
+from dynamic.models.helper_functions import (
+    get_seed_model_versions,
+    get_model_and_dataloader_based_on_setting,
+    get_possible_seeds,
+)
 from dynamic.models.helper_functions import (
     get_model_and_dataloader,
     get_model_and_dataloader_for_nm,
@@ -67,7 +75,9 @@ def get_performance_for_single_cell(
         ):
             images = images.double().to(device)
             responses = responses.transpose(1, 2)
-            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(device)
+            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(
+                device
+            )
             responses = responses.to(device)
             if device == "cpu":
                 all_responses.append(responses.detach().numpy())
@@ -100,35 +110,45 @@ def get_performance_for_single_cell(
     return correlations, all_predictions, all_responses
 
 
-def get_multiretinal_performance_for_singel_cells(dataloaders,
+def get_multiretinal_performance_for_single_cells(
+    dataloaders,
     model,
     device,
     rf_size,
     max_coordinate=None,
     img_h=150,
     img_w=200,
-    performance="validation",):
-    all_responses = {data_key: [] for data_key in dataloaders[performance].keys()}
-    all_predictions = {data_key: [] for data_key in dataloaders[performance].keys()}
+    performance="validation",
+):
+    all_responses = {
+        data_key: [] for data_key in dataloaders[performance].keys()
+    }
+    all_predictions = {
+        data_key: [] for data_key in dataloaders[performance].keys()
+    }
     model.to(device)
     model.eval()
     n_iterations = len(LongCycler(dataloaders["train"]))
     with torch.no_grad():
         for batch_no, (data_key, data) in tqdm(
-                enumerate(LongCycler(dataloaders[performance])),
-                total=n_iterations,
-                # desc="Epoch {}".format(epoch),
+            enumerate(LongCycler(dataloaders[performance])),
+            total=n_iterations,
+            # desc="Epoch {}".format(epoch),
         ):
             images = data[0]
             responses = data[1]
             images = images.double().to(device)
             responses = responses.transpose(1, 2)
-            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(device)
+            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(
+                device
+            )
             responses = responses.to(device)
             if device == "cpu":
                 all_responses[data_key].append(responses.detach().numpy())
             else:
-                all_responses[data_key].append(responses.detach().cpu().numpy())
+                all_responses[data_key].append(
+                    responses.detach().cpu().numpy()
+                )
             output = model_step(
                 images=images,
                 model=model,
@@ -136,7 +156,7 @@ def get_multiretinal_performance_for_singel_cells(dataloaders,
                 rf_size=rf_size,
                 h=img_h,
                 w=img_w,
-                data_key=data_key
+                data_key=data_key,
             )
 
             if device == "cpu":
@@ -147,13 +167,15 @@ def get_multiretinal_performance_for_singel_cells(dataloaders,
         correlations = {}
         for data_key in dataloaders[performance].keys():
             correlations[data_key] = torch.squeeze(
-            correlation(
-                torch.tensor(np.concatenate(all_predictions[data_key])),
-                torch.tensor(np.concatenate(all_responses[data_key])),
-                eps=1e-12,
+                correlation(
+                    torch.tensor(np.concatenate(all_predictions[data_key])),
+                    torch.tensor(np.concatenate(all_responses[data_key])),
+                    eps=1e-12,
+                )
             )
-        )
-            all_predictions[data_key] = np.concatenate(all_predictions[data_key])
+            all_predictions[data_key] = np.concatenate(
+                all_predictions[data_key]
+            )
             all_responses[data_key] = np.concatenate(all_responses[data_key])
     # np.save(f'{home}/logs/preds_0_on_2022.npy', all_predictions)
     return correlations, all_predictions, all_responses
@@ -213,7 +235,11 @@ def get_basic_cnn_ensemble_cell_performance(
 ):
     directory = f"{home}/models/{directory_prefix}_cnn/{data_type}/retina{retina_index + 1}/cell_None/readout_isotropic/gmp_0/"
     models, seeds = get_seed_model_versions(
-        filename, model_dir=directory, model_fn=model_fn, device=device, seeds=seeds
+        filename,
+        model_dir=directory,
+        model_fn=model_fn,
+        device=device,
+        seeds=seeds,
     )
     dataloaders, _, config = get_model_and_dataloader(
         directory,
@@ -231,7 +257,9 @@ def get_basic_cnn_ensemble_cell_performance(
         ):
             images = images.double().to(device)
             responses = responses.transpose(1, 2)
-            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(device)
+            responses = torch.flatten(responses, start_dim=0, end_dim=1).to(
+                device
+            )
             responses = responses.to(device)
             if device == "cpu":
                 all_responses.append(responses.detach().numpy())
@@ -268,64 +296,107 @@ def get_basic_cnn_ensemble_cell_performance(
 
 def get_multiretinal_cnn_perofrmance_dict(
     filename,
-        performance='validation',
-        directory_prefix='multiretinal_factorized',
-        data_type='salamander',
-        model_fn='models.MultiRetinalFactorizedEncoder.build_trained',
+    setting="wn",
+    performance="validation",
+    directory_prefix="multiretinal_factorized",
+    data_type="salamander",
+    model_dir=None,
+    model_fn="models.MultiRetinalFactorizedEncoder.build_trained",
     device="cpu",
     data_dir=None,
     seed=None,
     config_dict=None,
     fixation_file=None,
-
-
+    stimulus_seed=None,
+    excluded_cells=None,
+    fancy_nonlin=False,
 ):
-    directory = f"{home}/models/{directory_prefix}_cnn/{data_type}/retinaall/cell_None/readout_isotropic/gmp_0/"
-    dataloaders, model, config = get_model_and_dataloader(
-        directory,
-        filename,
+    directory = f"{model_dir if model_dir is not None else home}/models/{directory_prefix}_cnn/{data_type}/retinaall/cell_None/readout_isotropic/gmp_0/"
+    dataloaders, model, config = get_model_and_dataloader_based_on_setting(
+        setting=setting,
+        directory=directory,
+        filename=filename,
         model_fn=model_fn,
         device=device,
         data_dir=data_dir,
-        test=performance == "test",
         seed=seed,
         data_type=data_type,
         config_dict=config_dict,
+        fixation_file=fixation_file,
+        stimulus_seed=stimulus_seed,
+        performance=performance,
+        fancy_nonlin=fancy_nonlin,
     )
-    correlations, all_predictions, all_responses = get_multiretinal_performance_for_singel_cells(
+    (
+        correlations,
+        all_predictions,
+        all_responses,
+    ) = get_multiretinal_performance_for_single_cells(
         dataloaders=dataloaders,
         model=model,
         device=device,
         rf_size=(model.config_dict["img_h"], model.config_dict["img_w"]),
-        img_h = model.config_dict["img_h"],
-        img_w = model.config_dict["img_w"],
-        performance=performance
+        img_h=model.config_dict["img_h"],
+        img_w=model.config_dict["img_w"],
+        performance=performance,
     )
     cell_names = {}
+    cell_dict = {}
     all_cells = []
+    if (setting != "nm") or (setting != "wn"):
+        setting_str = f"_{setting}"
+    else:
+        setting_str = ""
     for data_key in correlations.keys():
-        cell_names[data_key] = get_cell_names(retina_index=int(data_key)-1,
-        explained_variance_threshold=model.config_dict[
-            "explainable_variance_threshold"
-        ],
-        correlation_threshold=model.config_dict["oracle_correlation_threshold"],
-        config=model.config_dict["config"],)
-        np.save(f"{directory}/{filename}/stats/seed_{seed}/cell_ids_retina_{data_key}.npy", cell_names)
+        reliable_correlatins = []
+        if excluded_cells is None:
+            data_key_ec = {data_key: []}
+        else:
+            data_key_ec = excluded_cells[data_key]
+        print(data_key_ec)
+        cell_names[data_key] = [
+            x
+            for x in get_cell_names(
+                retina_index=int(data_key) - 1,
+                explained_variance_threshold=model.config_dict[
+                    "explainable_variance_threshold"
+                ],
+                correlation_threshold=model.config_dict[
+                    "oracle_correlation_threshold"
+                ],
+                config=model.config_dict["config"],
+            )
+            if x not in data_key_ec
+        ]
+        print(len(cell_names[data_key]))
+
+        cell_dict[data_key] = {}
+        for i, cell in enumerate(cell_names[data_key]):
+            cell_dict[data_key][cell] = correlations[data_key][i]
+            reliable_correlatins.append(correlations[data_key][i])
+
         np.save(
-            f"{directory}/{filename}/stats/seed_{seed}/test_correlations_retina_{data_key}.npy",
-            correlations,
+            f"{directory}/{filename}/stats/seed_{seed}/cell_ids_retina_{data_key}{setting_str}.npy",
+            cell_names[data_key],
+        )
+        np.save(
+            f"{directory}/{filename}/stats/seed_{seed}/{performance}_correlations_retina_{data_key}{setting_str}.npy",
+            correlations[data_key],
         )
         print(
-            f"saved_correlations to {directory}/{filename}/stats/seed_{seed}/test_correlations_{data_key}.npy"
+            f"saved_correlations to {directory}/{filename}/stats/seed_{seed}/{performance}_correlations_{data_key}{setting_str}.npy"
         )
-        print(f'retina: {data_key}')
-        for cell_name, corr in zip(cell_names[data_key], correlations[data_key]):
-            print(f'cell: {cell_name} - corr: {corr}')
+        print(f"retina: {data_key}")
+        for cell_name, corr in zip(
+            cell_names[data_key], correlations[data_key]
+        ):
+            print(f"cell: {cell_name} - corr: {corr}")
+        print(f"reliable mean: {np.mean(reliable_correlatins)}")
         print(np.mean(correlations[data_key].detach().numpy()))
-        all_cells += list(correlations[data_key].detach().numpy())
-    print(f'per cell avg: {np.mean(all_cells)}')
-
-
+        all_cells += list(reliable_correlatins)
+        # all_cells += list(correlations[data_key].detach().numpy())
+    print(f"{setting} per cell avg: {np.mean(all_cells)}")
+    return correlations, all_predictions, all_responses, cell_dict
 
 
 def get_basic_wm_cnn_cell_performance_dict_for_nm(
@@ -356,7 +427,11 @@ def get_basic_wm_cnn_cell_performance_dict_for_nm(
         fixation_file=fixation_fie,
     )
 
-    correlations, all_predictions, all_responses = get_performance_for_single_cell(
+    (
+        correlations,
+        all_predictions,
+        all_responses,
+    ) = get_performance_for_single_cell(
         model=model,
         dataloaders=dataloaders,
         performance=performance,
@@ -372,11 +447,16 @@ def get_basic_wm_cnn_cell_performance_dict_for_nm(
         explained_variance_threshold=model.config_dict[
             "explainable_variance_threshold"
         ],
-        correlation_threshold=model.config_dict["oracle_correlation_threshold"],
+        correlation_threshold=model.config_dict[
+            "oracle_correlation_threshold"
+        ],
         config=model.config_dict["config"],
     )
     cell_dict = {k: v for k, v in zip(cell_names, correlations)}
-    np.save(f"{directory}/{filename}/stats/seed_{seed}/cell_ids_on_nm.npy", cell_names)
+    np.save(
+        f"{directory}/{filename}/stats/seed_{seed}/cell_ids_on_nm.npy",
+        cell_names,
+    )
     np.save(
         f"{directory}/{filename}/stats/seed_{seed}/test_correlations_on_nm.npy",
         correlations,
@@ -437,7 +517,11 @@ def get_basic_cnn_cell_performance_dict(
             fixation_file=fixation_file,
         )
 
-    correlations, all_predictions, all_responses = get_performance_for_single_cell(
+    (
+        correlations,
+        all_predictions,
+        all_responses,
+    ) = get_performance_for_single_cell(
         model=model,
         dataloaders=dataloaders,
         performance=performance,
@@ -463,13 +547,18 @@ def get_basic_cnn_cell_performance_dict(
         explained_variance_threshold=model.config_dict[
             "explainable_variance_threshold"
         ],
-        correlation_threshold=model.config_dict["oracle_correlation_threshold"],
+        correlation_threshold=model.config_dict[
+            "oracle_correlation_threshold"
+        ],
         config=model.config_dict["config"],
     )
     cell_dict = {k: v for k, v in zip(cell_names, correlations)}
-    np.save(f"{directory}/{filename}/stats/seed_{seed}/cell_ids.npy", cell_names)
     np.save(
-        f"{directory}/{filename}/stats/seed_{seed}/{performance}_correlations.npy", correlations
+        f"{directory}/{filename}/stats/seed_{seed}/cell_ids.npy", cell_names
+    )
+    np.save(
+        f"{directory}/{filename}/stats/seed_{seed}/{performance}_correlations.npy",
+        correlations,
     )
     print(
         f"saved_correlations to {directory}/{filename}/stats/seed_{seed}/{performance}_correlations.npy"
@@ -549,10 +638,12 @@ def create_scatter_plot_from_dicts(
         color="black",
     )
     plt.xlabel(
-        f"{model_1_name} CC; avg CC {np.round(np.mean(avg_model_1), 2)}", fontsize="15"
+        f"{model_1_name} CC; avg CC {np.round(np.mean(avg_model_1), 2)}",
+        fontsize="15",
     )
     plt.ylabel(
-        f"{model_2_name} CC; avg CC {np.round(np.mean(avg_model_2), 2)}", fontsize="15"
+        f"{model_2_name} CC; avg CC {np.round(np.mean(avg_model_2), 2)}",
+        fontsize="15",
     )
     plt.tick_params(labelsize="15")
     #     plt.title(f'Retina {retina_index + 1}', fontsize='xx-large')
@@ -575,10 +666,12 @@ def visualize_cell_kernels(directory, model_file, cell_names, seed=None):
     )
     weights = model["model"]["core.features.layer0.conv.weight"]
     scale = weights.max()
-    Path(f"{directory}/{model_file}/visualizations/reconstructed_filters/").mkdir(
-        parents=True, exist_ok=True
+    Path(
+        f"{directory}/{model_file}/visualizations/reconstructed_filters/"
+    ).mkdir(parents=True, exist_ok=True)
+    all_filters = np.zeros(
+        ((feature_vector.shape[1],) + cropped_stas[0].shape)
     )
-    all_filters = np.zeros(((feature_vector.shape[1],) + cropped_stas[0].shape))
     for cell_index in range(feature_vector.shape[1]):
         sta = cropped_stas[cell_names[cell_index]]
         features = feature_vector[:, cell_index]
@@ -586,11 +679,18 @@ def visualize_cell_kernels(directory, model_file, cell_names, seed=None):
         cell_filters = features[:].reshape([1, -1]) @ flat_weight
         cell_filters = cell_filters.reshape(weights.shape[2:])
         fig, ax = plt.subplots(
-            cell_filters.shape[0], 2, sharex=True, sharey=True, figsize=(10, 35)
+            cell_filters.shape[0],
+            2,
+            sharex=True,
+            sharey=True,
+            figsize=(10, 35),
         )
         for time in range(weights.shape[2]):
             im = ax[time, 0].imshow(
-                cell_filters[time].cpu(), cmap="coolwarm", vmin=-scale, vmax=scale
+                cell_filters[time].cpu(),
+                cmap="coolwarm",
+                vmin=-scale,
+                vmax=scale,
             )
 
             im2 = ax[time, 1].imshow(
@@ -629,10 +729,13 @@ if __name__ == "__main__":
     # 1 layer no nonlin lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_20.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90
     # 1 layer yes nonlin lr_0.0073_l_1_ch_[64]_t_25_bs_32_tr_250_ik_25x(33, 33)x(33, 33)_g_20.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90
     for seed in seeds:
-        get_multiretinal_cnn_perofrmance_dict(filename='lr_0.0073_l_1_ch_[64]_t_25_bs_32_tr_250_ik_25x(33, 33)x(33, 33)_g_20.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90',
-                                          performance='test',
-                                          directory_prefix='multiretinal_factorized_ev_0.15',
-                                          device='cuda', seed=seed)
+        get_multiretinal_cnn_perofrmance_dict(
+            filename="lr_0.0073_l_1_ch_[64]_t_25_bs_32_tr_250_ik_25x(33, 33)x(33, 33)_g_20.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90",
+            performance="test",
+            directory_prefix="multiretinal_factorized_ev_0.15",
+            device="cuda",
+            seed=seed,
+        )
     # lr_0.0100_l_1_ch_16_t_15_bs_10_tr_250_ik_15x15x15_g_47.0000_gt_0.0300_l1_0.0100_l2_0.0000_sg_0.15_p_0_bn_1_norm_0_fn_1 1 layer salamander
     # 'lr_0.0100_l_1_ch_16_t_15_bs_10_tr_250_ik_15x15x15_g_47.0000_gt_0.0300_l1_0.0100_l2_0.0000_sg_0.15_p_0_bn_1_norm_0_fn_1' 1 layer salamander
     # 'lr_0.0094_l_3_ch_16_t_25_bs_16_tr_250_ik_25x11x11_hk_25x7x7_g_47.0000_gt_1.1453_l1_1.2520_l2_0.0000_sg_0.35_p_0_bn_1_norm_0_fn_1' 3 layer salamander
@@ -648,11 +751,13 @@ if __name__ == "__main__":
     #     'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90',
     #     'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(25, 25)x(25, 25)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90',
     #     'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_1_h_80_w_90']
-    filenames = ['lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(25, 25)x(25, 25)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90',
-                'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90',
-                'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90',
-                'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90',
-                'lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90']
+    filenames = [
+        "lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(25, 25)x(25, 25)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90",
+        "lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90",
+        "lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90",
+        "lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90",
+        "lr_0.0073_l_1_ch_[16]_t_25_bs_32_tr_250_ik_25x(17, 17)x(17, 17)_g_47.0000_gt_1.4530_l1_1.3000_l2_0.0000_sg_0.25_d_1_dt_1___p_0_bn_1_s_1norm_0_fn_0_h_80_w_90",
+    ]
     perf_dict_1 = get_basic_cnn_cell_performance_across_seeds(
         [128, 1024, 16, 64, 256, 8],
         # [256, 8],
@@ -666,7 +771,9 @@ if __name__ == "__main__":
     print(perf_dict_1)
 
     for retina_index in range(5):
-        cell_names = get_cell_names(retina_index, explained_variance_threshold=0.0)
+        cell_names = get_cell_names(
+            retina_index, explained_variance_threshold=0.0
+        )
         # visualize_cell_kernels(f'//Users/m_vys/Documents/doktorat/CRC1456/retinal_circuit_modeling/models/basic_ev_0.15_cnn/retina{retina_index+1}/cell_None/readout_isotropic/gmp_0',
         #                        model_file='lr_0.0130_l_1_ch_16_t_20_bs_12_tr_150_ik_20x21x21_g_2.3966_gt_3.8047_l1_0.0419_l2_0.0000_sg_0.35_p_0_bn_1_norm_0_fn_0',
         #                        cell_names=cell_names)
@@ -733,8 +840,6 @@ if __name__ == "__main__":
         model_fn="models.cnn.FactorizedEncoder.build_trained",
         device="cuda",
         seed=64,
-
-
     )
     #
 

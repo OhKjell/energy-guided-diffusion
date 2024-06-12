@@ -42,7 +42,7 @@ from dynamic.models.cores import Basic3dCore, Factorized3dCore
 
 
 class Encoder(nn.Module):
-    def __init__(self, core, readout, readout_nonlinearity, elu_xshift, elu_yshift, l1):
+    def __init__(self, core, readout, readout_nonlinearity, elu_xshift, elu_yshift, l1, n_neurons_dict):
         super().__init__()
         self.core = core
         self.readout = readout
@@ -51,9 +51,12 @@ class Encoder(nn.Module):
             self.nonlinearity = core.nonlinearities[readout_nonlinearity](
                 elu_xshift, elu_yshift
             )
+        elif readout_nonlinearity == 'multi_softplus':
+            self.nonlinearity = core.nonlinearities[readout_nonlinearity](n_neurons_dict, data_keys = n_neurons_dict.keys())
         else:
             self.nonlinearity = core.nonlinearities[readout_nonlinearity]()
         self.visualization_dir = None
+
 
     def forward(self, x, data_key=None):
         out_core = self.core(x)
@@ -62,56 +65,71 @@ class Encoder(nn.Module):
         out_core = out_core.reshape(((-1,) + out_core.size()[2:]))
         # print('outcore shape', out_core.shape)
         # out_core = out_core.squeeze()
-
         if data_key is None:
             readout_out = self.readout(out_core)
         else:
             readout_out = self.readout[data_key](out_core)
-        out = self.nonlinearity(readout_out)
+        if isinstance(self.nonlinearity, multi_softplus):
+            out = self.nonlinearity(readout_out, data_key=data_key)
+        else:
+            out = self.nonlinearity(readout_out)
+
         return out
 
     @staticmethod
     def build_trained(dataloaders, model_dir, model_name, data_dir, device="cpu"):
         # get parameters from config file
-        with open(f"/{model_dir}/{model_name}/config/config.yaml", "r") as config_file:
-            config = yaml.unsafe_load(config_file)
-            model_config = config["model_config"]
-            if 'config' in config.keys():
-                for key in dataloaders['train'].keys():
-                    config['config']['big_crops'][key] = dataloaders['train'][key].dataset.crop
-            # config['size'] = (1, 150 - sum(config['dataloader_config']['crop'][:2]), 200-sum(config['dataloader_config']['crop'][2:]))
-            # config['img_h'] = 150 - sum(config['dataloader_config']['crop'][:2])
-            # config['img_w'] = 200 - sum(config['dataloader_config']['crop'][2:])
-            config['size'] = (1, 80, 90)
-            config['img_h'] = 80
-            config['img_w'] = 90
-            if "config" not in model_config.keys():
-                model_config["config"] = global_config
-            if "spatial_dilation" not in model_config.keys():
-                model_config["spatial_dilation"] = 1
-                model_config["temporal_dilation"] = 1
-            if "hidden_spatial_dilation" not in model_config.keys():
-                model_config["hidden_spatial_dilation"] = 1
-                model_config["hidden_temporal_dilation"] = 1
-            data_config = config["dataloader_config"]
-            n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(
-                dataloaders
-            )
-            del config["model_config"]
-            del config["dataloader_config"]
+        if '/' not in model_name:
+            with open(f"{model_dir}/{model_name}/config/config.yaml", "r") as config_file:
+                config = yaml.unsafe_load(config_file)
+        else:
+            model_name_abbrev = model_name.split('/')[0]
+            with open(f"{model_dir}/{model_name_abbrev}/config/config.yaml", "r") as config_file:
+                config = yaml.unsafe_load(config_file)
 
-            config_dict = {
-                **model_config,
-                **data_config,
-                **config,
-                "base_path": data_dir,
-                "initialize_source_grid": True,
-                "n_neurons_dict": n_neurons_dict,
-                "in_shapes_dict": in_shapes_dict,
-                "input_channels": input_channels[0],
-                "model_dir": model_dir,
-                "model_name": model_name,
-            }
+        model_config = config["model_config"]
+        nm = False
+        if 'config' in config.keys():
+            for key in dataloaders['train'].keys():
+                config['config']['big_crops'][key] = dataloaders['train'][key].dataset.crop
+                if dataloaders['train'][key].dataset.num_of_imgs > 20000:
+                    nm = True
+
+        # config['size'] = (1, 150 - sum(config['dataloader_config']['crop'][:2]), 200-sum(config['dataloader_config']['crop'][2:]))
+        # config['img_h'] = 150 - sum(config['dataloader_config']['crop'][:2])
+        # config['img_w'] = 200 - sum(config['dataloader_config']['crop'][2:])
+        config['size'] = (1, 80, 90)
+        config['img_h'] = 150
+        config['img_w'] = 200
+        if "config" not in model_config.keys():
+            model_config["config"] = global_config
+        if "spatial_dilation" not in model_config.keys():
+            model_config["spatial_dilation"] = 1
+            model_config["temporal_dilation"] = 1
+        if "hidden_spatial_dilation" not in model_config.keys():
+            model_config["hidden_spatial_dilation"] = 1
+            model_config["hidden_temporal_dilation"] = 1
+        data_config = config["dataloader_config"]
+        n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(
+            dataloaders
+        )
+        if nm:
+            model_config['flip_sta'] = True
+        del config["model_config"]
+        del config["dataloader_config"]
+
+        config_dict = {
+            **model_config,
+            **data_config,
+            **config,
+            "base_path": data_dir,
+            "initialize_source_grid": True,
+            "n_neurons_dict": n_neurons_dict,
+            "in_shapes_dict": in_shapes_dict,
+            "input_channels": input_channels[0],
+            "model_dir": model_dir,
+            "model_name": model_name,
+        }
         return config_dict
 
     def get_max_corr(self):
@@ -222,6 +240,7 @@ class BasicEncoder(Encoder):
             config_dict["elu_xshift"],
             config_dict["elu_yshift"],
             config_dict["l1"],
+            config_dict['n_neurons_dict']
         )
 
     @staticmethod
@@ -290,6 +309,7 @@ class FactorizedEncoder(Encoder):
         core_dict = dict(
             input_channels=config_dict["input_channels"],
             hidden_channels=config_dict["hidden_channels"],
+            groups=config_dict['groups'] if 'groups' in config_dict.keys() else 1,
             spatial_input_kernel=config_dict["spatial_input_kern"],
             spatial_hidden_kernel=config_dict["spatial_hidden_kern"],
             temporal_input_kernel=config_dict["temporal_input_kern"],
@@ -334,7 +354,11 @@ class FactorizedEncoder(Encoder):
             img_h=config_dict["img_h"],
             img_w=config_dict["img_w"],
             subsample=config_dict["subsample"],
+            flip_sta=config_dict["flip_sta"] if 'flip_sta' in config_dict.keys() else False,
+            cell_index=config_dict["cell_index"],
+
         )
+        print(f'flipping sta {readout_dict["flip_sta"]}')
         core = Factorized3dCore(**core_dict)
         self.config_dict = config_dict
         if seed is None:
@@ -350,6 +374,7 @@ class FactorizedEncoder(Encoder):
             config_dict["elu_xshift"],
             config_dict["elu_yshift"],
             config_dict["l1"],
+            config_dict['n_neurons_dict']
         )
 
     @staticmethod
@@ -369,7 +394,7 @@ class FactorizedEncoder(Encoder):
         )
         print(seed)
         state_dict = torch.load(
-            f"/{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
+            f"{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
             map_location=torch.device(device),
         )["model"]
         # if 'readout._mu' in state_dict.keys():
@@ -384,7 +409,7 @@ class FactorizedEncoder(Encoder):
         return model
 
     @staticmethod
-    def build_initial(dataloaders, config_dict, seed=None):
+    def build_initial(dataloaders, config_dict, device='cuda', seed=None):
         n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(
             dataloaders
         )
@@ -400,6 +425,7 @@ class FactorizedEncoder(Encoder):
             config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=False
         )
         model.config_dict = config_dict
+        model.to(device)
         return model
 
     def visualize(self):
@@ -461,8 +487,13 @@ class MultiRetinalFactorizedEncoder(Encoder):
             independent_bn_bias=config_dict["independent_bn_bias"],
         )
 
+        data_keys = dataloaders["train"].keys()
+        # if (len(data_keys) == 2):
+        #     data_keys = list(data_keys)
+        #     data_keys.append('03')
         readout_dict = dict(
-            data_keys=dataloaders["train"].keys(),
+            data_keys=data_keys,
+
             data_dir=config_dict["base_path"],
             oracle_correlation_threshold=config_dict["oracle_correlation_threshold"],
             explainable_variance_threshold=config_dict[
@@ -481,6 +512,7 @@ class MultiRetinalFactorizedEncoder(Encoder):
             img_h=config_dict["img_h"],
             img_w=config_dict["img_w"],
             subsample=config_dict["subsample"],
+            flip_sta=config_dict['flip_sta'] if 'flip_sta' in config_dict.keys() else False
         )
 
         core = Factorized3dCore(**core_dict)
@@ -499,6 +531,7 @@ class MultiRetinalFactorizedEncoder(Encoder):
             config_dict["elu_xshift"],
             config_dict["elu_yshift"],
             config_dict["l1"],
+            config_dict['n_neurons_dict']
         )
 
     @staticmethod
@@ -517,17 +550,37 @@ class MultiRetinalFactorizedEncoder(Encoder):
             config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=True
         )
         print(seed)
+        print(model_dir)
+        print(model_name)
         state_dict = torch.load(
             f"{model_dir}/{model_name}/weights/seed_{model.seed}/best_model.m",
             map_location=torch.device(device),
         )["model"]
+        if '/' in model_name:
+            if 'pn_1' in model_name:
+                for l, feature in enumerate(model.core.features):
+                    print(feature)
+                    print('layer', l)
+                    if hasattr(feature, 'nonlin'):
+                        if l == 0:
+                            model.core.features.layer0.nonlin = ParametrizedELU()
+                        elif l == 1:
+                            model.core.features.layer1.nonlin = ParametrizedELU()
+                        elif l == 2:
+                            model.core.features.layer2.nonlin = ParametrizedELU()
+                        elif l == 3:
+                            model.core.features.layer3.nonlin = ParametrizedELU()
+            # if 'fn_1' in model_name:
+            #     model.nonlinearity = parametrized_softplus()
+            # elif 'mlti_1' in model_name:
+            #     model.nonlinearity =
         model.load_state_dict(state_dict)
         model.config_dict = config_dict
         model.to(device)
         return model
 
     @staticmethod
-    def build_initial(dataloaders, config_dict, seed=None):
+    def build_initial(dataloaders, config_dict, device='cuda', seed=None):
         n_neurons_dict, in_shapes_dict, input_channels = get_dataloader_dims(
             dataloaders
         )
@@ -543,6 +596,7 @@ class MultiRetinalFactorizedEncoder(Encoder):
             config_dict=config_dict, dataloaders=dataloaders, seed=seed, trained=False
         )
         model.config_dict = config_dict
+        model.to(device)
         return model
 
 
@@ -812,4 +866,3 @@ def sta_model(
             param.requires_grad = train_readout
 
     return model
-

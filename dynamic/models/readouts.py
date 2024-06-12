@@ -32,6 +32,7 @@ class InitializedMultipleFullGaussian2d(ModuleDict):
         img_h=150,
         img_w=200,
         subsample=1,
+        flip_sta=False
     ):
         super().__init__()
         self.data_keys = data_keys
@@ -56,6 +57,7 @@ class InitializedMultipleFullGaussian2d(ModuleDict):
                 img_h=img_h,
                 img_w=img_w,
                 subsample=subsample,
+                flip_sta=flip_sta
             )
             self.add_module(data_key, readout)
 
@@ -80,6 +82,7 @@ def initialize_full_gaussian_readout(
     img_h=150,
     img_w=200,
     subsample=1,
+    flip_sta=False,
 ):
     """
 
@@ -105,7 +108,10 @@ def initialize_full_gaussian_readout(
     """
     if config is None:
         config = global_config
-
+    if len(str(retina_index)) == 2:
+        retina_index = int(str(retina_index)[-1])
+    print(f'retina index: {retina_index}')
+    print(in_shapes_dict)
     source_grid = get_rf_center_grid(
         retina_index=retina_index,
         crop=config["big_crops"][f"0{retina_index + 1}"],
@@ -114,8 +120,8 @@ def initialize_full_gaussian_readout(
         explainable_varinace_threshold=explainable_variance_threshold,
         config=config,
         subsample=subsample,
+        flip_sta=flip_sta
     )
-    print(f"THIS IS THE SOzrce girdf  {source_grid.shape}")
     readout = FullGaussian2d(
         in_shape=(
             (core.hidden_channels[-1],)
@@ -148,6 +154,7 @@ def initialize_full_gaussian_readout(
             explainable_varinace_threshold=explainable_variance_threshold,
             config=config,
             subsample=subsample,
+            flip_sta=flip_sta
         )
 
         # initializing readout locations with sta pixel of the biggest variance
@@ -198,7 +205,9 @@ def initialize_multiple_full_gaussian_readouts(
     img_h=150,
     img_w=200,
     subsample=1,
+    flip_sta=True
 ):
+    print('data_keys', data_keys)
     readout = InitializedMultipleFullGaussian2d(
         data_keys=data_keys,
         data_dir=data_dir,
@@ -219,5 +228,6 @@ def initialize_multiple_full_gaussian_readouts(
         img_h=img_h,
         img_w=img_w,
         subsample=subsample,
+        flip_sta=flip_sta
     )
     return readout
